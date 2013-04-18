@@ -1,0 +1,48 @@
+{
+  "name": "health",
+  "description": "TODO",
+  "keywords": [],
+  "version": "0.0.1",
+  "homepage": "http://github.com/cliffano/health",
+  "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "contributors": [
+    "All contributors (https://github.com/cliffano/health/graphs/contributors)"
+  ],
+  "main": "./lib/health",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/cliffano/health.git"
+  },
+  "bugs": {
+    "url": "http://github.com/cliffano/health/issues"
+  },
+  "directories": {
+    "bin": "./bin",
+    "lib": "./lib",
+    "test": "./test"
+  },
+  "dependencies": {
+    "async": "0.2.6",
+    "bagofholding": "0.1.4",
+    "cron": "1.0.1",
+    "mongodb": "1.2.14",
+    "nano": "3.3.8",
+    "node-cache": "0.3.2",
+    "underscore": "1.4.4",
+    "validator": "1.1.0"
+  },
+  "devDependencies": {
+    "buster": "0.6.12",
+    "shelljs": "0.1.2"
+  },
+  "scripts": {},
+  "engines": {
+    "node": ">= 0.4.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/cliffano/health/raw/master/LICENSE"
+    }
+  ]
+}
