@@ -24,10 +24,7 @@
   "dependencies": {
     "async": "0.2.6",
     "bagofholding": "0.1.4",
-    "cron": "1.0.1",
     "memory-cache": "0.0.5",
-    "mongodb": "1.2.14",
-    "nano": "3.3.8",
     "underscore": "1.4.4",
     "validator": "1.1.0"
   },
