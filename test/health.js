@@ -79,7 +79,7 @@ buster.testCase('health - check', {
           cb(null, result);
         }
       };
-    }
+    };
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
@@ -103,7 +103,7 @@ buster.testCase('health - check', {
           cb(null, result);
         }
       };
-    }
+    };
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
@@ -124,7 +124,7 @@ buster.testCase('health - check', {
           cb(new Error('some error'));
         }
       };
-    }
+    };
     function cb(err, results) {
       assert.equals(err.message, 'some error');
       assert.equals(results, undefined);

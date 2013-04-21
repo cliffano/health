@@ -6,7 +6,7 @@ buster.testCase('health - check', {
   'should have FAIL status when an error occurs while sending the request': function (done) {
     function mockRequest(method, url, opts, cb) {
       cb(new Error('some error'));
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
@@ -21,7 +21,7 @@ buster.testCase('health - check', {
   'should have OK status when request is successful and there is no checking involved': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
@@ -36,7 +36,7 @@ buster.testCase('health - check', {
   'should have OK status when request is successful and status code matches': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
@@ -51,7 +51,7 @@ buster.testCase('health - check', {
   'should have OK status when request is successful and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
@@ -66,7 +66,7 @@ buster.testCase('health - check', {
   'should have OK status when request is successful, status code matches, and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ], texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
@@ -81,7 +81,7 @@ buster.testCase('health - check', {
   'should have FAIL status when status code does not match': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '400' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
@@ -96,7 +96,7 @@ buster.testCase('health - check', {
   'should have FAIL status when text does not exist in response body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', texts: [ 'xyz' ] };
     function cb(err, result) {
@@ -111,7 +111,7 @@ buster.testCase('health - check', {
   'should have FAIL status when one text exists and another one does not': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    };
+    }
     this.stub(bag, 'http', { request: mockRequest });
     var setup = { uri: 'http://somehost', texts: [ 'foobar', 'xyz' ] };
     function cb(err, result) {
