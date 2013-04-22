@@ -25,6 +25,7 @@
     "async": "0.2.6",
     "bagofholding": "0.1.4",
     "memory-cache": "0.0.5",
+    "mongodb": "1.2.14",
     "js2xml" : "0.0.6",
     "underscore": "1.4.4",
     "validator": "1.1.0"
