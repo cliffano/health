@@ -7,7 +7,13 @@ buster.testCase('mongodb - check', {
     this.mockMongoClient = this.mock(mongodb.MongoClient);
   },
   'should have FAIL status when an error occurs while connecting to MongoDB': function (done) {
-    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017').callsArgWith(1, new Error('some error'));
+    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
+        server: {
+          socketOptions: {
+            connectTimeoutMS: 2000
+          }
+        }
+      }).callsArgWith(2, new Error('some error'));
     var setup = { uri: 'mongodb://somehost:27017' };
     function cb(err, result) {
       assert.isNull(err);
@@ -21,8 +27,34 @@ buster.testCase('mongodb - check', {
   'should close connection and pass result with OK status when connection is successful': function (done) {
     var stubClose = this.stub(),
       mockConnection = { close: stubClose };
-    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017').callsArgWith(1, null, mockConnection);
+    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
+      server: {
+        socketOptions: {
+          connectTimeoutMS: 2000
+        }
+      }
+    }).callsArgWith(2, null, mockConnection);
     var setup = { uri: 'mongodb://somehost:27017' };
+    function cb(err, result) {
+      assert.isTrue(stubClose.calledWith());
+      assert.isNull(err);
+      assert.equals(result.status, 'OK');
+      assert.equals(result.uri, 'mongodb://somehost:27017');
+      done();
+    }
+    checker.check(setup, cb);
+  },
+  'should set connect timeout server socket option when setup contains connectTimeout': function (done) {
+    var stubClose = this.stub(),
+      mockConnection = { close: stubClose };
+    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
+      server: {
+        socketOptions: {
+          connectTimeoutMS: 1234
+        }
+      }
+    }).callsArgWith(2, null, mockConnection);
+    var setup = { uri: 'mongodb://somehost:27017', connectTimeout: 1234 };
     function cb(err, result) {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
