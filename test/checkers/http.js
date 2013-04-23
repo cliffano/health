@@ -1,8 +1,8 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
-  http = require('../../lib/checkers/http');
+  checker = require('../../lib/checkers/http');
 
-buster.testCase('health - check', {
+buster.testCase('http - check', {
   'should have FAIL status when an error occurs while sending the request': function (done) {
     function mockRequest(method, url, opts, cb) {
       cb(new Error('some error'));
@@ -16,7 +16,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'some error');
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have OK status when request is successful and there is no checking involved': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -31,7 +31,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, undefined);
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have OK status when request is successful and status code matches': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -46,7 +46,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Status code 200 as expected');
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have OK status when request is successful and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -61,7 +61,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Text foo, blah exists in response body');
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have OK status when request is successful, status code matches, and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -76,7 +76,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Text foo, blah exists in response body');
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have FAIL status when status code does not match': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -91,7 +91,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Status code 400 does not match the expected 200, 301');
       done();
     }
-    http.check(setup, cb);
+    checker.check(setup, cb);
   },
   'should have FAIL status when text does not exist in response body': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -106,7 +106,7 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Text xyz does not exist in response body');
       done();
     }
-    http.check(setup, cb); 
+    checker.check(setup, cb); 
   },
   'should have FAIL status when one text exists and another one does not': function (done) {
     function mockRequest(method, url, opts, cb) {
@@ -121,6 +121,6 @@ buster.testCase('health - check', {
       assert.equals(result.desc, 'Text xyz does not exist in response body');
       done();
     }
-    http.check(setup, cb); 
+    checker.check(setup, cb); 
   }
 });
