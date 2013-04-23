@@ -26,18 +26,18 @@ buster.testCase('health - check', {
   setUp: function () {
     this.mockCache = this.mock(cache);
   },
-  'should pass error when uri is unsupported': function (done) {
+  'should pass error when uri has unsupported protocol': function (done) {
     var health = new Health({
       setup: [{ uri: 'httpx://somehost' }]
     });
     function cb(err, results) {
-      assert.equals(err.message, 'Unsupported checker for uri httpx://somehost');
+      assert.equals(err.message, 'Unsupported protocol for URI httpx://somehost');
       assert.equals(results, undefined);
       done();
     }
     health.check(cb);
   },
-  'should pass error when uri is unsupported and setup uses file': function (done) {
+  'should pass error when uri has unsupported protocol and setup uses file': function (done) {
     var health = new Health({
       setupFile: '/some/path/health.json'
     });
@@ -46,7 +46,7 @@ buster.testCase('health - check', {
       return '[{ "uri": "httpx://somehost" }]';
     }});
     function cb(err, results) {
-      assert.equals(err.message, 'Unsupported checker for uri httpx://somehost');
+      assert.equals(err.message, 'Unsupported protocol for URI httpx://somehost');
       assert.equals(results, undefined);
       done();
     }
