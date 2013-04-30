@@ -53,7 +53,7 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should pass result with cached data when result is already cached (cache hit)': function (done) {
-    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'OK' });
+    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'OK', responseTime: 15 });
     var health = new Health({
       setup: [{ uri: 'http://somehost' }]
     });
@@ -62,11 +62,12 @@ buster.testCase('health - check', {
       assert.equals(results.length, 1);
       assert.equals(results[0].uri, 'http://somehost');
       assert.equals(results[0].status, 'OK');
+      assert.equals(results[0].responseTime, 15);
       done();
     }
     health.check(cb);
   },
-  'should pass result with check result when cache is not already cached (cache miss) and the result is then cached': function (done) {
+  'should pass result with check result when it is not already cached (cache miss) and the result is then cached': function (done) {
     var result = { uri: 'http://somehost', status: 'OK' };
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 10000);
@@ -85,12 +86,14 @@ buster.testCase('health - check', {
       assert.equals(results.length, 1);
       assert.equals(results[0].uri, 'http://somehost');
       assert.equals(results[0].status, 'OK');
+      assert.defined(results[0].responseTime);
       done();
     }
     health.check(cb);
   },
   'should format data when format opt is specified': function (done) {
-    var result = { uri: 'http://somehost', status: 'OK' };
+    var result = { uri: 'http://somehost', status: 'OK' },
+      mockTimer = this.useFakeTimers(0, 'Date');
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
     var health = new Health({
@@ -107,7 +110,7 @@ buster.testCase('health - check', {
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
-      assert.equals(results[0], 'OK | http://somehost');
+      assert.equals(results[0], 'OK | http://somehost - 0ms');
       done();
     }
     health.check(cb);
