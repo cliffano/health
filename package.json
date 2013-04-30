@@ -1,7 +1,11 @@
 {
   "name": "health",
-  "description": "TODO",
-  "keywords": [],
+  "description": "Resource status monitoring library.",
+  "keywords": [
+    "health",
+    "status",
+    "monitor"
+  ],
   "version": "0.0.1",
   "homepage": "http://github.com/cliffano/health",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
