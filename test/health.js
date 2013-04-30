@@ -91,7 +91,7 @@ buster.testCase('health - check', {
     }
     health.check(cb);
   },
-  'should format data when formatter opt is specified': function (done) {
+  'should format data when formatter opt string is specified': function (done) {
     var result = { uri: 'http://somehost', status: 'OK' },
       mockTimer = this.useFakeTimers(0, 'Date');
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
@@ -131,6 +131,35 @@ buster.testCase('health - check', {
     function cb(err, results) {
       assert.equals(err.message, 'some error');
       assert.equals(results, undefined);
+      done();
+    }
+    health.check(cb);
+  },
+  'should format data when formatter opt function is specified': function (done) {
+    var result = { uri: 'http://somehost', status: 'OK' },
+      mockTimer = this.useFakeTimers(0, 'Date');
+    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
+    this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
+    var health = new Health({
+      setup: [{ uri: 'http://somehost', ttl: 5000 }],
+      formatter: function (results) {
+        var formatted = '';
+        results.forEach(function (result) {
+          formatted = result.uri + ': ' + result.status + '\n';
+        });
+        return formatted;
+      }
+    });
+    health._checker = function (uri) {
+      return {
+        check: function (setup, cb) {
+          cb(null, result);
+        }
+      };
+    };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result, 'http://somehost: OK\n');
       done();
     }
     health.check(cb);
