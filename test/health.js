@@ -6,18 +6,15 @@ var bag = require('bagofholding'),
 buster.testCase('health - health', {
   'should set opts if specified via constructor': function () {
     var health = new Health({
-      setupFile: '/some/path/health.json',
       setup: { uri: 'http://somehost' },
       formatter: 'json'
     });
-    assert.equals(health.opts.setupFile, '/some/path/health.json');
     assert.equals(health.opts.setup, { uri: 'http://somehost' });
     assert.equals(health.opts.formatter, 'json');
   },
   'should set default opts if unspecified via constructor': function () {
     var health = new Health();
-    assert.equals(health.opts.setupFile, 'health.json');
-    assert.equals(health.opts.setup, undefined);
+    assert.equals(health.opts.setup, 'health.json');
     assert.equals(health.opts.formatter, undefined);
   }
 });
@@ -39,7 +36,7 @@ buster.testCase('health - check', {
   },
   'should pass error when uri has unsupported protocol and setup uses file': function (done) {
     var health = new Health({
-      setupFile: '/some/path/health.json'
+      setup: '/some/path/health.json'
     });
     this.stub(bag, 'cli', { lookupFile: function (file) {
       assert.equals(file, '/some/path/health.json');
