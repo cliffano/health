@@ -12,7 +12,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'FAIL');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'some error');
       done();
     }
@@ -28,7 +27,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, undefined);
       done();
     }
@@ -43,7 +41,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Status code 200 as expected');
       done();
     }
@@ -58,7 +55,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Text foo, blah exists in response body');
       done();
     }
@@ -73,7 +69,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Text foo, blah exists in response body');
       done();
     }
@@ -88,7 +83,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'FAIL');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Status code 400 does not match the expected 200, 301');
       done();
     }
@@ -103,7 +97,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'FAIL');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Text xyz does not exist in response body');
       done();
     }
@@ -118,7 +111,6 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'FAIL');
-      assert.equals(result.uri, 'http://somehost');
       assert.equals(result.desc, 'Text xyz does not exist in response body');
       done();
     }

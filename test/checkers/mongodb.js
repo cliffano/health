@@ -18,7 +18,6 @@ buster.testCase('mongodb - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'FAIL');
-      assert.equals(result.uri, 'mongodb://somehost:27017');
       assert.equals(result.desc, 'some error');
       done();
     }
@@ -39,7 +38,6 @@ buster.testCase('mongodb - check', {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'mongodb://somehost:27017');
       done();
     }
     checker.check(setup, cb);
@@ -59,7 +57,6 @@ buster.testCase('mongodb - check', {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
       assert.equals(result.status, 'OK');
-      assert.equals(result.uri, 'mongodb://somehost:27017');
       done();
     }
     checker.check(setup, cb);
