@@ -63,7 +63,7 @@ Health setup is just a simple JSON:
   <tr>
     <td>ttl</td>
     <td>30000</td>
-    <td>Cache time to live</td>
+    <td>Cache time to live in milliseconds</td>
     <td>All</td>
     <td>Optional</td>
   </tr>
@@ -83,7 +83,7 @@ Health setup is just a simple JSON:
   </tr>
   <tr>
     <td>texts</td>
-    <td>[ 'must exist', 'this must also exist' ]</td>
+    <td>[ 'foo', 'bar' ]</td>
     <td>An array of all texts that must exist in response body, any miss means status FAIL</td>
     <td>http, https</td>
     <td>Optional</td>
