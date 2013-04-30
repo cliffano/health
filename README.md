@@ -4,7 +4,7 @@ Health [![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=
 
 Health is a resource status monitoring library.
 
-This is handy when you want to monitor the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status OK/FAIL against each resource.
+This is handy when you want to monitor the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status OK/FAIL against each resource along with the response time.
 
 It also supports result caching via ttl attribe of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
 
