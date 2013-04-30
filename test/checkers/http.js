@@ -20,10 +20,11 @@ buster.testCase('http - check', {
   },
   'should have OK status when request is successful and there is no checking involved': function (done) {
     function mockRequest(method, url, opts, cb) {
+      assert.equals(opts.timeout, 8000);
       opts.handlers.xxx({ statusCode: '200' }, cb);
     }
     this.stub(bag, 'http', { request: mockRequest });
-    var setup = { uri: 'http://somehost' };
+    var setup = { uri: 'http://somehost', timeout: 8000 };
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'OK');
