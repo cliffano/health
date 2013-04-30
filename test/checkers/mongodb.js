@@ -44,7 +44,7 @@ buster.testCase('mongodb - check', {
     }
     checker.check(setup, cb);
   },
-  'should set connect timeout server socket option when setup contains connectTimeout': function (done) {
+  'should set connect timeout server socket option when setup contains timeout': function (done) {
     var stubClose = this.stub(),
       mockConnection = { close: stubClose };
     this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
@@ -54,7 +54,7 @@ buster.testCase('mongodb - check', {
         }
       }
     }).callsArgWith(2, null, mockConnection);
-    var setup = { uri: 'mongodb://somehost:27017', connectTimeout: 1234 };
+    var setup = { uri: 'mongodb://somehost:27017', timeout: 1234 };
     function cb(err, result) {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
