@@ -4,6 +4,10 @@ Health [![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=
 
 Health is a resource status monitoring library.
 
+This is handy when you want to monitor the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status OK/FAIL against each resource.
+
+It also supports result caching via ttl attribe of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
+
 Installation
 ------------
 
@@ -27,6 +31,7 @@ Health setup is just a simple JSON:
     [
       { "name": "google", "uri", "http://google.com", "statusCodes": [ 200 ] },
       { "name": "gmail", "uri", "https://mail.google.com", "timeout": "1000" },
+      { "name": "mongodb", "uri": "mongodb://somehost:27017", "timeout": 200, "ttl": 30000 }
     ]
 
 <table>
@@ -42,7 +47,8 @@ Health setup is just a simple JSON:
     <td>
       http://google.com<br/>
       https://mail.google.com<br/>
-      mongodb://somehost:27017</td>
+      mongodb://somehost:27017
+    </td>
     <td>Resource URI to be checked</td>
     <td>All</td>
     <td>Mandatory</td>
@@ -51,6 +57,13 @@ Health setup is just a simple JSON:
     <td>name</td>
     <td>someapp</td>
     <td>Resource name</td>
+    <td>All</td>
+    <td>Optional</td>
+  </tr>
+  <tr>
+    <td>ttl</td>
+    <td>30000</td>
+    <td>Cache time to live</td>
     <td>All</td>
     <td>Optional</td>
   </tr>
