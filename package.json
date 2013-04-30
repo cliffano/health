@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "async": "0.2.6",
-    "bagofholding": "0.1.4",
+    "bagofholding": "0.1.6",
     "memory-cache": "0.0.5",
     "mongodb": "1.2.14",
     "js2xml" : "0.0.6",
