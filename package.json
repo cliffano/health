@@ -6,7 +6,7 @@
     "status",
     "monitor"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "http://github.com/cliffano/health",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "contributors": [
@@ -30,7 +30,7 @@
     "bagofholding": "0.1.6",
     "memory-cache": "0.0.5",
     "mongodb": "1.2.14",
-    "js2xml" : "0.0.6",
+    "js2xml": "0.0.6",
     "underscore": "1.4.4",
     "validator": "1.1.0"
   },
