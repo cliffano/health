@@ -8,17 +8,17 @@ buster.testCase('health - health', {
     var health = new Health({
       setupFile: '/some/path/health.json',
       setup: { uri: 'http://somehost' },
-      format: 'json'
+      formatter: 'json'
     });
     assert.equals(health.opts.setupFile, '/some/path/health.json');
     assert.equals(health.opts.setup, { uri: 'http://somehost' });
-    assert.equals(health.opts.format, 'json');
+    assert.equals(health.opts.formatter, 'json');
   },
   'should set default opts if unspecified via constructor': function () {
     var health = new Health();
     assert.equals(health.opts.setupFile, 'health.json');
     assert.equals(health.opts.setup, undefined);
-    assert.equals(health.opts.format, undefined);
+    assert.equals(health.opts.formatter, undefined);
   }
 });
 
@@ -91,14 +91,14 @@ buster.testCase('health - check', {
     }
     health.check(cb);
   },
-  'should format data when format opt is specified': function (done) {
+  'should format data when formatter opt is specified': function (done) {
     var result = { uri: 'http://somehost', status: 'OK' },
       mockTimer = this.useFakeTimers(0, 'Date');
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
     var health = new Health({
       setup: [{ uri: 'http://somehost', ttl: 5000 }],
-      format: 'text'
+      formatter: 'text'
     });
     health._checker = function (uri) {
       return {
