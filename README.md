@@ -16,12 +16,28 @@ Installation
 Usage
 -----
 
+    // use default formatter
     var health = new (require('health'))(
-      setup: [
-        { name: 'google', uri: 'http://google.com' },
-        { name: 'gmail', uri: 'https://mail.google.com' }
-      ]
+      setup: [ { name: 'google', uri: 'http://google.com' } ]
     );
+
+    // use built-in formatter (html, text, or xml)
+    var health = new (require('health'))(
+      setup: [ { name: 'google', uri: 'http://google.com' } ],
+      formatter: 'html'
+    );
+
+    // use custom formatter function
+    var health = new (require('health'))(
+      setup: [ { name: 'google', uri: 'http://google.com' } ],
+      formatter: function (results) {
+        return results.join('|');
+      }
+    );
+
+    // check resources
+    health.check(function (err, result) {
+    });
 
 Configuration
 -------------
