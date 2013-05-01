@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Health status</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+  <style type="text/css">
+    div#_container {{
+      margin: 30px;
+    }}
+    th {{
+      background-color: #dddddd;
+    }}
+  </style>
+</head>
+<body>
+  <div id="_container" class="container-fluid">
+    <div class="row-fluid">
+      <div class="span9 text-center">
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Name</th>
+              <th>URI</th>
+              <th>Description</th>
+              <th>Response Time (ms)</th>
+            </tr>
+          </thead>
+          <tbody>
+          {foreach result in results}
+            {if result.status eq "ok"}
+              <tr class="success">
+                <td><i class="icon-ok"></i></td>
+            {elif result.status eq "fail"}
+              <tr class="error">
+                <td><i class="icon-remove"></i></td>
+            {else}
+              <tr>
+                <td><i class="icon-question-sign"></i></td>
+            {end}
+              <td>{result.name}</td>
+              <td>{result.uri}</td>
+              <td>{result.desc}</td>
+              <td>{result.responseTime}</td>
+            </tr>
+          {end}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
