@@ -50,7 +50,7 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should pass result with cached data when result is already cached (cache hit)': function (done) {
-    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'OK', responseTime: 15 });
+    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'ok', responseTime: 15 });
     var health = new Health({
       setup: [{ uri: 'http://somehost' }]
     });
@@ -58,14 +58,14 @@ buster.testCase('health - check', {
       assert.isNull(err);
       assert.equals(results.length, 1);
       assert.equals(results[0].uri, 'http://somehost');
-      assert.equals(results[0].status, 'OK');
+      assert.equals(results[0].status, 'ok');
       assert.equals(results[0].responseTime, 15);
       done();
     }
     health.check(cb);
   },
   'should pass result with check result when it is not already cached (cache miss) and the result is then cached': function (done) {
-    var result = { status: 'OK' };
+    var result = { status: 'ok' };
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 10000);
     var health = new Health({
@@ -83,14 +83,14 @@ buster.testCase('health - check', {
       assert.equals(results.length, 1);
       assert.equals(results[0].name, 'someapp');
       assert.equals(results[0].uri, 'http://somehost');
-      assert.equals(results[0].status, 'OK');
+      assert.equals(results[0].status, 'ok');
       assert.defined(results[0].responseTime);
       done();
     }
     health.check(cb);
   },
   'should format data when formatter opt string is specified': function (done) {
-    var result = { uri: 'http://somehost', status: 'OK' },
+    var result = { uri: 'http://somehost', status: 'ok' },
       mockTimer = this.useFakeTimers(0, 'Date');
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
@@ -108,13 +108,13 @@ buster.testCase('health - check', {
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
-      assert.equals(results[0], 'OK | http://somehost - 0ms');
+      assert.equals(results[0], 'ok | http://somehost - 0ms');
       done();
     }
     health.check(cb);
   },
   'should pass error when an error occurs while checking a resource': function (done) {
-    var result = { uri: 'http://somehost', status: 'OK' };
+    var result = { uri: 'http://somehost', status: 'ok' };
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     var health = new Health({
       setup: [{ uri: 'http://somehost', ttl: 5000 }]
@@ -134,7 +134,7 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should format data when formatter opt function is specified': function (done) {
-    var result = { uri: 'http://somehost', status: 'OK' },
+    var result = { uri: 'http://somehost', status: 'ok' },
       mockTimer = this.useFakeTimers(0, 'Date');
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
@@ -157,7 +157,7 @@ buster.testCase('health - check', {
     };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result, 'http://somehost: OK\n');
+      assert.equals(result, 'http://somehost: ok\n');
       done();
     }
     health.check(cb);

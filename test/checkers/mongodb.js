@@ -6,7 +6,7 @@ buster.testCase('mongodb - check', {
   setUp: function () {
     this.mockMongoClient = this.mock(mongodb.MongoClient);
   },
-  'should have FAIL status when an error occurs while connecting to MongoDB': function (done) {
+  'should have fail status when an error occurs while connecting to MongoDB': function (done) {
     this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
         server: {
           socketOptions: {
@@ -17,13 +17,13 @@ buster.testCase('mongodb - check', {
     var setup = { uri: 'mongodb://somehost:27017' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'FAIL');
+      assert.equals(result.status, 'fail');
       assert.equals(result.desc, 'some error');
       done();
     }
     checker.check(setup, cb);
   },
-  'should close connection and pass result with OK status when connection is successful': function (done) {
+  'should close connection and pass result with ok status when connection is successful': function (done) {
     var stubClose = this.stub(),
       mockConnection = { close: stubClose };
     this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
@@ -37,7 +37,7 @@ buster.testCase('mongodb - check', {
     function cb(err, result) {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
-      assert.equals(result.status, 'OK');
+      assert.equals(result.status, 'ok');
       done();
     }
     checker.check(setup, cb);
@@ -56,7 +56,7 @@ buster.testCase('mongodb - check', {
     function cb(err, result) {
       assert.isTrue(stubClose.calledWith());
       assert.isNull(err);
-      assert.equals(result.status, 'OK');
+      assert.equals(result.status, 'ok');
       done();
     }
     checker.check(setup, cb);
