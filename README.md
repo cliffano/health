@@ -55,7 +55,7 @@ Health setup is just a simple JSON:
     <th>Attribute</th>
     <th>Type</th>
     <th>Description</th>
-    <th>Checker</th>
+    <th>Protocol</th>
     <th>Usage</th>
     <th>Default</th>
     <th>Example</th>
