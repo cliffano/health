@@ -1,4 +1,7 @@
-### 0.0.4-pre
+### 0.0.5-pre
+*
+
+### 0.0.4
 * Add CLI with init and check commands
 
 ### 0.0.3
