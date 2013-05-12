@@ -1,5 +1,5 @@
 ### 0.0.4-pre
-*
+* Add CLI with init and check commands
 
 ### 0.0.3
 * Add html formatter 

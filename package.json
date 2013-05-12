@@ -13,6 +13,9 @@
     "All contributors (https://github.com/cliffano/health/graphs/contributors)"
   ],
   "main": "./lib/health",
+  "bin": {
+    "health": "./bin/health"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/cliffano/health.git"
@@ -28,6 +31,7 @@
   "dependencies": {
     "async": "0.2.6",
     "bagofholding": "0.1.6",
+    "fs.extra": "1.2.0",
     "memory-cache": "0.0.5",
     "mongodb": "1.2.14",
     "js2xml": "0.0.6",

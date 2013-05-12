@@ -1,0 +1,14 @@
+{
+  "commands": {
+    "init": {
+      "desc": "Create sample setup file\nUsage: health init"
+    },
+    "check": {
+      "desc": "Check resources configured in setup file\nUsage: health [-s/--setup-file <setupFile>] [-f/--formatter <formatter>] check",
+      "options": [
+        { "arg": "-s, --setup-file <setupFile>", "desc": "Setup file, default: health.json" },
+        { "arg": "-f, --formatter <formatter>", "desc": "Result formatter: html, text, or xml, default: text" }
+      ]
+    }
+  }
+}
