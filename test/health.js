@@ -1,6 +1,7 @@
 var bag = require('bagofholding'),
   buster = require('buster'),
   cache = require('memory-cache'),
+  fsx = require('fs.extra'),
   Health = require('../lib/health');
 
 buster.testCase('health - health', {
@@ -16,6 +17,25 @@ buster.testCase('health - health', {
     var health = new Health();
     assert.equals(health.opts.setup, 'health.json');
     assert.equals(health.opts.formatter, undefined);
+  }
+});
+
+buster.testCase('health - init', {
+  setUp: function () {
+    this.mockConsole = this.mock(console);
+  },
+  'should copy sample health.js file to current directory when init is called': function (done) {
+    this.mockConsole.expects('log').once().withExactArgs('Creating sample setup file: health.json');
+    this.stub(fsx, 'copy', function (src, dest, cb) {
+      assert.isTrue(src.match(/\/examples\/health.json$/).length === 1);
+      assert.equals(dest, 'health.json');
+      cb();
+    });
+    var health = new Health();
+    health.init(function (err, result) {
+      assert.equals(err, undefined);
+      done();
+    });
   }
 });
 
