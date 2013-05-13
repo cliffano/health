@@ -1,5 +1,6 @@
 ### 0.0.5-pre
-*
+* Add cli formatter
+* Fix CLI exit code to be the number of non-ok status
 
 ### 0.0.4
 * Add CLI with init and check commands

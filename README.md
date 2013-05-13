@@ -39,6 +39,10 @@ Usage
     health.check(function (err, result) {
     });
 
+From command-line:
+
+    health -f html -s health.json check
+
 Configuration
 -------------
 
