@@ -1,4 +1,7 @@
-### 0.0.5-pre
+### 0.0.6-pre
+*
+
+### 0.0.5
 * Add cli formatter
 * Fix CLI exit code to be the number of non-ok status
 
