@@ -52,7 +52,7 @@
             {end}
               <td class="status">{result.status}</td>
               <td>{result.name}</td>
-              <td>{result.uri}</td>
+              <td><a href="{result.uri}">{result.uri}</a></td>
               <td class="result">
                 {foreach error in result.errors}
                   <i class="icon-exclamation-sign"></i> {error}<br/>
