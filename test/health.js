@@ -1,4 +1,4 @@
-var bag = require('bagofholding'),
+var bag = require('bagofcli'),
   buster = require('buster'),
   cache = require('memory-cache'),
   fsx = require('fs.extra'),
@@ -58,10 +58,10 @@ buster.testCase('health - check', {
     var health = new Health({
       setup: '/some/path/health.json'
     });
-    this.stub(bag, 'cli', { lookupFile: function (file) {
+    this.stub(bag, 'lookupFile', function (file) {
       assert.equals(file, '/some/path/health.json');
       return '[{ "uri": "httpx://somehost" }]';
-    }});
+    });
     function cb(err, results) {
       assert.equals(err.message, 'Unsupported protocol for URI httpx://somehost');
       assert.equals(results, undefined);

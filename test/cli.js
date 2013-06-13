@@ -1,4 +1,4 @@
-var bag = require('bagofholding'),
+var bag = require('bagofcli'),
   buster = require('buster'),
   cli = require('../lib/cli'),
   Health = require('../lib/health');
@@ -11,18 +11,15 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.check.action);
       done();
     };
-    this.stub(bag, 'cli', { command: mockCommand });
+    this.stub(bag, 'command', mockCommand);
     cli.exec();
   }
 });
 
 buster.testCase('cli - init', {
   'should contain init command and delegate to health init when exec is called': function (done) {
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.init.action();
-      },
-      exit: bag.cli.exit
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.init.action();
     });
     this.stub(Health.prototype, 'init', function (cb) {
       assert.equals(typeof cb, 'function');
@@ -42,15 +39,12 @@ buster.testCase('cli - check', {
     this.mockConsole.expects('log').once().withExactArgs('someresult');
     this.mockProcess.expects('exit').twice().withExactArgs(0);
     this.mockFormatter.expects('format').once().withExactArgs([{ status: 'ok', name: 'someapp', desc: 'somedesc' }]).returns(['someresult']);
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.check.action({});
-      },
-      exitCb: bag.cli.exitCb,
-      lookupFile: function (file) {
-        assert.equals(file, 'health.json');
-        return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-      }
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.check.action({});
+    });
+    this.stub(bag, 'lookupFile', function (file) {
+      assert.equals(file, 'health.json');
+      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
     });
     this.stub(Health.prototype, 'check', function (cb) {
       cb(null, [{ status: 'ok', name: 'someapp', desc: 'somedesc' }]);
@@ -61,15 +55,12 @@ buster.testCase('cli - check', {
     this.mockConsole.expects('log').once().withExactArgs('someresult');
     this.mockProcess.expects('exit').twice().withExactArgs(0);
     this.mockFormatter.expects('format').once().withExactArgs([{ status: 'ok', name: 'someapp', desc: 'somedesc' }]).returns('someresult');
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.check.action({});
-      },
-      exitCb: bag.cli.exitCb,
-      lookupFile: function (file) {
-        assert.equals(file, 'health.json');
-        return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-      }
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.check.action({});
+    });
+    this.stub(bag, 'lookupFile', function (file) {
+      assert.equals(file, 'health.json');
+      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
     });
     this.stub(Health.prototype, 'check', function (cb) {
       cb(null, [{ status: 'ok', name: 'someapp', desc: 'somedesc' }]);
@@ -81,15 +72,12 @@ buster.testCase('cli - check', {
     this.mockProcess.expects('exit').once().withExactArgs(0);
     this.mockProcess.expects('exit').once().withExactArgs(2);
     this.mockFormatter.expects('format').once().returns('someresult');
-    this.stub(bag, 'cli', {
-      command: function (base, actions) {
-        actions.commands.check.action({});
-      },
-      exitCb: bag.cli.exitCb,
-      lookupFile: function (file) {
-        assert.equals(file, 'health.json');
-        return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-      }
+    this.stub(bag, 'command', function (base, actions) {
+      actions.commands.check.action({});
+    });
+    this.stub(bag, 'lookupFile', function (file) {
+      assert.equals(file, 'health.json');
+      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
     });
     this.stub(Health.prototype, 'check', function (cb) {
       cb(null, [

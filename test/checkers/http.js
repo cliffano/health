@@ -1,4 +1,4 @@
-var bag = require('bagofholding'),
+var bag = require('bagofrequest'),
   buster = require('buster'),
   checker = require('../../lib/checkers/http');
 
@@ -7,7 +7,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       cb(new Error('some error'));
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
       assert.isNull(err);
@@ -22,7 +22,7 @@ buster.testCase('http - check', {
       assert.equals(opts.timeout, 8000);
       opts.handlers.xxx({ statusCode: '200' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', timeout: 8000 };
     function cb(err, result) {
       assert.isNull(err);
@@ -36,7 +36,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
       assert.isNull(err);
@@ -50,7 +50,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
@@ -64,7 +64,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ], texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
@@ -78,7 +78,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '400' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
       assert.isNull(err);
@@ -92,7 +92,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', texts: [ 'xyz' ] };
     function cb(err, result) {
       assert.isNull(err);
@@ -106,7 +106,7 @@ buster.testCase('http - check', {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
-    this.stub(bag, 'http', { request: mockRequest });
+    this.stub(bag, 'request', mockRequest);
     var setup = { uri: 'http://somehost', texts: [ 'foobar', 'xyz' ] };
     function cb(err, result) {
       assert.isNull(err);

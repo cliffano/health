@@ -1,5 +1,5 @@
 ### 0.0.6-pre
-*
+* 
 
 ### 0.0.5
 * Add cli formatter
