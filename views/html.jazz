@@ -11,6 +11,18 @@
     th {{
       background-color: #dddddd;
     }}
+    td {{
+      line-height: 170%;
+      padding: 5px;
+    }}
+    td.result i {{
+      margin-right: 3px;
+    }}
+    td.status {{
+      font-size: 90%;
+      font-weight: bold;
+      text-transform: uppercase;
+    }}
   </style>
 </head>
 <body>
@@ -23,7 +35,7 @@
               <th>Status</th>
               <th>Name</th>
               <th>URI</th>
-              <th>Results</th>
+              <th>Result</th>
               <th>Duration (ms)</th>
             </tr>
           </thead>
@@ -31,33 +43,25 @@
           {foreach result in results}
             {if result.status eq "ok"}
               <tr class="success">
-                <td><i class="icon-ok"></i></td>
             {elif result.status eq "fail"}
               <tr class="error">
-                <td><i class="icon-remove"></i></td>
             {elif result.status eq "error"}
-              <tr class="error">
-                <td><i class="icon-remove"></i></td>
+              <tr class="error">  
             {else}
               <tr>
-                <td><i class="icon-question-sign"></i></td>
             {end}
+              <td class="status">{result.status}</td>
               <td>{result.name}</td>
               <td>{result.uri}</td>
-              <td>
-                {if result.errors and result.errors.length gt 0}
-                  <span id="{__count}-errors" class="badge badge-important">{result.errors.length} error{if result.errors.length gt 1}s{end}</span>
-                  <script type="text/javascript">
-                    $('#{__count}-errors').tooltip({{
-                      placement: 'bottom',
-                      html: 'x'
-                    }});
-                  </script>
-                {elif result.failures and result.failures.length gt 0}
-                  <span id="{__count}-failures" class="badge badge-important">{result.failures.length} failure{if result.failures.length gt 1}s{end}</span>
-
-                {elif result.successes and result.successes.length gt 0}
-                  <span id="{__count}-successes" class="badge badge-info">{result.successes.length} success{if result.successes.length gt 1}es{end}</span>
+              <td class="result">
+                {foreach error in result.errors}
+                  <i class="icon-exclamation-sign"></i> {error}<br/>
+                {end}
+                {foreach failure in result.failures}
+                  <i class="icon-remove-sign"></i> {failure}<br/>
+                {end}
+                {foreach success in result.successes}
+                  <i class="icon-ok-sign"></i> {success}<br/>
                 {end}
               </td>
               <td>{result.duration}</td>
@@ -68,7 +72,6 @@
       </div>
     </div>
   </div>
-  <script src="http//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
   <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
