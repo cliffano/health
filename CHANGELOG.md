@@ -1,5 +1,6 @@
 ### 0.0.6-pre
-* 
+* Add error status to differentiate error from check failures
+* Add success, failure, and error messages to improve reporting
 
 ### 0.0.5
 * Add cli formatter

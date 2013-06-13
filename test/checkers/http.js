@@ -11,8 +11,8 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.desc, 'some error');
+      assert.equals(result.status, 'error');
+      assert.equals(result.errors, ['some error']);
       done();
     }
     checker.check(setup, cb);
@@ -27,7 +27,8 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'ok');
-      assert.equals(result.desc, undefined);
+      assert.equals(result.failures, []);
+      assert.equals(result.successes, []);
       done();
     }
     checker.check(setup, cb);
@@ -41,7 +42,8 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'ok');
-      assert.equals(result.desc, 'Status code 200 as expected');
+      assert.equals(result.successes, ['Status code 200 as expected']);
+      assert.equals(result.failures, []);
       done();
     }
     checker.check(setup, cb);
@@ -55,7 +57,8 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'ok');
-      assert.equals(result.desc, 'Text foo, blah exists in response body');
+      assert.equals(result.successes, ['Text foo exists in response body', 'Text blah exists in response body']);
+      assert.equals(result.failures, []);
       done();
     }
     checker.check(setup, cb);
@@ -69,7 +72,12 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'ok');
-      assert.equals(result.desc, 'Text foo, blah exists in response body');
+      assert.equals(result.successes, [
+        'Status code 200 as expected',
+        'Text foo exists in response body',
+        'Text blah exists in response body'
+      ]);
+      assert.equals(result.failures, []);
       done();
     }
     checker.check(setup, cb);
@@ -83,7 +91,8 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'fail');
-      assert.equals(result.desc, 'Status code 400 does not match the expected 200, 301');
+      assert.equals(result.failures, ['Status code 400 does not match the expected 200, 301']);
+      assert.equals(result.successes, []);
       done();
     }
     checker.check(setup, cb);
@@ -97,7 +106,8 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'fail');
-      assert.equals(result.desc, 'Text xyz does not exist in response body');
+      assert.equals(result.failures, ['Text xyz does not exist in response body']);
+      assert.equals(result.successes, []);
       done();
     }
     checker.check(setup, cb); 
@@ -111,7 +121,38 @@ buster.testCase('http - check', {
     function cb(err, result) {
       assert.isNull(err);
       assert.equals(result.status, 'fail');
-      assert.equals(result.desc, 'Text xyz does not exist in response body');
+      assert.equals(result.failures, ['Text xyz does not exist in response body']);
+      assert.equals(result.successes, ['Text foobar exists in response body']);
+      done();
+    }
+    checker.check(setup, cb); 
+  },
+  'should have fail status when checks result in both success and failure': function (done) {
+    function mockRequest(method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
+    }
+    this.stub(bag, 'request', mockRequest);
+    var setup = { uri: 'http://somehost', statusCodes: [200], texts: [ 'xyz' ] };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 'fail');
+      assert.equals(result.failures, ['Text xyz does not exist in response body']);
+      assert.equals(result.successes, ['Status code 200 as expected']);
+      done();
+    }
+    checker.check(setup, cb); 
+  },
+  'should execute all checks even though the first one fails': function (done) {
+    function mockRequest(method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: '200', body: 'foobar xyz' }, cb);
+    }
+    this.stub(bag, 'request', mockRequest);
+    var setup = { uri: 'http://somehost', statusCodes: [201], texts: [ 'foobar', 'xyz', 'blah' ] };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 'fail');
+      assert.equals(result.failures, ['Status code 200 does not match the expected 201', 'Text blah does not exist in response body']);
+      assert.equals(result.successes, ['Text foobar exists in response body', 'Text xyz exists in response body']);
       done();
     }
     checker.check(setup, cb); 

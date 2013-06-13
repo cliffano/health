@@ -17,8 +17,8 @@ buster.testCase('mongodb - check', {
     var setup = { uri: 'mongodb://somehost:27017' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.desc, 'some error');
+      assert.equals(result.status, 'error');
+      assert.equals(result.errors, ['some error']);
       done();
     }
     checker.check(setup, cb);
