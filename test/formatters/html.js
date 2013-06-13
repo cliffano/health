@@ -8,7 +8,7 @@ buster.testCase('html - format', {
   },
   'should format text properly when desc exists': function () {
     this.mockFs.expects('readFileSync').returns(new Buffer('sometemplate'));
-    var result = text.format([{ uri: 'http://somehost', status: 'ok', desc: 'somedesc', responseTime: 20 }]);
+    var result = text.format([{ uri: 'http://somehost', status: 'ok', desc: 'somedesc', duration: 20 }]);
     assert.equals(result, 'sometemplate');
   }
 });

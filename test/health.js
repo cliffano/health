@@ -70,7 +70,7 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should pass result with cached data when result is already cached (cache hit)': function (done) {
-    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'ok', responseTime: 15 });
+    this.mockCache.expects('get').once().withExactArgs('http://somehost').returns({ uri: 'http://somehost', status: 'ok', duration: 15 });
     var health = new Health({
       setup: [{ uri: 'http://somehost' }]
     });
@@ -79,7 +79,7 @@ buster.testCase('health - check', {
       assert.equals(results.length, 1);
       assert.equals(results[0].uri, 'http://somehost');
       assert.equals(results[0].status, 'ok');
-      assert.equals(results[0].responseTime, 15);
+      assert.equals(results[0].duration, 15);
       done();
     }
     health.check(cb);
@@ -104,7 +104,7 @@ buster.testCase('health - check', {
       assert.equals(results[0].name, 'someapp');
       assert.equals(results[0].uri, 'http://somehost');
       assert.equals(results[0].status, 'ok');
-      assert.defined(results[0].responseTime);
+      assert.defined(results[0].duration);
       done();
     }
     health.check(cb);

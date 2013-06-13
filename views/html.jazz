@@ -24,7 +24,7 @@
               <th>Name</th>
               <th>URI</th>
               <th>Description</th>
-              <th>Response Time (ms)</th>
+              <th>Duration (ms)</th>
             </tr>
           </thead>
           <tbody>
@@ -42,7 +42,7 @@
               <td>{result.name}</td>
               <td>{result.uri}</td>
               <td>{result.desc}</td>
-              <td>{result.responseTime}</td>
+              <td>{result.duration}</td>
             </tr>
           {end}
           </tbody>
