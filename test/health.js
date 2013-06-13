@@ -128,7 +128,7 @@ buster.testCase('health - check', {
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
-      assert.equals(results[0], 'ok | http://somehost - 0ms');
+      assert.equals(results[0], 'ok - http://somehost - 0ms');
       done();
     }
     health.check(cb);

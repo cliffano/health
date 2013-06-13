@@ -16,9 +16,9 @@ buster.testCase('text - format', {
   },
   'should format xml with multiple results properly': function () {
     var result = xml.format([
-      { name: 'someapp1', uri: 'http://somehost1', status: 'ok', desc: 'somedesc1', duration: 20 },
-      { name: 'someapp2', uri: 'http://somehost2', status: 'fail', desc: 'somedesc2', duration: 20 }
+      { name: 'someapp1', uri: 'http://somehost1', status: 'ok', successes: ['somedesc1'], duration: 20 },
+      { name: 'someapp2', uri: 'http://somehost2', status: 'fail', failures: ['somedesc2'], duration: 20 }
     ]);
-    assert.equals(result, '<?xml version="1.0" encoding="UTF-8"?>\n<results>\n  <item>\n    <name>someapp1</name>\n    <uri>http://somehost1</uri>\n    <status>ok</status>\n    <desc>somedesc1</desc>\n    <duration>20</duration>\n  </item>\n  <item>\n    <name>someapp2</name>\n    <uri>http://somehost2</uri>\n    <status>fail</status>\n    <desc>somedesc2</desc>\n    <duration>20</duration>\n  </item>\n</results>\n');
+    assert.equals(result, '<?xml version="1.0" encoding="UTF-8"?>\n<results>\n  <item>\n    <name>someapp1</name>\n    <uri>http://somehost1</uri>\n    <status>ok</status>\n    <successes>\n      <item>somedesc1</item>\n    </successes>\n    <duration>20</duration>\n  </item>\n  <item>\n    <name>someapp2</name>\n    <uri>http://somehost2</uri>\n    <status>fail</status>\n    <failures>\n      <item>somedesc2</item>\n    </failures>\n    <duration>20</duration>\n  </item>\n</results>\n');
   }
 });
