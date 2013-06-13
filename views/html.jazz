@@ -41,7 +41,7 @@
           </thead>
           <tbody>
           {foreach result in results}
-            {if result.status eq "ok"}
+            {if result.status eq "success"}
               <tr class="success">
             {elif result.status eq "fail"}
               <tr class="error">

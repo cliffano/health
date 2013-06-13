@@ -2,6 +2,7 @@
 * Add error status to differentiate error from check failures
 * Add success, failure, and error messages to improve reporting
 * Rename responseTime to duration (check time in milliseconds)
+* Change status ok to success
 
 ### 0.0.5
 * Add cli formatter

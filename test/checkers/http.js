@@ -17,7 +17,7 @@ buster.testCase('http - check', {
     }
     checker.check(setup, cb);
   },
-  'should have ok status when request is successful and there is no checking involved': function (done) {
+  'should have success status when request is successful and there is no checking involved': function (done) {
     function mockRequest(method, url, opts, cb) {
       assert.equals(opts.timeout, 8000);
       opts.handlers.xxx({ statusCode: '200' }, cb);
@@ -26,14 +26,14 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', timeout: 8000 };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'ok');
+      assert.equals(result.status, 'success');
       assert.equals(result.failures, []);
       assert.equals(result.successes, []);
       done();
     }
     checker.check(setup, cb);
   },
-  'should have ok status when request is successful and status code matches': function (done) {
+  'should have success status when request is successful and status code matches': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200' }, cb);
     }
@@ -41,14 +41,14 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'ok');
+      assert.equals(result.status, 'success');
       assert.equals(result.successes, ['Status code 200 as expected']);
       assert.equals(result.failures, []);
       done();
     }
     checker.check(setup, cb);
   },
-  'should have ok status when request is successful and texts exist in request body': function (done) {
+  'should have success status when request is successful and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
@@ -56,14 +56,14 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'ok');
+      assert.equals(result.status, 'success');
       assert.equals(result.successes, ['Text foo exists in response body', 'Text blah exists in response body']);
       assert.equals(result.failures, []);
       done();
     }
     checker.check(setup, cb);
   },
-  'should have ok status when request is successful, status code matches, and texts exist in request body': function (done) {
+  'should have success status when request is successful, status code matches, and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
@@ -71,7 +71,7 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ], texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'ok');
+      assert.equals(result.status, 'success');
       assert.equals(result.successes, [
         'Status code 200 as expected',
         'Text foo exists in response body',
