@@ -47,6 +47,8 @@
               <tr class="error">
             {elif result.status eq "error"}
               <tr class="error">  
+            {elif result.status eq "warning"}
+              <tr class="warning">  
             {else}
               <tr>
             {end}

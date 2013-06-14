@@ -3,6 +3,7 @@
 * Add success, failure, and error messages to improve reporting
 * Rename responseTime to duration (check time in milliseconds)
 * Change status ok to success
+* Add lenient check attribute and warning status
 
 ### 0.0.5
 * Add cli formatter
