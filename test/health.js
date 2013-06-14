@@ -184,6 +184,36 @@ buster.testCase('health - check', {
   }
 });
 
+buster.testCase('health - _check', {
+  setUp: function () {
+    this.health = new Health();
+  },
+  'should set name if it exists': function () {
+    var result = {},
+      setup = { name: 'somename', uri: 'http://somehost' },
+      checker = this.health._check(result, setup);
+    assert.equals(result.name, 'somename');
+  },
+  'should set status to warning when result is fail and lenient is true': function () {
+    var result = { status: 'fail' },
+      setup = { name: 'somename', uri: 'http://somehost', lenient: true },
+      checker = this.health._check(result, setup);
+    assert.equals(result.status, 'warning');
+  },
+  'should set status to warning when result is error and lenient is true': function () {
+    var result = { status: 'error' },
+      setup = { name: 'somename', uri: 'http://somehost', lenient: true },
+      checker = this.health._check(result, setup);
+    assert.equals(result.status, 'warning');
+  },
+  'should mask password with asterisks': function () {
+    var result = {},
+      setup = { name: 'somename', uri: 'http://user:pass@somehost' },
+      checker = this.health._check(result, setup);
+    assert.equals(result.uri, 'http://user:****@somehost/');
+  },
+});
+
 buster.testCase('health - _checker', {
   setUp: function () {
     this.health = new Health();
