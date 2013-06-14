@@ -92,6 +92,15 @@ Health setup is just a simple JSON:
     <td>30000</td>
   </tr>
   <tr>
+    <td>lenient</td>
+    <td>boolean</td>
+    <td>Replace fail or error with warning</td>
+    <td>All</td>
+    <td>Optional</td>
+    <td></td>
+    <td>false</td>
+  </tr>
+  <tr>
     <td>timeout</td>
     <td>number</td>
     <td>Request/connect timeout in milliseconds</td>
