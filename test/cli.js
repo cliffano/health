@@ -38,7 +38,7 @@ buster.testCase('cli - check', {
   'should log array items line by line': function () {
     this.mockConsole.expects('log').once().withExactArgs('someresult');
     this.mockProcess.expects('exit').twice().withExactArgs(0);
-    this.mockFormatter.expects('format').once().withExactArgs([{ status: 'ok', name: 'someapp', desc: 'somedesc' }]).returns(['someresult']);
+    this.mockFormatter.expects('format').once().withExactArgs([{ status: 'success', name: 'someapp', desc: 'somedesc' }]).returns(['someresult']);
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.check.action({});
     });
@@ -47,14 +47,14 @@ buster.testCase('cli - check', {
       return '[ { "name": "gmail", "uri": "http://google.com" } ]';
     });
     this.stub(Health.prototype, 'check', function (cb) {
-      cb(null, [{ status: 'ok', name: 'someapp', desc: 'somedesc' }]);
+      cb(null, [{ status: 'success', name: 'someapp', desc: 'somedesc' }]);
     });
     cli.exec();
   },
   'should log string result as-is': function () {
     this.mockConsole.expects('log').once().withExactArgs('someresult');
     this.mockProcess.expects('exit').twice().withExactArgs(0);
-    this.mockFormatter.expects('format').once().withExactArgs([{ status: 'ok', name: 'someapp', desc: 'somedesc' }]).returns('someresult');
+    this.mockFormatter.expects('format').once().withExactArgs([{ status: 'success', name: 'someapp', desc: 'somedesc' }]).returns('someresult');
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.check.action({});
     });
@@ -63,7 +63,7 @@ buster.testCase('cli - check', {
       return '[ { "name": "gmail", "uri": "http://google.com" } ]';
     });
     this.stub(Health.prototype, 'check', function (cb) {
-      cb(null, [{ status: 'ok', name: 'someapp', desc: 'somedesc' }]);
+      cb(null, [{ status: 'success', name: 'someapp', desc: 'somedesc' }]);
     });
     cli.exec();
   },
@@ -82,7 +82,7 @@ buster.testCase('cli - check', {
     this.stub(Health.prototype, 'check', function (cb) {
       cb(null, [
         { status: 'fail', name: 'someapp1', desc: 'somedesc1' },
-        { status: 'ok', name: 'someapp2', desc: 'somedesc2' },
+        { status: 'success', name: 'someapp2', desc: 'somedesc2' },
         { status: 'fail', name: 'someapp3', desc: 'somedesc3' }
       ]);
     });

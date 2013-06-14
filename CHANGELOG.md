@@ -1,5 +1,5 @@
 ### 0.1.1-pre
-*
+* Fix exit code when all checks are successful
 
 ### 0.1.0
 * Add error status to differentiate error from check failures
