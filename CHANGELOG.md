@@ -1,4 +1,7 @@
-### 0.1.0-pre
+### 0.1.1-pre
+*
+
+### 0.1.0
 * Add error status to differentiate error from check failures
 * Add success, failure, and error messages to improve reporting
 * Rename responseTime to duration (check time in milliseconds)
