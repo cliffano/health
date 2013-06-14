@@ -65,6 +65,13 @@
                 {foreach success in result.successes}
                   <i class="icon-ok-sign"></i> {success}<br/>
                 {end}
+                {if result.info}
+                  <i class="icon-info-sign"></i>
+                  {foreach info in result.info}
+                    <a href="">{info.key}</a>
+                  {end}
+                  <br/>
+                {end}
               </td>
               <td>{result.duration}</td>
             </tr>

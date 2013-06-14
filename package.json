@@ -6,7 +6,10 @@
     "status",
     "monitor"
   ],
-  "version": "0.1.1",
+  "version": "0.1.0",
+  "publishConfig": {
+    "registry": "http://scp-build:55121/registry/_design/app/_rewrite"
+  },
   "homepage": "http://github.com/cliffano/health",
   "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
   "contributors": [
