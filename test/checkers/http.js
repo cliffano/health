@@ -156,5 +156,22 @@ buster.testCase('http - check', {
       done();
     }
     checker.check(setup, cb); 
+  },
+  'should pass result headers and body as info': function (done) {
+    function mockRequest(method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: '200', headers: { someheader: 'somevalue' }, body: 'some body' }, cb);
+    }
+    this.stub(bag, 'request', mockRequest);
+    var setup = { uri: 'http://somehost' };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 'success');
+      assert.equals(result.failures, []);
+      assert.equals(result.successes, []);
+      assert.equals(result.info.headers.someheader, 'somevalue');
+      assert.equals(result.info.body, 'some body');
+      done();
+    }
+    checker.check(setup, cb); 
   }
 });

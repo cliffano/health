@@ -1,4 +1,5 @@
 ### 0.1.1-pre
+* Add headers and body as http(s) debug info
 * Fix exit code when all checks are successful
 
 ### 0.1.0
