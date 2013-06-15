@@ -97,8 +97,17 @@ Health setup is just a simple JSON:
     <td>Replace fail or error with warning</td>
     <td>All</td>
     <td>Optional</td>
-    <td></td>
     <td>false</td>
+    <td>true, false</td>
+  </tr>
+  <tr>
+    <td>group</td>
+    <td>string</td>
+    <td>Resource group name, status is set to warning when there's at least one group member having success/warning status, group members status is set to fail/error only when none of the group members has success/warning status</td>
+    <td>All</td>
+    <td>Optional</td>
+    <td></td>
+    <td>databases, apps, datacenter1</td>
   </tr>
   <tr>
     <td>timeout</td>
