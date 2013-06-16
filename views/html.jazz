@@ -42,15 +42,15 @@
           <tbody>
           {foreach result in results}
             {if result.status eq "success"}
-              <tr class="success">
+              <tr id="result-{__count}" class="success">
             {elif result.status eq "fail"}
-              <tr class="error">
+              <tr id="result-{__count}" class="error">
             {elif result.status eq "error"}
-              <tr class="error">  
+              <tr id="result-{__count}" class="error">  
             {elif result.status eq "warning"}
-              <tr class="warning">  
+              <tr id="result-{__count}" class="warning">  
             {else}
-              <tr>
+              <tr id="result-{__count}">
             {end}
               <td class="status">{result.status}</td>
               <td>{result.name}</td>
@@ -68,7 +68,7 @@
                 {if result.info}
                   <i class="icon-info-sign"></i>
                   {foreach info in result.info}
-                    <a href="">{info.key}</a>
+                    <a class="info-{__count}" href="#">{info.key}</a>
                   {end}
                   <br/>
                 {end}
@@ -81,6 +81,24 @@
       </div>
     </div>
   </div>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
   <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {{
+      var resultId, infoId;
+      {foreach result in results}
+        resultId = 'result-{__count}';
+        {foreach info in result.info}
+          infoId = 'info-{__count}';
+          $('tr#' + resultId + ' a.' + infoId).popover({{
+            title: '{info.key}',
+            content: '{escape(info.value)}',
+            html: true,
+            placement: 'bottom'
+          }});
+        {end}
+      {end}
+    }});
+  </script>
 </body>
 </html>
