@@ -68,7 +68,7 @@
                 {if result.info}
                   <i class="icon-info-sign"></i>
                   {foreach info in result.info}
-                    <a class="info-{__count}" href="#">{info.key}</a>
+                    <a class="info-{__count}" href="javascript: void(0);">{info.key}</a>
                   {end}
                   <br/>
                 {end}
