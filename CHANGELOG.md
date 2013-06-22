@@ -1,5 +1,5 @@
-### 0.1.2-pre
-*
+### 0.2.0-pre
+* Add result model
 
 ### 0.1.1
 * Add group check attribute
