@@ -2,7 +2,8 @@ var bag = require('bagofcli'),
   buster = require('buster'),
   cache = require('memory-cache'),
   fsx = require('fs.extra'),
-  Health = require('../lib/health');
+  Health = require('../lib/health'),
+  Result = require('../lib/result');
 
 buster.testCase('health - health', {
   'should set opts if specified via constructor': function () {
@@ -85,7 +86,8 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should pass result with check result when it is not already cached (cache miss) and the result is then cached': function (done) {
-    var result = { status: 'success' };
+    var result = new Result();
+    result.success();
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 10000);
     var health = new Health({
@@ -101,17 +103,19 @@ buster.testCase('health - check', {
     function cb(err, results) {
       assert.isNull(err);
       assert.equals(results.length, 1);
-      assert.equals(results[0].name, 'someapp');
-      assert.equals(results[0].uri, 'http://somehost');
-      assert.equals(results[0].status, 'success');
-      assert.defined(results[0].duration);
+      assert.equals(results[0].getName(), 'someapp');
+      assert.equals(results[0].getUri(), 'http://somehost');
+      assert.isTrue(results[0].isSuccess());
+      assert.defined(results[0].getDuration());
       done();
     }
     health.check(cb);
   },
   'should format data when formatter opt string is specified': function (done) {
-    var result = { uri: 'http://somehost', status: 'success' },
+    var result = new Result(),
       mockTimer = this.useFakeTimers(0, 'Date');
+    result.setUri('http://somehost');
+    result.success();
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
     var health = new Health({
@@ -154,8 +158,10 @@ buster.testCase('health - check', {
     health.check(cb);
   },
   'should format data when formatter opt function is specified': function (done) {
-    var result = { uri: 'http://somehost', status: 'success' },
+    var result = new Result(),
       mockTimer = this.useFakeTimers(0, 'Date');
+    result.setUri('http://somehost');
+    result.success();
     this.mockCache.expects('get').once().withExactArgs('http://somehost').returns(null);
     this.mockCache.expects('put').once().withExactArgs('http://somehost', result, 5000);
     var health = new Health({
@@ -163,7 +169,7 @@ buster.testCase('health - check', {
       formatter: function (results) {
         var formatted = '';
         results.forEach(function (result) {
-          formatted = result.uri + ': ' + result.status + '\n';
+          formatted = result.getUri() + ': ' + result.getStatus() + '\n';
         });
         return formatted;
       }
@@ -189,28 +195,30 @@ buster.testCase('health - _singleResultRules', {
     this.health = new Health();
   },
   'should set name if it exists': function () {
-    var result = {},
-      setup = { name: 'somename', uri: 'http://somehost' },
-      checker = this.health._singleResultRules(result, setup);
-    assert.equals(result.name, 'somename');
+    var result = new Result(),
+      setup = { name: 'somename', uri: 'http://somehost' };
+    this.health._singleResultRules(result, setup);      
+    assert.equals(result.getName(), 'somename');
   },
   'should set status to warning when result is fail and lenient is true': function () {
-    var result = { status: 'fail' },
-      setup = { name: 'somename', uri: 'http://somehost', lenient: true },
-      checker = this.health._singleResultRules(result, setup);
-    assert.equals(result.status, 'warning');
+    var result = new Result(),
+      setup = { name: 'somename', uri: 'http://somehost', lenient: true };
+    result.fail();
+    this.health._singleResultRules(result, setup);
+    assert.isTrue(result.isWarning());
   },
   'should set status to warning when result is error and lenient is true': function () {
-    var result = { status: 'error' },
-      setup = { name: 'somename', uri: 'http://somehost', lenient: true },
-      checker = this.health._singleResultRules(result, setup);
+    var result = new Result(),
+      setup = { name: 'somename', uri: 'http://somehost', lenient: true };
+    result.error();
+    this.health._singleResultRules(result, setup);
     assert.equals(result.status, 'warning');
   },
   'should mask password with asterisks': function () {
-    var result = {},
-      setup = { name: 'somename', uri: 'http://user:pass@somehost' },
-      checker = this.health._singleResultRules(result, setup);
-    assert.equals(result.uri, 'http://user:****@somehost/');
+    var result = new Result(),
+      setup = { name: 'somename', uri: 'http://user:pass@somehost' };
+    this.health._singleResultRules(result, setup);
+    assert.equals(result.getUri(), 'http://user:****@somehost/');
   }
 });
 

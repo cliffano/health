@@ -11,8 +11,8 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'error');
-      assert.equals(result.errors, ['some error']);
+      assert.equals(result.getStatus(), 'error');
+      assert.equals(result.getErrors(), ['some error']);
       done();
     }
     checker.check(setup, cb);
@@ -26,9 +26,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', timeout: 8000 };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'success');
-      assert.equals(result.failures, []);
-      assert.equals(result.successes, []);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getFailures(), []);
+      assert.equals(result.getSuccesses(), []);
       done();
     }
     checker.check(setup, cb);
@@ -41,9 +41,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'success');
-      assert.equals(result.successes, ['Status code 200 as expected']);
-      assert.equals(result.failures, []);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), ['Status code 200 as expected']);
+      assert.equals(result.getFailures(), []);
       done();
     }
     checker.check(setup, cb);
@@ -56,9 +56,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'success');
-      assert.equals(result.successes, ['Text foo exists in response body', 'Text blah exists in response body']);
-      assert.equals(result.failures, []);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), ['Text foo exists in response body', 'Text blah exists in response body']);
+      assert.equals(result.getFailures(), []);
       done();
     }
     checker.check(setup, cb);
@@ -71,13 +71,13 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ], texts: [ 'foo', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'success');
-      assert.equals(result.successes, [
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), [
         'Status code 200 as expected',
         'Text foo exists in response body',
         'Text blah exists in response body'
       ]);
-      assert.equals(result.failures, []);
+      assert.equals(result.getFailures(), []);
       done();
     }
     checker.check(setup, cb);
@@ -90,9 +90,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [ 200, 301 ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.failures, ['Status code 400 does not match the expected 200, 301']);
-      assert.equals(result.successes, []);
+      assert.isTrue(result.isFail());
+      assert.equals(result.getFailures(), ['Status code 400 does not match the expected 200, 301']);
+      assert.equals(result.getSuccesses(), []);
       done();
     }
     checker.check(setup, cb);
@@ -105,9 +105,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', texts: [ 'xyz' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.failures, ['Text xyz does not exist in response body']);
-      assert.equals(result.successes, []);
+      assert.isTrue(result.isFail());
+      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
+      assert.equals(result.getSuccesses(), []);
       done();
     }
     checker.check(setup, cb); 
@@ -120,9 +120,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', texts: [ 'foobar', 'xyz' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.failures, ['Text xyz does not exist in response body']);
-      assert.equals(result.successes, ['Text foobar exists in response body']);
+      assert.isTrue(result.isFail());
+      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
+      assert.equals(result.getSuccesses(), ['Text foobar exists in response body']);
       done();
     }
     checker.check(setup, cb); 
@@ -135,9 +135,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [200], texts: [ 'xyz' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.failures, ['Text xyz does not exist in response body']);
-      assert.equals(result.successes, ['Status code 200 as expected']);
+      assert.isTrue(result.isFail());
+      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
+      assert.equals(result.getSuccesses(), ['Status code 200 as expected']);
       done();
     }
     checker.check(setup, cb); 
@@ -150,9 +150,9 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost', statusCodes: [201], texts: [ 'foobar', 'xyz', 'blah' ] };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'fail');
-      assert.equals(result.failures, ['Status code 200 does not match the expected 201', 'Text blah does not exist in response body']);
-      assert.equals(result.successes, ['Text foobar exists in response body', 'Text xyz exists in response body']);
+      assert.isTrue(result.isFail());
+      assert.equals(result.getFailures(), ['Status code 200 does not match the expected 201', 'Text blah does not exist in response body']);
+      assert.equals(result.getSuccesses(), ['Text foobar exists in response body', 'Text xyz exists in response body']);
       done();
     }
     checker.check(setup, cb); 
@@ -165,11 +165,11 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.status, 'success');
-      assert.equals(result.failures, []);
-      assert.equals(result.successes, []);
-      assert.equals(result.info.headers.someheader, 'somevalue');
-      assert.equals(result.info.body, 'some body');
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getFailures(), []);
+      assert.equals(result.getSuccesses(), []);
+      assert.equals(result.getInfo().headers.someheader, 'somevalue');
+      assert.equals(result.getInfo().body, 'some body');
       done();
     }
     checker.check(setup, cb); 
