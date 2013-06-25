@@ -38,7 +38,6 @@
     "memory-cache": "0.0.5",
     "mongodb": "1.2.14",
     "jazz": "0.0.18",
-    "js2xml": "0.0.6",
     "validator": "1.1.0"
   },
   "devDependencies": {

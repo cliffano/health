@@ -1,5 +1,6 @@
 ### 0.2.0-pre
 * Add result model
+* Remove xml formatter
 
 ### 0.1.1
 * Add group check attribute
