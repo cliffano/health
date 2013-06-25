@@ -227,12 +227,25 @@ buster.testCase('health - _multiResultsRules', {
     this.health = new Health();
   },
   'should leave all results as-is when there is no specified group': function () {
-    var results = [
-        { name: 'somename1', uri: 'http://somehost1', status: 'fail' },
-        { name: 'somename2', uri: 'http://somehost2', status: 'success' },
-        { name: 'somename3', uri: 'http://somehost3', status: 'error' },
-        { name: 'somename4', uri: 'http://somehost4', status: 'warning' }
-      ],
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.success();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.error();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.warning();
+
+    var results = [ result1, result2, result3, result4 ],
       setup = [
         { name: 'somename1', uri: 'http://somehost1' },
         { name: 'somename2', uri: 'http://somehost2' },
@@ -240,18 +253,31 @@ buster.testCase('health - _multiResultsRules', {
         { name: 'somename4', uri: 'http://somehost4' }
       ];
     results = this.health._multiResultsRules(results, setup);
-    assert.equals(results[0].status, 'fail');
-    assert.equals(results[1].status, 'success');
-    assert.equals(results[2].status, 'error');
-    assert.equals(results[3].status, 'warning');
+    assert.isTrue(results[0].isFail());
+    assert.isTrue(results[1].isSuccess());
+    assert.isTrue(results[2].isError());
+    assert.isTrue(results[3].isWarning());
   },
   'should change status fail and error to warning when not all group members have non-success status': function () {
-    var results = [
-        { name: 'somename1', uri: 'http://somehost1', status: 'fail' },
-        { name: 'somename2', uri: 'http://somehost2', status: 'success' },
-        { name: 'somename3', uri: 'http://somehost3', status: 'error' },
-        { name: 'somename4', uri: 'http://somehost4', status: 'warning' }
-      ],
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.success();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.error();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.warning();
+
+    var results = [ result1, result2, result3, result4 ],
       setup = [
         { name: 'somename1', uri: 'http://somehost1', group: 'somegroup' },
         { name: 'somename2', uri: 'http://somehost2', group: 'somegroup' },
@@ -259,18 +285,31 @@ buster.testCase('health - _multiResultsRules', {
         { name: 'somename4', uri: 'http://somehost4', group: 'somegroup' }
       ];
     results = this.health._multiResultsRules(results, setup);
-    assert.equals(results[0].status, 'warning');
-    assert.equals(results[1].status, 'success');
-    assert.equals(results[2].status, 'warning');
-    assert.equals(results[3].status, 'warning');
+    assert.isTrue(results[0].isWarning());
+    assert.isTrue(results[1].isSuccess());
+    assert.isTrue(results[2].isWarning());
+    assert.isTrue(results[3].isWarning());
   },
   'should change status warning to fail when all group members have non-success status': function () {
-    var results = [
-        { name: 'somename1', uri: 'http://somehost1', status: 'fail' },
-        { name: 'somename2', uri: 'http://somehost2', status: 'fail' },
-        { name: 'somename3', uri: 'http://somehost3', status: 'warning' },
-        { name: 'somename4', uri: 'http://somehost4', status: 'error' }
-      ],
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.fail();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.warning();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.error();
+
+    var results = [ result1, result2, result3, result4 ],
       setup = [
         { name: 'somename1', uri: 'http://somehost1', group: 'somegroup' },
         { name: 'somename2', uri: 'http://somehost2', group: 'somegroup' },
@@ -278,22 +317,47 @@ buster.testCase('health - _multiResultsRules', {
         { name: 'somename4', uri: 'http://somehost4', group: 'somegroup' }
       ];
     results = this.health._multiResultsRules(results, setup);
-    assert.equals(results[0].status, 'fail');
-    assert.equals(results[1].status, 'fail');
-    assert.equals(results[2].status, 'fail');
-    assert.equals(results[3].status, 'error');
+    assert.isTrue(results[0].isFail());
+    assert.isTrue(results[1].isFail());
+    assert.isTrue(results[2].isFail());
+    assert.isTrue(results[3].isError());
   },
   'should change and keep status accordingly when there are multiple groups': function () {
-    var results = [
-        { name: 'somename1', uri: 'http://somehost1', status: 'fail' },
-        { name: 'somename2', uri: 'http://somehost2', status: 'fail' },
-        { name: 'somename3', uri: 'http://somehost3', status: 'warning' },
-        { name: 'somename4', uri: 'http://somehost4', status: 'error' },
-        { name: 'somename5', uri: 'http://somehost5', status: 'fail' },
-        { name: 'somename6', uri: 'http://somehost6', status: 'success' },
-        { name: 'somename7', uri: 'http://somehost7', status: 'error' },
-        { name: 'somename8', uri: 'http://somehost8', status: 'warning' }
-      ],
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result(),
+      result5 = new Result(),
+      result6 = new Result(),
+      result7 = new Result(),
+      result8 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.fail();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.warning();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.error();
+    result5.setName('somename5');
+    result5.setUri('http://somehost5');
+    result5.fail();
+    result6.setName('somename6');
+    result6.setUri('http://somehost6');
+    result6.success();
+    result7.setName('somename7');
+    result7.setUri('http://somehost7');
+    result7.error();
+    result8.setName('somename8');
+    result8.setUri('http://somehost8');
+    result8.warning();
+
+    var results = [ result1, result2, result3, result4, result5, result6, result7, result8 ],
       setup = [
         { name: 'somename1', uri: 'http://somehost1', group: 'somegroupA' },
         { name: 'somename2', uri: 'http://somehost2', group: 'somegroupA' },
@@ -305,14 +369,14 @@ buster.testCase('health - _multiResultsRules', {
         { name: 'somename8', uri: 'http://somehost8', group: 'somegroupB' }
       ];
     results = this.health._multiResultsRules(results, setup);
-    assert.equals(results[0].status, 'fail');
-    assert.equals(results[1].status, 'fail');
-    assert.equals(results[2].status, 'fail');
-    assert.equals(results[3].status, 'error');
-    assert.equals(results[4].status, 'warning');
-    assert.equals(results[5].status, 'success');
-    assert.equals(results[6].status, 'warning');
-    assert.equals(results[7].status, 'warning');
+    assert.isTrue(results[0].isFail());
+    assert.isTrue(results[1].isFail());
+    assert.isTrue(results[2].isFail());
+    assert.isTrue(results[3].isError());
+    assert.isTrue(results[4].isWarning());
+    assert.isTrue(results[5].isSuccess());
+    assert.isTrue(results[6].isWarning());
+    assert.isTrue(results[7].isWarning());
   }
 });
 
