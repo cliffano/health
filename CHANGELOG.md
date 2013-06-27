@@ -1,5 +1,5 @@
 ### 0.2.1-pre
-*
+* Add file checker
 
 ### 0.2.0
 * Add result model
