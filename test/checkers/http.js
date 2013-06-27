@@ -11,7 +11,7 @@ buster.testCase('http - check', {
     var setup = { uri: 'http://somehost' };
     function cb(err, result) {
       assert.isNull(err);
-      assert.equals(result.isError());
+      assert.isTrue(result.isError());
       assert.equals(result.getErrors(), ['some error']);
       done();
     }

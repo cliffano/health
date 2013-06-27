@@ -49,9 +49,10 @@ Configuration
 Health setup is just a simple JSON:
 
     [
-      { "name": "google", "uri", "http://google.com", "statusCodes": [ 200 ] },
-      { "name": "gmail", "uri", "https://mail.google.com", "timeout": "1000" },
-      { "name": "mongodb", "uri": "mongodb://somehost:27017", "timeout": 200, "ttl": 30000 }
+      { "name": "Google", "uri", "http://google.com", "statusCodes": [ 200 ] },
+      { "name": "GMail", "uri", "https://mail.google.com", "timeout": "1000" },
+      { "name": "MongoDB", "uri": "mongodb://somehost:27017", "timeout": 200, "ttl": 30000 },
+      { "name": "Temp", "uri": "file:///tmp", "mode": "777", "ttl": 360000 }
     ]
 
 <table>
@@ -135,5 +136,14 @@ Health setup is just a simple JSON:
     <td>Optional</td>
     <td></td>
     <td>[ 'foo', 'bar' ]</td>
+  </tr>
+  <tr>
+    <td>mode</td>
+    <td>string</td>
+    <td>3-digit file/directory mode</td>
+    <td>file</td>
+    <td>Optional</td>
+    <td></td>
+    <td>777, 644</td>
   </tr>
 </table>
