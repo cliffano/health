@@ -1,4 +1,4 @@
-Health [![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=master)](http://travis-ci.org/cliffano/health) [![Dependencies Status](https://david-dm.org/cliffano/health.png)](http://david-dm.org/cliffano/health)
+Health [![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=master)](http://travis-ci.org/cliffano/health) [![Dependencies Status](https://david-dm.org/cliffano/health.png)](http://david-dm.org/cliffano/health) [![Published Version](https://badge.fury.io/js/health.png)](http://badge.fury.io/js/health)
 -----------
 <img align="right" src="https://raw.github.com/cliffano/health/master/avatar.jpg" alt="Avatar"/>
 
