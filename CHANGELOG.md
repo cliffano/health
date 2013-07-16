@@ -1,5 +1,5 @@
 ### 0.2.2-pre
-*
+* Add result timestamp (when check is started)
 
 ### 0.2.1
 * Add file checker

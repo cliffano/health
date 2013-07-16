@@ -107,6 +107,7 @@ buster.testCase('health - check', {
       assert.equals(results[0].getUri(), 'http://somehost');
       assert.isTrue(results[0].isSuccess());
       assert.defined(results[0].getDuration());
+      assert.defined(results[0].getTimestamp());
       done();
     }
     health.check(cb);
