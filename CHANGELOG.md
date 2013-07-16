@@ -1,8 +1,9 @@
 ### 0.2.2-pre
 * Add result timestamp (when check is started)
 * Rename http(s) attributes: statusCodes -> statusCode, texts -> text
-* All checker attributes now support <attribute> and <attribute>-or
+* All checker attributes support <attribute> and <attribute>-or
 * Add health#clearCache
+* All checker attributes support regular expression
 
 ### 0.2.1
 * Add file checker

@@ -48,16 +48,35 @@ buster.testCase('http - check', {
     }
     checker.check(setup, cb);
   },
+  'should have success status when request is successful and status code matches the regular expression': function (done) {
+    function mockRequest(method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: '200' }, cb);
+    }
+    this.stub(bag, 'request', mockRequest);
+    var setup = { uri: 'http://somehost', 'statusCode-or': [ '2[0-9]{2}', 301 ] };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), ['Status code 2[0-9]{2} as expected']);
+      assert.equals(result.getFailures(), []);
+      done();
+    }
+    checker.check(setup, cb);
+  },
   'should have success status when request is successful and texts exist in request body': function (done) {
     function mockRequest(method, url, opts, cb) {
       opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
     }
     this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', text: [ 'foo', 'blah' ] };
+    var setup = { uri: 'http://somehost', text: [ 'foo', 'blah', '^foob', 'lah$' ] };
     function cb(err, result) {
       assert.isNull(err);
       assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), ['Text foo exists in response body', 'Text blah exists in response body']);
+      assert.equals(result.getSuccesses(), [
+        'Text foo exists in response body',
+        'Text blah exists in response body',
+        'Text ^foob exists in response body',
+        'Text lah$ exists in response body']);
       assert.equals(result.getFailures(), []);
       done();
     }

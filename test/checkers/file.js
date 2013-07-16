@@ -53,6 +53,18 @@ buster.testCase('file - check', {
     }
     checker.check(setup, cb);
   },
+  'should have success status when mode matches expected regular expression': function (done) {
+    this.mockStats.mode = 16895;
+    this.mockFs.expects('lstat').once().withArgs('/tmp').callsArgWith(1, null, this.mockStats);
+    var setup = { uri: 'file:///tmp', mode: '7{3}' };
+    function cb(err, result) {
+      assert.isNull(err);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), ['Mode 777 as expected']);
+      done();
+    }
+    checker.check(setup, cb);
+  },
   'should have success status when mode matches expectation and mode is an array with single item': function (done) {
     this.mockStats.mode = 16895;
     this.mockFs.expects('lstat').once().withArgs('/tmp').callsArgWith(1, null, this.mockStats);
