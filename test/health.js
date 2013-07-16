@@ -334,6 +334,82 @@ buster.testCase('health - _multiResultsRules', {
     assert.isTrue(results[2].isFail());
     assert.isTrue(results[3].isError());
   },
+  'should change status warning to fail when group is weighted and members do not pass the weight': function () {
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result(),
+      result5 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.fail();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.warning();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.error();
+    result5.setName('somename5');
+    result5.setUri('http://somehost5');
+    result5.success();
+
+    var results = [ result1, result2, result3, result4, result5 ],
+      setup = [
+        { name: 'somename1', uri: 'http://somehost1', group: 'somegroup-50' },
+        { name: 'somename2', uri: 'http://somehost2', group: 'somegroup-50' },
+        { name: 'somename3', uri: 'http://somehost3', group: 'somegroup-50' },
+        { name: 'somename4', uri: 'http://somehost4', group: 'somegroup-50' },
+        { name: 'somename5', uri: 'http://somehost5', group: 'somegroup-50' }
+      ];
+    results = this.health._multiResultsRules(results, setup);
+    assert.isTrue(results[0].isFail());
+    assert.isTrue(results[1].isFail());
+    assert.isTrue(results[2].isFail());
+    assert.isTrue(results[3].isError());
+    assert.isTrue(results[4].isSuccess());
+  },
+  'should change status fail and error to warning when group is weighted and members pass the weight': function () {
+    var result1 = new Result(),
+      result2 = new Result(),
+      result3 = new Result(),
+      result4 = new Result(),
+      result5 = new Result();
+
+    result1.setName('somename1');
+    result1.setUri('http://somehost1');
+    result1.fail();
+    result2.setName('somename2');
+    result2.setUri('http://somehost2');
+    result2.fail();
+    result3.setName('somename3');
+    result3.setUri('http://somehost3');
+    result3.warning();
+    result4.setName('somename4');
+    result4.setUri('http://somehost4');
+    result4.error();
+    result5.setName('somename5');
+    result5.setUri('http://somehost5');
+    result5.success();
+
+    var results = [ result1, result2, result3, result4, result5 ],
+      setup = [
+        { name: 'somename1', uri: 'http://somehost1', group: 'somegroup-20' },
+        { name: 'somename2', uri: 'http://somehost2', group: 'somegroup-20' },
+        { name: 'somename3', uri: 'http://somehost3', group: 'somegroup-20' },
+        { name: 'somename4', uri: 'http://somehost4', group: 'somegroup-20' },
+        { name: 'somename5', uri: 'http://somehost5', group: 'somegroup-20' }
+      ];
+    results = this.health._multiResultsRules(results, setup);
+    assert.isTrue(results[0].isWarning());
+    assert.isTrue(results[1].isWarning());
+    assert.isTrue(results[2].isWarning());
+    assert.isTrue(results[3].isWarning());
+    assert.isTrue(results[4].isSuccess());
+  },
   'should change and keep status accordingly when there are multiple groups': function () {
     var result1 = new Result(),
       result2 = new Result(),
