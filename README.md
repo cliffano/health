@@ -120,16 +120,16 @@ Health setup is just a simple JSON:
     <td>500</td>
   </tr>
   <tr>
-    <td>statusCodes</td>
+    <td>statusCode</td>
     <td>array</td>
-    <td>An array of acceptable response HTTP status codes, any match means status OK</td>
+    <td>An array of acceptable response HTTP status codes</td>
     <td>http, https</td>
     <td>Optional</td>
     <td></td>
-    <td>[ 200, '3xx', 409 ]</td>
+    <td>[ 200, 409 ]</td>
   </tr>
   <tr>
-    <td>texts</td>
+    <td>text</td>
     <td>array</td>
     <td>An array of all texts that must exist in response body, any of them does not exist means status FAIL</td>
     <td>http, https</td>
