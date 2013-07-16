@@ -40,6 +40,17 @@ buster.testCase('health - init', {
   }
 });
 
+buster.testCase('health - clearCache', {
+  setUp: function () {
+    this.mockCache = this.mock(cache);
+  },
+  'should call clear': function () {
+    this.mockCache.expects('clear').once().withExactArgs();
+    var health = new Health();
+    health.clearCache();
+  }
+});
+
 buster.testCase('health - check', {
   setUp: function () {
     this.mockCache = this.mock(cache);
