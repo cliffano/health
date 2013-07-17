@@ -65,12 +65,11 @@
                 {foreach success in result.successes}
                   <i class="icon-ok-sign"></i> {success}<br/>
                 {end}
-                {if result.info}
-                  <i class="icon-info-sign"></i>
-                  {foreach info in result.info}
-                    <a class="info-{__count}" href="javascript: void(0);">{info.key}</a>
+                {foreach info in result.info}
+                  {if __count eq 1}
+                    <i class="icon-info-sign"></i>
                   {end}
-                  <br/>
+                  <a class="info-{__count}" href="javascript: void(0);">{info.key}</a>
                 {end}
               </td>
               <td>{result.duration}</td>
