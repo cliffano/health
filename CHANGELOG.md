@@ -1,4 +1,7 @@
-### 0.2.3-pre
+### 0.2.4-pre
+*
+
+### 0.2.3
 * Fix info icon display on html report when there's no info
 * Improve mongo checker error message from mongodb dep
 
