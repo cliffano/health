@@ -1,5 +1,6 @@
 ### 0.2.3-pre
-*
+* Fix info icon display on html report when there's no info
+* Improve mongo checker error message from mongodb dep
 
 ### 0.2.2
 * Add result timestamp (when check is started)
