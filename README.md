@@ -1,6 +1,14 @@
-Health [![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=master)](http://travis-ci.org/cliffano/health) [![Dependencies Status](https://david-dm.org/cliffano/health.png)](http://david-dm.org/cliffano/health) [![Published Version](https://badge.fury.io/js/health.png)](http://badge.fury.io/js/health)
------------
 <img align="right" src="https://raw.github.com/cliffano/health/master/avatar.jpg" alt="Avatar"/>
+
+[![Build Status](https://secure.travis-ci.org/cliffano/health.png?branch=master)](http://travis-ci.org/cliffano/health)
+[![Dependencies Status](https://david-dm.org/cliffano/health.png)](http://david-dm.org/cliffano/health)
+[![Coverage Status](https://coveralls.io/repos/cliffano/health/badge.png?branch=master)](https://coveralls.io/r/cliffano/health?branch=master)
+[![Published Version](https://badge.fury.io/js/health.png)](http://badge.fury.io/js/health)
+<br/>
+[![npm Badge](https://nodei.co/npm/health.png)](http://npmjs.org/package/health)
+
+Health
+------
 
 Health is a resource status monitoring library.
 
