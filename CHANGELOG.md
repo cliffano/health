@@ -1,4 +1,4 @@
-### 0.2.4-pre
+### 0.3.0-pre
 * Set min node engine to >= v0.10.0
 
 ### 0.2.3
