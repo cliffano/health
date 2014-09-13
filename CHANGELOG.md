@@ -1,5 +1,5 @@
 ### 0.2.4-pre
-*
+* Set min node engine to >= v0.10.0
 
 ### 0.2.3
 * Fix info icon display on html report when there's no info
