@@ -1,6 +1,8 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   fs = require('fs'),
-  text = require('../../lib/formatters/html');
+  text = require('../../lib/formatters/html'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('html - format', {
   setUp: function () {

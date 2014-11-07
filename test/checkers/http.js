@@ -1,8 +1,13 @@
 var bag = require('bagofrequest'),
-  buster = require('buster'),
-  checker = require('../../lib/checkers/http');
+  buster = require('buster-node'),
+  checker = require('../../lib/checkers/http'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('http - check', {
+  setUp: function () {
+    this.mock({});
+  },
   'should have fail status when an error occurs while sending the request': function (done) {
     function mockRequest(method, url, opts, cb) {
       cb(new Error('some error'));

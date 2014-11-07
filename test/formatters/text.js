@@ -1,8 +1,13 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   Result = require('../../lib/result'),
-  text = require('../../lib/formatters/text');
+  text = require('../../lib/formatters/text'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('text - format', {
+  setUp: function () {
+    this.mock({});
+  },
   'should format text properly when desc exists': function () {
     var result = new Result();
     result.setUri('http://somehost');

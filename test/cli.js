@@ -1,7 +1,9 @@
 var bag = require('bagofcli'),
-  buster = require('buster'),
+  buster = require('buster-node'),
   cli = require('../lib/cli'),
-  Health = require('../lib/health');
+  Health = require('../lib/health'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('cli - exec', {
   'should contain commands with actions': function (done) {
@@ -11,12 +13,16 @@ buster.testCase('cli - exec', {
       assert.defined(actions.commands.check.action);
       done();
     };
+    this.mock({});
     this.stub(bag, 'command', mockCommand);
     cli.exec();
   }
 });
 
 buster.testCase('cli - init', {
+  setUp: function () {
+    this.mock({});
+  },
   'should contain init command and delegate to health init when exec is called': function (done) {
     this.stub(bag, 'command', function (base, actions) {
       actions.commands.init.action();

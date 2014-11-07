@@ -1,6 +1,8 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   checker = require('../../lib/checkers/file'),
-  fs = require('fs');
+  fs = require('fs'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('file - check', {
   setUp: function () {

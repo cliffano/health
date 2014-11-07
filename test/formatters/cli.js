@@ -1,8 +1,13 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   cli = require('../../lib/formatters/cli'),
-  Result = require('../../lib/result');
+  Result = require('../../lib/result'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('cli - format', {
+  setUp: function () {
+    this.mock({});
+  },
   'should format cli line properly when desc exists': function () {
     var result = new Result();
     result.setUri('http://somehost');

@@ -1,9 +1,12 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   checker = require('../lib/checker'),
-  Result = require('../lib/result');
+  Result = require('../lib/result'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('checker - allMustPass', {
   setUp: function () {
+    this.mock({});
     this.result = new Result();
   },
   'should have successes and no failure when all items pass checking': function () {
@@ -45,6 +48,7 @@ buster.testCase('checker - allMustPass', {
 
 buster.testCase('checker - oneMustPass', {
   setUp: function () {
+    this.mock({});
     this.result = new Result();
   },
   'should have successes and no failure when all items pass checking': function () {
@@ -85,6 +89,7 @@ buster.testCase('checker - oneMustPass', {
 
 buster.testCase('checker - checkAttribute', {
   setUp: function () {
+    this.mock({});
     this.result = new Result();
   },
   'should have successes and no failure when all items pass checking': function () {

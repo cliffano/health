@@ -1,6 +1,8 @@
-var buster = require('buster'),
+var buster = require('buster-node'),
   checker = require('../../lib/checkers/mongodb'),
-  mongodb = require('mongodb');
+  mongodb = require('mongodb'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('mongodb - check', {
   setUp: function () {

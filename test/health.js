@@ -1,11 +1,16 @@
 var bag = require('bagofcli'),
-  buster = require('buster'),
+  buster = require('buster-node'),
   cache = require('memory-cache'),
   fsx = require('fs.extra'),
   Health = require('../lib/health'),
-  Result = require('../lib/result');
+  Result = require('../lib/result'),
+  referee = require('referee'),
+  assert = referee.assert;
 
 buster.testCase('health - health', {
+  setUp: function () {
+    this.mock({});
+  },
   'should set opts if specified via constructor': function () {
     var health = new Health({
       setup: { uri: 'http://somehost' },
@@ -204,6 +209,7 @@ buster.testCase('health - check', {
 
 buster.testCase('health - _singleResultRules', {
   setUp: function () {
+    this.mock({});
     this.health = new Health();
   },
   'should set name if it exists': function () {
@@ -236,6 +242,7 @@ buster.testCase('health - _singleResultRules', {
 
 buster.testCase('health - _multiResultsRules', {
   setUp: function () {
+    this.mock({});
     this.health = new Health();
   },
   'should leave all results as-is when there is no specified group': function () {
@@ -470,6 +477,7 @@ buster.testCase('health - _multiResultsRules', {
 
 buster.testCase('health - _checker', {
   setUp: function () {
+    this.mock({});
     this.health = new Health();
   },
   'should use http checker when URI has http protocol': function () {
