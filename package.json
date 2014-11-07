@@ -43,8 +43,7 @@
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
-    "referee": "~1.1.0",
-    "shelljs": "~0.1.4"
+    "referee": "~1.1.0"
   },
   "scripts": {},
   "engines": {
