@@ -30,16 +30,16 @@
   },
   "dependencies": {
     "async": "~0.9.0",
-    "bagofcli": "~0.2.0",
+    "bagofcli": "~0.2.1",
     "bagofrequest": "~0.1.0",
-    "colors": "~0.6.2",
+    "colors": "~1.0.3",
     "fs.extra": "~1.2.1",
     "i18n": "~0.5.0",
     "lodash": "~2.4.1",
     "memory-cache": "~0.0.5",
-    "mongodb": "~1.4.11",
+    "mongodb": "~1.4.20",
     "jazz": "~0.0.18",
-    "validator": "~3.18.1"
+    "validator": "~3.22.1"
   },
   "devDependencies": {
     "buster-node": "~0.7.0",
