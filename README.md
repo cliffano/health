@@ -155,3 +155,8 @@ Health setup is just a simple JSON:
     <td>777, 644</td>
   </tr>
 </table>
+
+Colophon
+--------
+
+[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
