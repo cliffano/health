@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/cliffano/health.svg)](http://travis-ci.org/cliffano/health)
 [![Dependencies Status](https://img.shields.io/david/cliffano/health.svg)](http://david-dm.org/cliffano/health)
-[![Coverage Status](https://coveralls.io/repos/cliffano/health/badge.png?branch=master)](https://coveralls.io/r/cliffano/health?branch=master)
-[![Published Version](https://badge.fury.io/js/health.png)](http://badge.fury.io/js/health)
+[![Coverage Status](https://img.shields.io/coveralls/cliffano/health.svg)](https://coveralls.io/r/cliffano/health?branch=master)
+[![Published Version](https://img.shields.io/npm/v/health.svg)](http://www.npmjs.com/package/health)
 <br/>
 [![npm Badge](https://nodei.co/npm/health.png)](http://npmjs.org/package/health)
 
