@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - lib/health.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>lib/health.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">67.85</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">234</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">44.43</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.92</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">var _ = require(&#039;lodash&#039;),
+  async = require(&#039;async&#039;),
+  bag = require(&#039;bagofcli&#039;),
+  cache = require(&#039;memory-cache&#039;),
+  fsx = require(&#039;fs.extra&#039;),
+  i18n = require(&#039;i18n&#039;),
+  p = require(&#039;path&#039;),
+  url = require(&#039;url&#039;);
+
+/**
+ * class Health
+ *
+ * @param {Object} opts: optional
+ * - setup: health check setup, 
+ *   if it&#039;s an object, each must have uri field, with optional ttl field (in milliseconds), and type-specific fields
+ *   if it&#039;s a string, then it&#039;s a path to JSON setup file containing health check setup
+ *   if unspecified, then it defaults to health.json that exists in either current directory or home directory
+ * - formatter: result formatter,
+ *   if it&#039;s a function, then results will be passed to the formatter function,
+ *   otherwise, it&#039;s assumed to be built-in string formatter: text or xml
+ *   if unspecified, then no formatting will be applied
+ */
+function Health(opts) {
+  opts = opts || {};
+
+  this.opts = {
+    setup: opts.setup || &#039;health.json&#039;,
+    locale: opts.locale || &#039;en&#039;,
+    formatter: opts.formatter
+  };
+
+  i18n.configure({
+    locales: [&#039;en&#039;, &#039;id&#039;],
+    defaultLocale: &#039;en&#039;,
+    directory: p.join(__dirname,&#039;../locales&#039;),
+    updateFiles: false
+  });
+  i18n.setLocale(opts.locale);
+}
+
+/**
+ * Create a sample health.json setup file in current working directory.
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Health.prototype.init = function (cb) {
+  console.log(&#039;Creating sample setup file: health.json&#039;);
+  fsx.copy(p.join(__dirname, &#039;../examples/health.json&#039;), &#039;health.json&#039;, cb);
+};
+
+/**
+ * Clear all cached check result for all resources.
+ */
+Health.prototype.clearCache = function () {
+  cache.clear();
+};
+
+/**
+ * Execute the checks contained in setup, in parallel.
+ * Each result will be cached depends on TTL setting for each URI, 
+ *
+ * @param {Function} cb: standard cb(err, result) callback
+ */
+Health.prototype.check = function (cb) {
+  const TTL = 10000;
+
+  if (typeof this.opts.setup === &#039;string&#039;) {
+    this.opts.setup = JSON.parse(bag.lookupFile(this.opts.setup));
+  }
+
+  var tasks = [],
+    self = this;
+
+  this.opts.setup.forEach(function (setup) {
+    tasks.push(function (cb) {
+
+      var checker = self._checker(setup.uri);
+      if (checker) {
+
+        var cached = cache.get(setup.uri),
+          startTime = Date.now();
+        if (cached === null) {
+
+          checker.check(setup, function (err, result) {
+            if (err) {
+              cb(err);
+            } else {
+
+              var endTime = Date.now();
+              result.setDuration(endTime - startTime);
+              result.setTimestamp(new Date(endTime));
+
+              // apply rules to each single result
+              result = self._singleResultRules(result, setup);
+
+              cache.put(setup.uri, result, setup.ttl || TTL);
+              cb(null, result);
+            }
+          });
+
+        } else {
+          cb(null, cached);
+        }
+      } else {
+        cb(new Error(i18n.__(&#039;Unsupported protocol for URI %s&#039;, setup.uri)));
+      }
+    });
+  });
+
+  async.parallel(tasks, function (err, results) {
+    if (err) {
+      cb(err);
+    } else if (self.opts.formatter) {
+
+      // apply rules to multiple results
+      results = self._multiResultsRules(results, self.opts.setup);
+
+      if (typeof self.opts.formatter === &#039;function&#039;) {
+        cb(null, self.opts.formatter(results));
+      } else {
+        cb(null, require(&#039;./formatters/&#039; + self.opts.formatter).format(results));
+      }
+    } else {
+      cb(null, results);
+    }
+  });
+};
+
+Health.prototype._singleResultRules = function (result, setup) {
+  // basic info
+  if (setup.name) {
+    result.setName(setup.name);
+  }
+  result.setUri(setup.uri);
+
+  // camouflage fail status as warn when lenient is true
+  if (setup.lenient === true &amp;&amp; (result.isFail() || result.isError())) {
+    result.warning();
+  }
+
+  // mask password
+  var parsedUri = url.parse(result.getUri());
+  if (parsedUri.auth) {
+    var userPass = parsedUri.auth.split(&#039;:&#039;);
+    userPass[1] = userPass[1].replace(/./g, &#039;*&#039;);
+    parsedUri.auth = userPass.join(&#039;:&#039;);
+    result.setUri(url.format(parsedUri));
+  }
+
+  return result;
+};
+
+Health.prototype._multiResultsRules = function (results, setup) {
+  var groups = {};
+
+  function addToGroup(result, group, index) {
+    if (!groups[group]) {
+      groups[group] = [];
+    }
+    // store index to avoid re-iterating the whole result
+    // for each group when changing the status
+    groups[group].push({ index: index, result: result });
+  }
+
+  for (var i = 0, ln = results.length; i &lt; ln; i += 1) {
+    if (setup[i].group) {
+      addToGroup(results[i], setup[i].group, i);
+    }
+  }
+
+  // threshold is specified as suffix in group name
+  function _getThreshold(group) {
+    var threshold;
+    if (group.match(/\-[0-9]{1,3}$/)) {
+      var elems = group.split(&#039;-&#039;);
+      threshold = parseInt(elems[elems.length - 1], 10);
+    }
+    return threshold;
+  }
+
+  function _isSuccess(members, threshold) {
+    var successCount = 0;
+    members.forEach(function (member) {
+      if (member.isSuccess()) {
+        successCount += 1;
+      }
+    });
+    // if threshold is undefined, it&#039;s considered a success as
+    // long as the calculated threshold is greater than 0 (at least one success).
+    // if threshold is defined, then it&#039;s considered a success
+    // when the calculated threshold is equal or greater to the threshold
+    return threshold ?
+      (successCount * 100 / members.length) &gt;= threshold :
+      (successCount * 100 / members.length) &gt; 0;
+  }
+
+  Object.keys(groups).forEach(function (group) {
+    var members = _.pluck(groups[group], &#039;result&#039;),
+      indices = _.pluck(groups[group], &#039;index&#039;),
+      isSuccess = _isSuccess(members, _getThreshold(group));
+
+    indices.forEach(function (index) {
+      var result = results[index];
+      // if group check is considered a success, change all error and fail to warning
+      if (isSuccess) {
+        if (result.isFail() || result.isError()) {
+          result.warning();
+        }
+      // if group check is not considered a success, change warning to fail
+      } else {
+        if (result.isWarning()) {
+          result.fail();
+        }
+      }
+    });
+  });
+
+  return results;
+};
+
+Health.prototype._checker = function (uri) {
+  var checker,
+    protocol = uri.match(/^.+:\/\//);
+
+  try {
+    checker = require(&#039;./checkers/&#039; + protocol[0].replace(/:\/\/$/, &#039;&#039;));
+  } catch (e) {
+    // unsupported protocol
+  }
+
+  return checker;
+};
+
+module.exports = Health;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ complexity.cyclomatic }} <br>
+    Length : {{ complexity.halstead.length }} <br>
+    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

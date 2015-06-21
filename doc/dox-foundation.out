@@ -1,0 +1,11 @@
+[ 'lib/checker.js',
+  'lib/checkers/file.js',
+  'lib/checkers/http.js',
+  'lib/checkers/https.js',
+  'lib/checkers/mongodb.js',
+  'lib/cli.js',
+  'lib/formatters/cli.js',
+  'lib/formatters/html.js',
+  'lib/formatters/text.js',
+  'lib/health.js',
+  'lib/result.js' ]
