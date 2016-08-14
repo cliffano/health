@@ -1,5 +1,5 @@
 ### 0.3.1-pre
-*
+* Set locale fallback to default when current locale is not defined
 
 ### 0.3.0
 * Set min node engine to >= v0.10.0
