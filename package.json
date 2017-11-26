@@ -29,7 +29,7 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "^2.5.0",
+    "async": "^2.6.0",
     "bagofcli": "^1.0.0",
     "bagofrequest": "^1.0.0",
     "colors": "^1.1.2",
@@ -37,9 +37,9 @@
     "i18n": "^0.8.3",
     "lodash": "^4.17.4",
     "memory-cache": "^0.2.0",
-    "mongodb": "^2.2.30",
+    "mongodb": "^2.2.33",
     "jazz": "^0.0.18",
-    "validator": "^8.0.0"
+    "validator": "^9.1.2"
   },
   "devDependencies": {
     "buster-node": "^0.7.1",
