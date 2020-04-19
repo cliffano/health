@@ -4,18 +4,18 @@
 [![Dependencies Status](https://img.shields.io/david/cliffano/health.svg)](http://david-dm.org/cliffano/health)
 [![Coverage Status](https://img.shields.io/coveralls/cliffano/health.svg)](https://coveralls.io/r/cliffano/health?branch=master)
 [![Published Version](https://img.shields.io/npm/v/health.svg)](http://www.npmjs.com/package/health)
+[![Vulnerabilities Status](https://snyk.io/test/github/cliffano/health/badge.svg)](https://snyk.io/test/github/cliffano/health)
 <br/>
 [![npm Badge](https://nodei.co/npm/health.png)](http://npmjs.org/package/health)
-[![Vulnerabilities Status](https://snyk.io/test/github/cliffano/health/badge.svg)](https://snyk.io/test/github/cliffano/health)
 
 Health
 ------
 
-Health is a resource status monitoring library.
+Health is a resource health status checking library.
 
-This is handy when you want to monitor the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status ok/fail against each resource along with the response time.
+This is handy when you want to check the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status ok/fail against each resource along with the response time.
 
-It also supports result caching via ttl attribe of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
+It also supports result caching via ttl attribute of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
 
 Installation
 ------------
