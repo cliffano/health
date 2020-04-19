@@ -1,11 +1,12 @@
 <img align="right" src="https://raw.github.com/cliffano/health/master/avatar.jpg" alt="Avatar"/>
 
-[![Build Status](https://img.shields.io/travis/cliffano/health.svg)](http://travis-ci.org/cliffano/health)
+[![Build Status](https://github.com/cliffano/health/workflows/CI/badge.svg)](https://github.com/cliffano/health/actions?query=workflow%3ACI)
 [![Dependencies Status](https://img.shields.io/david/cliffano/health.svg)](http://david-dm.org/cliffano/health)
 [![Coverage Status](https://img.shields.io/coveralls/cliffano/health.svg)](https://coveralls.io/r/cliffano/health?branch=master)
 [![Published Version](https://img.shields.io/npm/v/health.svg)](http://www.npmjs.com/package/health)
 <br/>
 [![npm Badge](https://nodei.co/npm/health.png)](http://npmjs.org/package/health)
+[![Vulnerabilities Status](https://snyk.io/test/github/cliffano/health/badge.svg)](https://snyk.io/test/github/cliffano/health)
 
 Health
 ------
@@ -19,7 +20,7 @@ It also supports result caching via ttl attribe of each resource, which is handy
 Installation
 ------------
 
-    npm install -g health 
+    npm install -g health
 
 Usage
 -----
