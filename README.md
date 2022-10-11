@@ -160,11 +160,11 @@ Health setup is just a simple JSON:
 Colophon
 --------
 
-[Developer's Guide](http://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
 
 Build reports:
 
-* [Code complexity report](http://cliffano.github.io/health/complexity/plato/index.html)
-* [Unit tests report](http://cliffano.github.io/health/test/buster.out)
-* [Test coverage report](http://cliffano.github.io/health/coverage/buster-istanbul/lcov-report/lib/index.html)
-* [API Documentation](http://cliffano.github.io/health/doc/dox-foundation/index.html)
+* [Code complexity report](https://cliffano.github.io/health/complexity/plato/index.html)
+* [Unit tests report](https://cliffano.github.io/health/test/buster.out)
+* [Test coverage report](https://cliffano.github.io/health/coverage/buster-istanbul/lcov-report/lib/index.html)
+* [API Documentation](https://cliffano.github.io/health/doc/dox-foundation/index.html)
