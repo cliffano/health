@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">73.94</p>
+      <p class="stat">73.64</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">68</p>
+      <p class="stat">82</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">16.42</p>
+      <p class="stat">20.33</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.43</p>
+      <p class="stat">0.45</p>
     </div>
   </div>
 </div>
@@ -89,10 +89,11 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var bag = require(&#039;bagofrequest&#039;),
-  checker = require(&#039;../checker&#039;),
-  Result = require(&#039;../result&#039;),
-  validator = require(&#039;validator&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import bag from &quot;bagofrequest&quot;;
+import validator from &quot;validator&quot;;
+import checker from &quot;../checker.js&quot;;
+import Result from &quot;../result.js&quot;;
 
 /**
  * Health check a http resource.
@@ -105,22 +106,26 @@
  * @param {Function} cb: standard cb(err, result) callback
  */
 function check(setup, cb) {
-
-  var method = setup.method || &#039;get&#039;,
-    opts = {
-      handlers: {},
-      timeout: setup.timeout
-    };
+  const method = setup.method || &quot;get&quot;;
+  const opts = {
+    handlers: {},
+    timeout: setup.timeout,
+  };
 
   function _catchAll(response, cb) {
-    var result = new Result();
+    const result = new Result();
 
-    checker.checkAttribute(&#039;statusCode&#039;, setup, _checkStatusCode(response.statusCode), result);
-    checker.checkAttribute(&#039;text&#039;, setup, _checkText(response.body), result);
+    checker.checkAttribute(
+      &quot;statusCode&quot;,
+      setup,
+      _checkStatusCode(response.statusCode),
+      result,
+    );
+    checker.checkAttribute(&quot;text&quot;, setup, _checkText(response.body), result);
 
-    result.addInfo(&#039;headers&#039;, response.headers);
-    result.addInfo(&#039;body&#039;, response.body);
-    
+    result.addInfo(&quot;headers&quot;, response.headers);
+    result.addInfo(&quot;body&quot;, response.body);
+
     cb(null, result);
   }
 
@@ -137,11 +142,16 @@ function check(setup, cb) {
 }
 
 function _checkStatusCode(actual) {
+  // response.statusCode is a Number (per Node&#039;s http.IncomingMessage),
+  // but validator.matches requires a String input.
+  actual = String(actual);
   return function (expected) {
     if (validator.matches(actual, new RegExp(expected))) {
-      return &#039;Status code &#039; + expected + &#039; as expected&#039;;
+      return &quot;Status code &quot; + expected + &quot; as expected&quot;;
     } else {
-      throw new Error(&#039;Status code &#039; + actual + &#039; does not match the expected &#039; + expected);
+      throw new Error(
+        &quot;Status code &quot; + actual + &quot; does not match the expected &quot; + expected,
+      );
     }
   };
 }
@@ -149,14 +159,18 @@ function _checkStatusCode(actual) {
 function _checkText(actual) {
   return function (expected) {
     if (validator.matches(actual, new RegExp(expected))) {
-      return &#039;Text &#039; + expected + &#039; exists in response body&#039;;
+      return &quot;Text &quot; + expected + &quot; exists in response body&quot;;
     } else {
-      throw new Error(&#039;Text &#039; + expected + &#039; does not exist in response body&#039;);
+      throw new Error(&quot;Text &quot; + expected + &quot; does not exist in response body&quot;);
     }
   };
 }
 
-exports.check = check;</textarea>
+const exports = {
+  check: check,
+};
+
+export { exports as default };</textarea>
   </div>
 </div>
 
@@ -168,10 +182,10 @@ exports.check = check;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

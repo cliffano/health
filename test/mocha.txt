@@ -1,0 +1,115 @@
+
+[0m[0m
+[0m  checker - allMustPass[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
+  [32m  [32m✔[39m[0m[90m should have successes and failures when some items pass and some items fail checking[0m
+  [32m  [32m✔[39m[0m[90m should have failures and no success when all items fail checking[0m
+
+[0m  checker - oneMustPass[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when some items pass and some items fail checking[0m
+  [32m  [32m✔[39m[0m[90m should have failures and no success when all items fail checking[0m
+
+[0m  checker - checkAttribute[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking and attribute is a single value[0m
+  [32m  [32m✔[39m[0m[90m should have successes and no failure when attribute has -or prefix and only one expectation matches[0m
+  [32m  [32m✔[39m[0m[90m should have no success and no failure when attribute does not exist in setup[0m
+
+[0m  file - check[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when an error occurs while stat-ing the file[0m
+  [32m  [32m✔[39m[0m[90m should have success status when there is no error while stat-ing the file[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when mode does not match expectation[0m
+  [32m  [32m✔[39m[0m[90m should have success status when mode matches expectation[0m
+  [32m  [32m✔[39m[0m[90m should have success status when mode matches expected regular expression[0m
+  [32m  [32m✔[39m[0m[90m should have success status when mode matches expectation and mode is an array with single item[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when mode expects multiple matches and only one actually matches[0m
+  [32m  [32m✔[39m[0m[90m should have success status when mode is either and it specifies multiple values and one matches[0m
+
+[0m  http - check[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when an error occurs while sending the request[0m
+  [32m  [32m✔[39m[0m[90m should have success status when request is successful and there is no checking involved[0m
+  [32m  [32m✔[39m[0m[90m should have success status when request is successful and status code matches[0m
+  [32m  [32m✔[39m[0m[90m should have success status when request is successful and status code matches the regular expression[0m
+  [32m  [32m✔[39m[0m[90m should have success status when request is successful and texts exist in request body[0m
+  [32m  [32m✔[39m[0m[90m should have success status when request is successful, status code matches, and texts exist in request body[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when status code does not match[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when text does not exist in response body[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when one text exists and another one does not[0m
+  [32m  [32m✔[39m[0m[90m should have fail status when checks result in both success and failure[0m
+  [32m  [32m✔[39m[0m[90m should execute all checks even though the first one fails[0m
+  [32m  [32m✔[39m[0m[90m should pass result headers and body as info[0m
+
+[0m  https[0m
+  [32m  [32m✔[39m[0m[90m should have check method[0m
+
+[0m  mongodb - check[0m
+  [32m  [32m✔[39m[0m[90m should have success status when connect resolves[0m[33m (56ms)[0m
+  [32m  [32m✔[39m[0m[90m should have error status when connect rejects[0m
+
+[0m  cli - exec[0m
+  [32m  [32m✔[39m[0m[90m should contain commands with actions[0m
+
+[0m  cli - init[0m
+  [32m  [32m✔[39m[0m[90m should contain init command and delegate to health init when exec is called[0m
+
+[0m  cli - check[0m
+  [32m  [32m✔[39m[0m[90m should log array items line by line[0m
+  [32m  [32m✔[39m[0m[90m should log string result as-is[0m
+  [32m  [32m✔[39m[0m[90m should exit process with the number of non-ok result[0m
+
+[0m  cli - format[0m
+  [32m  [32m✔[39m[0m[90m should format cli line properly when desc exists[0m
+  [32m  [32m✔[39m[0m[90m should format cli line properly when name exists[0m
+  [32m  [32m✔[39m[0m[90m should colourise status and uri and exclude name and desc from cli line when they do not exist[0m
+
+[0m  html - format[0m
+  [32m  [32m✔[39m[0m[90m should format text properly when desc exists[0m
+
+[0m  text - format[0m
+  [32m  [32m✔[39m[0m[90m should format text properly when desc exists[0m
+  [32m  [32m✔[39m[0m[90m should format text properly when name exists[0m
+  [32m  [32m✔[39m[0m[90m should exclude name and desc from text when they do not exist[0m
+  [32m  [32m✔[39m[0m[90m should format multiple texts properly[0m
+
+[0m  health - health[0m
+  [32m  [32m✔[39m[0m[90m should set opts if specified via constructor[0m
+  [32m  [32m✔[39m[0m[90m should set default opts if unspecified via constructor[0m
+
+[0m  health - init[0m
+  [32m  [32m✔[39m[0m[90m should copy sample health.js file to current directory when init is called[0m
+
+[0m  health - clearCache[0m
+  [32m  [32m✔[39m[0m[90m should call clear[0m
+
+[0m  health - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error when uri has unsupported protocol[0m
+  [32m  [32m✔[39m[0m[90m should pass error when uri has unsupported protocol and setup uses file[0m
+  [32m  [32m✔[39m[0m[90m should pass result with cached data when result is already cached (cache hit)[0m
+  [32m  [32m✔[39m[0m[90m should pass result with check result when it is not already cached (cache miss) and the result is then cached[0m
+  [32m  [32m✔[39m[0m[90m should format data when formatter opt string is specified[0m
+  [32m  [32m✔[39m[0m[90m should pass error when an error occurs while checking a resource[0m
+  [32m  [32m✔[39m[0m[90m should format data when formatter opt function is specified[0m
+
+[0m  health - _singleResultRules[0m
+  [32m  [32m✔[39m[0m[90m should set name if it exists[0m
+  [32m  [32m✔[39m[0m[90m should set status to warning when result is fail and lenient is true[0m
+  [32m  [32m✔[39m[0m[90m should set status to warning when result is error and lenient is true[0m
+  [32m  [32m✔[39m[0m[90m should mask password with asterisks[0m
+
+[0m  health - _multiResultsRules[0m
+  [32m  [32m✔[39m[0m[90m should leave all results as-is when there is no specified group[0m
+  [32m  [32m✔[39m[0m[90m should change status fail and error to warning when not all group members have non-success status[0m
+  [32m  [32m✔[39m[0m[90m should change status warning to fail when all group members have non-success status[0m
+  [32m  [32m✔[39m[0m[90m should change status warning to fail when group is weighted and members do not pass the weight[0m
+  [32m  [32m✔[39m[0m[90m should change status fail and error to warning when group is weighted and members pass the weight[0m
+  [32m  [32m✔[39m[0m[90m should change and keep status accordingly when there are multiple groups[0m
+
+[0m  health - _checker[0m
+  [32m  [32m✔[39m[0m[90m should use http checker when URI has http protocol[0m
+  [32m  [32m✔[39m[0m[90m should use http checker when URI has https protocol[0m
+  [32m  [32m✔[39m[0m[90m should have undefined checker when URI has unsupported protocol[0m
+
+
+[92m [0m[32m 70 passing[0m[90m (139ms)[0m
+

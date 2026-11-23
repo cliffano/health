@@ -12,7 +12,7 @@
   <![endif]-->
 
   <script>
-    var __options = {"flags":{"complexity":{"logicalor":true,"switchcase":true,"forin":false,"trycatch":false,"newmi":true},"jshint":{}}}
+    var __options = {"flags":{"complexity":{"commonjs":true,"logicalor":true,"switchcase":true,"forin":false,"trycatch":false,"newmi":true},"jshint":{}}}
   </script>
 
   <link href="assets/css/vendor/bootstrap.css" rel="stylesheet">
@@ -31,7 +31,7 @@
             <div class="reportBlock lineCount">
                 <div class="reportContent">
                     <small class="chart-label">Total / Average Lines</small>
-                    <h1>789 / 71</h1>
+                    <h1>522 / 65</h1>
                 </div>
                 <div id="chart_historical_sloc" class="chart js-chart"></div>
             </div>
@@ -40,7 +40,7 @@
             <div class="reportBlock maintainability">
                 <div class="reportContent">
                     <small class="chart-label">Average Maintainability</small>
-                    <h1>77.18</h1>
+                    <h1>78.78</h1>
                 </div>
                 <div id="chart_historical_maint" class="chart js-chart"></div>
             </div>
@@ -54,16 +54,6 @@
                 <ul class="list-unstyled">
 
                     <li>
-                        <strong>68 score</strong>
-                        <small>lib/health.js</small>
-                    </li>
-
-                    <li>
-                        <strong>69 score</strong>
-                        <small>lib/checkers/mongodb.js</small>
-                    </li>
-
-                    <li>
                         <strong>74 score</strong>
                         <small>lib/checkers/http.js</small>
                     </li>
@@ -74,8 +64,18 @@
                     </li>
 
                     <li>
-                        <strong>75 score</strong>
+                        <strong>74 score</strong>
                         <small>lib/checker.js</small>
+                    </li>
+
+                    <li>
+                        <strong>75 score</strong>
+                        <small>lib/checkers/mongodb.js</small>
+                    </li>
+
+                    <li>
+                        <strong>76 score</strong>
+                        <small>lib/formatters/cli.js</small>
                     </li>
 
                 </ul>
@@ -87,29 +87,63 @@
                 <ul class="list-unstyled">
 
                     <li>
-                        <strong>234 lines</strong>
-                        <small>lib/health.js</small>
-                    </li>
-
-                    <li>
-                        <strong>174 lines</strong>
+                        <strong>182 lines</strong>
                         <small>lib/result.js</small>
                     </li>
 
                     <li>
-                        <strong>68 lines</strong>
+                        <strong>82 lines</strong>
                         <small>lib/checkers/http.js</small>
                     </li>
 
                     <li>
-                        <strong>58 lines</strong>
+                        <strong>72 lines</strong>
                         <small>lib/checker.js</small>
                     </li>
 
                     <li>
-                        <strong>53 lines</strong>
-                        <small>lib/cli.js</small>
+                        <strong>48 lines</strong>
+                        <small>lib/checkers/file.js</small>
                     </li>
+
+                    <li>
+                        <strong>48 lines</strong>
+                        <small>lib/formatters/cli.js</small>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="reportBlock lintList">
+                <h2 class="reportTitle">Lint Warnings</h2>
+                <ul class="list-unstyled">
+
+                    <li>
+                        <strong>14 lint errors</strong>
+                        <small>lib/formatters/cli.js</small>
+                   </li>
+
+                    <li>
+                        <strong>14 lint errors</strong>
+                        <small>lib/formatters/text.js</small>
+                   </li>
+
+                    <li>
+                        <strong>9 lint errors</strong>
+                        <small>lib/checkers/http.js</small>
+                   </li>
+
+                    <li>
+                        <strong>5 lint errors</strong>
+                        <small>lib/checkers/file.js</small>
+                   </li>
+
+                    <li>
+                        <strong>5 lint errors</strong>
+                        <small>lib/checkers/mongodb.js</small>
+                   </li>
 
                 </ul>
             </div>

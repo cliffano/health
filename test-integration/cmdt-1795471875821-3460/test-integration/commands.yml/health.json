@@ -1,0 +1,4 @@
+[
+  { "name": "google", "uri": "http://google.com", "ttl": 1000 },
+  { "name": "gmail", "uri": "https://mail.google.com", "ttl": 5000 }
+]

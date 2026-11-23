@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">74.28</p>
+      <p class="stat">74.26</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">42</p>
+      <p class="stat">48</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">10.43</p>
+      <p class="stat">15.26</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.28</p>
+      <p class="stat">0.29</p>
     </div>
   </div>
 </div>
@@ -89,10 +89,11 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">var checker = require(&#039;../checker&#039;),
-  fs = require(&#039;fs&#039;),
-  Result = require(&#039;../result&#039;),
-  validator = require(&#039;validator&#039;);
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+import fs from &quot;fs&quot;;
+import validator from &quot;validator&quot;;
+import checker from &quot;../checker.js&quot;;
+import Result from &quot;../result.js&quot;;
 
 /**
  * Health check a file resource.
@@ -103,16 +104,15 @@
  * @param {Function} cb: standard cb(err, result) callback
  */
 function check(setup, cb) {
-
-  fs.lstat(setup.uri.replace(/^file\:\/\//, &#039;&#039;), function (err, stats) {
-    var result = new Result();
+  fs.lstat(setup.uri.replace(/^file:\/\//, &quot;&quot;), function (err, stats) {
+    const result = new Result();
 
     if (err) {
       result.addError(err.message);
     } else {
-      var modeString = parseInt(stats.mode.toString(8), 10).toString(),
-        mode = modeString.slice(modeString.length - 3, modeString.length);
-      checker.checkAttribute(&#039;mode&#039;, setup, _checkMode(mode), result);
+      const modeString = parseInt(stats.mode.toString(8), 10).toString();
+      const mode = modeString.slice(modeString.length - 3, modeString.length);
+      checker.checkAttribute(&quot;mode&quot;, setup, _checkMode(mode), result);
     }
 
     result.setStatusByStats();
@@ -123,14 +123,20 @@ function check(setup, cb) {
 function _checkMode(actual) {
   return function (expected) {
     if (validator.matches(actual, new RegExp(expected))) {
-      return &#039;Mode &#039; + actual + &#039; as expected&#039;;
+      return &quot;Mode &quot; + actual + &quot; as expected&quot;;
     } else {
-      throw new Error(&#039;Mode &#039; + actual + &#039; does not match the expected &#039; + expected);
+      throw new Error(
+        &quot;Mode &quot; + actual + &quot; does not match the expected &quot; + expected,
+      );
     }
   };
 }
 
-exports.check = check;</textarea>
+const exports = {
+  check: check,
+};
+
+export { exports as default };</textarea>
   </div>
 </div>
 
@@ -142,10 +148,10 @@ exports.check = check;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 

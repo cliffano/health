@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>checker.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Health.html">Health</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Health.html#check">check</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Health.html#clearCache">clearCache</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="Health.html#init">init</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="Result.html">Result</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#allMustPass">allMustPass</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#check">check</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkAttribute">checkAttribute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#exec">exec</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#format">format</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#oneMustPass">oneMustPass</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">checker.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+/**
+ * All items must pass check function.
+ * All successes and failures will be added to Result.
+ *
+ * @param {Array} items: an array of items to be checked
+ * @param {Function} check: check function
+ * @param {Object} result: check Result
+ */
+function allMustPass(items, check, result) {
+  items.forEach(function (item) {
+    try {
+      result.addSuccess(check(item));
+    } catch (e) {
+      result.addFailure(e.message);
+    }
+  });
+}
+
+/**
+ * At least one item must pass check function.
+ * All successes will be added to Result.
+ * Failures will only be added to Result if there's no success.
+ *
+ * @param {Array} items: an array of items to be checked
+ * @param {Function} check: check function
+ * @param {Object} result: check Result
+ */
+function oneMustPass(items, check, result) {
+  const failures = [];
+  items.forEach(function (item) {
+    try {
+      result.addSuccess(check(item));
+    } catch (e) {
+      failures.push(e.message);
+    }
+  });
+  if (!result.hasSuccess()) {
+    result.addFailures(failures);
+  }
+}
+
+/**
+ * Check whether an attribute exists in setup file.
+ * - if &lt;attribute> exists in setup, then all attribute values must pass the check
+ * - if &lt;attribute>-or exists in setup, then either one of the attribute values must pass the check
+ *
+ * @param {String} attribute: attribute name to check in the setup
+ * @param {Object} setup: health setup
+ * @param {Function} check: check function
+ * @param {Object} result: check Result
+ */
+function checkAttribute(attribute, setup, check, result) {
+  if (setup[attribute]) {
+    if (!Array.isArray(setup[attribute])) {
+      setup[attribute] = [setup[attribute]];
+    }
+    allMustPass(setup[attribute], check, result);
+  }
+  if (setup[attribute + "-or"]) {
+    oneMustPass(setup[attribute + "-or"], check, result);
+  }
+}
+
+const exports = {
+  allMustPass: allMustPass,
+  oneMustPass: oneMustPass,
+  checkAttribute: checkAttribute,
+};
+
+export { exports as default };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Nov 23 2026 22:11:14 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

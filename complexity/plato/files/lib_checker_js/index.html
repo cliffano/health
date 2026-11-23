@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">74.53</p>
+      <p class="stat">74.47</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">58</p>
+      <p class="stat">72</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">17.39</p>
+      <p class="stat">23.70</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.23</p>
+      <p class="stat">0.25</p>
     </div>
   </div>
 </div>
@@ -89,7 +89,9 @@
 
 <div class="container">
   <div class="row">
-    <textarea id="file-source" class="col-md-12">/**
+    <textarea id="file-source" class="col-md-12">&quot;use strict&quot;;
+
+/**
  * All items must pass check function.
  * All successes and failures will be added to Result.
  *
@@ -117,7 +119,7 @@ function allMustPass(items, check, result) {
  * @param {Object} result: check Result
  */
 function oneMustPass(items, check, result) {
-  var failures = [];
+  const failures = [];
   items.forEach(function (item) {
     try {
       result.addSuccess(check(item));
@@ -147,14 +149,18 @@ function checkAttribute(attribute, setup, check, result) {
     }
     allMustPass(setup[attribute], check, result);
   }
-  if (setup[attribute + &#039;-or&#039;]) {
-    oneMustPass(setup[attribute + &#039;-or&#039;], check, result);
+  if (setup[attribute + &quot;-or&quot;]) {
+    oneMustPass(setup[attribute + &quot;-or&quot;], check, result);
   }
 }
 
-exports.allMustPass = allMustPass;
-exports.oneMustPass = oneMustPass;
-exports.checkAttribute = checkAttribute;</textarea>
+const exports = {
+  allMustPass: allMustPass,
+  oneMustPass: oneMustPass,
+  checkAttribute: checkAttribute,
+};
+
+export { exports as default };</textarea>
   </div>
 </div>
 
@@ -166,10 +172,10 @@ exports.checkAttribute = checkAttribute;</textarea>
 
 <script type="text/html" id="complexity-popover-template">
   <div class="complexity-notice">
-    Complexity : {{ complexity.cyclomatic }} <br>
-    Length : {{ complexity.halstead.length }} <br>
-    Difficulty : {{ complexity.halstead.difficulty.toFixed(2) }} <br>
-    Est # bugs : {{ complexity.halstead.bugs.toFixed(2) }}<br>
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
   </div>
 </script>
 
