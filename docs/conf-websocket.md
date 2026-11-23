@@ -6,7 +6,7 @@ See [examples/websocket.yaml](../examples/websocket.yaml) for a complete example
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -49,16 +49,17 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: Echo server round-trip
-protocol: websocket
-request:
-  url: wss://echo.websocket.org
-  send: "ping from health"
-  timeout: 5000
-  messageTimeout: 3000
-expect:
-  connected: true
-  connectTime: { $lt: 3000 }
-  messageReceived: true
-  message: { $contains: "health" }
+checks:
+  - name: Echo server round-trip
+    protocol: websocket
+    request:
+      url: wss://echo.websocket.org
+      send: "ping from health"
+      timeout: 5000
+      messageTimeout: 3000
+    expect:
+      connected: true
+      connectTime: { $lt: 3000 }
+      messageReceived: true
+      message: { $contains: "health" }
 ```

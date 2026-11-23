@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
-- Add YAML expectation files, holding a single check, a `checks` array, or multiple `---` separated documents
+- Add YAML expectation files, each with a top-level `checks` array that can combine checks of any protocol
 - Add http, https, http2, tcp, udp, dns, tls, websocket (ws), and ntp checkers built on Node.js core modules
 - Add expectation matcher with partial deep matching and `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`, `$contains`, `$matches`, `$exists`, `$in`, `$length`, `$type`, `$not` operators
 - Add `Health#check`, `Health#checkFile`, and `Health#checkFiles` API

@@ -1,14 +1,15 @@
 # NTP checks — query a time server, verify it's sane and our clock is close.
-name: pool.ntp.org is healthy and clock is in sync
-protocol: ntp
-request:
-  host: pool.ntp.org
-  port: 123
-  timeout: 3000
-expect:
-  responded: true
-  valid: true                  # mode=4 (server) and stratum in 1..15
-  stratum: { $lte: 4 }         # reasonably close to a reference clock
-  leapIndicator: { $ne: 3 }    # 3 = clock unsynchronized
-  offsetAbs: { $lt: 5000 }     # our clock within 5s of the server
-  delay: { $lt: 1000 }         # round-trip ms
+checks:
+  - name: pool.ntp.org is healthy and clock is in sync
+    protocol: ntp
+    request:
+      host: pool.ntp.org
+      port: 123
+      timeout: 3000
+    expect:
+      responded: true
+      valid: true                  # mode=4 (server) and stratum in 1..15
+      stratum: { $lte: 4 }         # reasonably close to a reference clock
+      leapIndicator: { $ne: 3 }    # 3 = clock unsynchronized
+      offsetAbs: { $lt: 5000 }     # our clock within 5s of the server
+      delay: { $lt: 1000 }         # round-trip ms

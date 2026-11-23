@@ -1,6 +1,7 @@
 - fixtures:
     - test-integration/fixtures/pass.yaml
     - test-integration/fixtures/fail.yaml
+    - test-integration/fixtures/no-checks.yaml
 
 - params:
     health: ../../../../../bin/health.js
@@ -39,3 +40,8 @@
   command: "{health} check missing.yaml"
   exitcode: 1
   output: "could not run file"
+
+- description: Command check should exit 1 when file has no checks array
+  command: "{health} check no-checks.yaml"
+  exitcode: 1
+  output: 'Expectation file must have a top-level "checks" array'

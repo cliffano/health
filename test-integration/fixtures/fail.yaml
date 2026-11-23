@@ -1,9 +1,10 @@
 # Fails offline: nothing listens on TCP port 1, so the connection is refused.
-name: tcp port 1 refuses connection
-protocol: tcp
-request:
-  host: 127.0.0.1
-  port: 1
-  timeout: 500
-expect:
-  connected: true
+checks:
+  - name: tcp port 1 refuses connection
+    protocol: tcp
+    request:
+      host: 127.0.0.1
+      port: 1
+      timeout: 500
+    expect:
+      connected: true

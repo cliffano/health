@@ -1,11 +1,12 @@
 # Passes offline: nothing listens on the discard port, and UDP never
 # replies, so the expectation is the absence of a response.
-name: udp discard port stays silent
-protocol: udp
-request:
-  host: 127.0.0.1
-  port: 9
-  send: ping
-  timeout: 300
-expect:
-  responded: false
+checks:
+  - name: udp discard port stays silent
+    protocol: udp
+    request:
+      host: 127.0.0.1
+      port: 9
+      send: ping
+      timeout: 300
+    expect:
+      responded: false

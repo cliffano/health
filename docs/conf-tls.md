@@ -6,7 +6,7 @@ See [examples/tls.yaml](../examples/tls.yaml) for a complete example file, and t
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -62,20 +62,21 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: google.com certificate healthy
-protocol: tls
-request:
-  host: google.com
-  port: 443
-  servername: google.com
-  alpnProtocols: [h2, http/1.1]
-  timeout: 5000
-expect:
-  connected: true
-  authorized: true
-  protocol: { $in: [TLSv1.2, TLSv1.3] }
-  alpnProtocol: h2
-  cert:
-    subject: { $matches: "google" }
-    daysRemaining: { $gt: 14 }
+checks:
+  - name: google.com certificate healthy
+    protocol: tls
+    request:
+      host: google.com
+      port: 443
+      servername: google.com
+      alpnProtocols: [h2, http/1.1]
+      timeout: 5000
+    expect:
+      connected: true
+      authorized: true
+      protocol: { $in: [TLSv1.2, TLSv1.3] }
+      alpnProtocol: h2
+      cert:
+        subject: { $matches: "google" }
+        daysRemaining: { $gt: 14 }
 ```

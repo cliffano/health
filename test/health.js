@@ -197,19 +197,7 @@ describe("health - checkFile", function () {
     });
   }
 
-  it("should run single check when file has one document", function (done) {
-    stubFile(
-      "protocol: http\nrequest: { url: http://somehost }\nexpect: { status: 200 }\n",
-    );
-    new Health().checkFile("some.yaml", function (err, results) {
-      assert.isNull(err);
-      assert.equals(results.length, 1);
-      assert.isTrue(results[0].ok);
-      done();
-    });
-  });
-
-  it("should run every check when file has a checks array", function (done) {
+  it("should run every check when file has a checks array of mixed protocols", function (done) {
     stubFile(
       [
         "checks:",
@@ -230,13 +218,63 @@ describe("health - checkFile", function () {
     });
   });
 
-  it("should run every document and skip empty ones when file has multiple documents", function (done) {
-    stubFile(
-      "---\nprotocol: http\nrequest: { url: http://a }\n---\n---\nprotocol: dns\nrequest: { name: b }\n",
-    );
+  it("should return no results when checks array is empty", function (done) {
+    stubFile("checks: []\n");
     new Health().checkFile("some.yaml", function (err, results) {
       assert.isNull(err);
-      assert.equals(results.length, 2);
+      assert.equals(results, []);
+      done();
+    });
+  });
+
+  it("should pass error to callback when file has no checks array", function (done) {
+    stubFile("protocol: http\nrequest: { url: http://somehost }\n");
+    new Health().checkFile("some.yaml", function (err, results) {
+      assert.equals(
+        err.message,
+        'Expectation file must have a top-level "checks" array',
+      );
+      assert.isUndefined(results);
+      done();
+    });
+  });
+
+  it("should pass error to callback when checks is not an array", function (done) {
+    stubFile("checks: { protocol: http }\n");
+    new Health().checkFile("some.yaml", function (err) {
+      assert.equals(
+        err.message,
+        'Expectation file must have a top-level "checks" array',
+      );
+      done();
+    });
+  });
+
+  it("should pass error to callback when file is empty", function (done) {
+    stubFile("");
+    new Health().checkFile("some.yaml", function (err) {
+      assert.equals(
+        err.message,
+        'Expectation file must have a top-level "checks" array',
+      );
+      done();
+    });
+  });
+
+  it("should pass error to callback when a checks item is not an object", function (done) {
+    stubFile(
+      "checks:\n  - { protocol: dns, request: { name: a } }\n  - just a string\n",
+    );
+    new Health().checkFile("some.yaml", function (err) {
+      assert.equals(err.message, "checks[1] must be a check object");
+      done();
+    });
+  });
+
+  it("should pass error to callback when file has multiple documents", function (done) {
+    stubFile("checks: []\n---\nchecks: []\n");
+    new Health().checkFile("some.yaml", function (err) {
+      assert.isString(err.message);
       done();
     });
   });
@@ -259,7 +297,7 @@ describe("health - checkFile", function () {
   });
 
   it("should pass error to callback when a check has unknown protocol", function (done) {
-    stubFile("protocol: gopher\n");
+    stubFile("checks:\n  - protocol: gopher\n");
     new Health().checkFile("some.yaml", function (err) {
       assert.isTrue(/Unknown protocol "gopher"/.test(err.message));
       done();

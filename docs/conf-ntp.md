@@ -6,7 +6,7 @@ See [examples/ntp.yaml](../examples/ntp.yaml) for a complete example file, and t
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -53,17 +53,18 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: pool.ntp.org is healthy and clock is in sync
-protocol: ntp
-request:
-  host: pool.ntp.org
-  port: 123
-  timeout: 3000
-expect:
-  responded: true
-  valid: true
-  stratum: { $lte: 4 }
-  leapIndicator: { $ne: 3 }
-  offsetAbs: { $lt: 5000 }
-  delay: { $lt: 1000 }
+checks:
+  - name: pool.ntp.org is healthy and clock is in sync
+    protocol: ntp
+    request:
+      host: pool.ntp.org
+      port: 123
+      timeout: 3000
+    expect:
+      responded: true
+      valid: true
+      stratum: { $lte: 4 }
+      leapIndicator: { $ne: 3 }
+      offsetAbs: { $lt: 5000 }
+      delay: { $lt: 1000 }
 ```

@@ -1,43 +1,43 @@
-# HTTP/HTTPS check — everything the response exposes is verifiable.
-name: Google homepage
-protocol: http
-request:
-  url: https://google.com
-  method: GET            # GET, POST, HEAD, PUT, DELETE, ...
-  # headers:             # request headers to send
-  #   user-agent: health
-  # body: '{"ping": 1}'  # request body (for POST/PUT)
-  followRedirects: true  # default true
-  maxRedirects: 5
-  timeout: 10000         # ms
-expect:
-  status: 200
-  statusText: OK
-  httpVersion: "1.1"
-  redirects: 1                     # google.com -> www.google.com
-  responseTime: { $lt: 5000 }      # ms, end-to-end including redirects
-  bodyLength: { $gt: 1000 }        # bytes
-  body: { $contains: "<title>" }   # substring; use $matches for regex
-  headers:
-    content-type: { $matches: "text/html" }
-    server: { $exists: true }
-    x-powered-by: { $exists: false }
-  tls:                             # populated for https URLs
-    authorized: true
-    protocol: { $in: [TLSv1.2, TLSv1.3] }
-    certDaysRemaining: { $gt: 14 } # alert before the cert expires
+# HTTP/HTTPS checks — everything the response exposes is verifiable.
+checks:
+  - name: Google homepage
+    protocol: http
+    request:
+      url: https://google.com
+      method: GET            # GET, POST, HEAD, PUT, DELETE, ...
+      # headers:             # request headers to send
+      #   user-agent: health
+      # body: '{"ping": 1}'  # request body (for POST/PUT)
+      followRedirects: true  # default true
+      maxRedirects: 5
+      timeout: 10000         # ms
+    expect:
+      status: 200
+      statusText: OK
+      httpVersion: "1.1"
+      redirects: 1                     # google.com -> www.google.com
+      responseTime: { $lt: 5000 }      # ms, end-to-end including redirects
+      bodyLength: { $gt: 1000 }        # bytes
+      body: { $contains: "<title>" }   # substring; use $matches for regex
+      headers:
+        content-type: { $matches: "text/html" }
+        server: { $exists: true }
+        x-powered-by: { $exists: false }
+      tls:                             # populated for https URLs
+        authorized: true
+        protocol: { $in: [TLSv1.2, TLSv1.3] }
+        certDaysRemaining: { $gt: 14 } # alert before the cert expires
 
----
-# JSON API check — parsed body available under `json` (partial deep match)
-name: httpbin JSON echo
-protocol: http
-request:
-  url: https://httpbin.org/get
-expect:
-  status: 200
-  headers:
-    content-type: application/json
-  json:
-    url: https://httpbin.org/get
-    headers:
-      Host: httpbin.org
+  # JSON API check — parsed body available under `json` (partial deep match)
+  - name: httpbin JSON echo
+    protocol: http
+    request:
+      url: https://httpbin.org/get
+    expect:
+      status: 200
+      headers:
+        content-type: application/json
+      json:
+        url: https://httpbin.org/get
+        headers:
+          Host: httpbin.org

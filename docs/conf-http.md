@@ -6,7 +6,7 @@ See [examples/http.yaml](../examples/http.yaml) for a complete example file, and
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -66,25 +66,26 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: Google homepage
-protocol: https
-request:
-  url: https://google.com
-  method: GET
-  headers:
-    user-agent: health
-  timeout: 10000
-  followRedirects: true
-  maxRedirects: 5
-expect:
-  status: 200
-  redirects: 1
-  responseTime: { $lt: 5000 }
-  body: { $contains: "<title>" }
-  headers:
-    content-type: { $matches: "text/html" }
-    x-powered-by: { $exists: false }
-  tls:
-    authorized: true
-    certDaysRemaining: { $gt: 14 }
+checks:
+  - name: Google homepage
+    protocol: https
+    request:
+      url: https://google.com
+      method: GET
+      headers:
+        user-agent: health
+      timeout: 10000
+      followRedirects: true
+      maxRedirects: 5
+    expect:
+      status: 200
+      redirects: 1
+      responseTime: { $lt: 5000 }
+      body: { $contains: "<title>" }
+      headers:
+        content-type: { $matches: "text/html" }
+        x-powered-by: { $exists: false }
+      tls:
+        authorized: true
+        certDaysRemaining: { $gt: 14 }
 ```

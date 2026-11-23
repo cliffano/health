@@ -1,0 +1,5 @@
+# Invalid: a check without the top-level checks array.
+protocol: udp
+request:
+  host: 127.0.0.1
+  port: 9

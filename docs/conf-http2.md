@@ -6,7 +6,7 @@ See [examples/http2.yaml](../examples/http2.yaml) for a complete example file, a
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -53,17 +53,18 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: Google speaks HTTP/2
-protocol: http2
-request:
-  url: https://www.google.com/
-  method: GET
-  timeout: 10000
-expect:
-  status: 200
-  httpVersion: "2.0"
-  alpnProtocol: h2
-  headers:
-    content-type: { $matches: "text/html" }
-  responseTime: { $lt: 5000 }
+checks:
+  - name: Google speaks HTTP/2
+    protocol: http2
+    request:
+      url: https://www.google.com/
+      method: GET
+      timeout: 10000
+    expect:
+      status: 200
+      httpVersion: "2.0"
+      alpnProtocol: h2
+      headers:
+        content-type: { $matches: "text/html" }
+      responseTime: { $lt: 5000 }
 ```

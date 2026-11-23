@@ -6,7 +6,7 @@ See [examples/dns.yaml](../examples/dns.yaml) for a complete example file, and t
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -58,16 +58,17 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: gmail MX records point at Google
-protocol: dns
-request:
-  name: gmail.com
-  rrtype: MX
-  server: 8.8.8.8
-  timeout: 5000
-expect:
-  count: { $gte: 1 }
-  records:
-    $contains: { exchange: gmail-smtp-in.l.google.com, priority: 5 }
-  responseTime: { $lt: 2000 }
+checks:
+  - name: gmail MX records point at Google
+    protocol: dns
+    request:
+      name: gmail.com
+      rrtype: MX
+      server: 8.8.8.8
+      timeout: 5000
+    expect:
+      count: { $gte: 1 }
+      records:
+        $contains: { exchange: gmail-smtp-in.l.google.com, priority: 5 }
+      responseTime: { $lt: 2000 }
 ```

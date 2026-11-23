@@ -6,7 +6,7 @@ See [examples/udp.yaml](../examples/udp.yaml) for a complete example file, and t
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -51,17 +51,18 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: Google public DNS answers over UDP
-protocol: udp
-request:
-  host: 8.8.8.8
-  port: 53
-  sendHex: "abcd0100000100000000000006676f6f676c6503636f6d0000010001"
-  timeout: 3000
-  type: udp4
-expect:
-  responded: true
-  responseTime: { $lt: 500 }
-  bytesReceived: { $gt: 12 }
-  dataHex: { $matches: "^abcd" }
+checks:
+  - name: Google public DNS answers over UDP
+    protocol: udp
+    request:
+      host: 8.8.8.8
+      port: 53
+      sendHex: "abcd0100000100000000000006676f6f676c6503636f6d0000010001"
+      timeout: 3000
+      type: udp4
+    expect:
+      responded: true
+      responseTime: { $lt: 500 }
+      bytesReceived: { $gt: 12 }
+      dataHex: { $matches: "^abcd" }
 ```

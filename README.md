@@ -30,11 +30,12 @@ Requires Node.js 22 or newer.
 The simplest expectation file, `google.yaml`:
 
 ```yaml
-protocol: http
-request:
-  url: https://google.com
-expect:
-  status: 200
+checks:
+  - protocol: http
+    request:
+      url: https://google.com
+    expect:
+      status: 200
 ```
 
 Check it from command-line:
@@ -90,11 +91,11 @@ health.checkFiles(["http.yaml", "dns.yaml"], function (err, reports) {
 });
 ```
 
-A protocol failure such as a refused connection or a timeout is reported as a failed result with an `error` message, not as a callback error. The callback error is only used when a check can't be run at all, e.g. unknown protocol or invalid YAML.
+A protocol failure such as a refused connection or a timeout is reported as a failed result with an `error` message, not as a callback error. The callback error is only used when a check can't be run at all, e.g. unknown protocol, invalid YAML, or a file without a `checks` array.
 
 ## Expectation files
 
-Each check has a `protocol`, a protocol-specific `request`, an `expect` block, and an optional `name`. A file can hold a single check, a top-level `checks` array, or multiple YAML documents separated by `---`:
+An expectation file always has a single top-level `checks` array. Each check has a `protocol`, a protocol-specific `request`, an `expect` block, and an optional `name`, and checks of different protocols can be combined in the same file:
 
 ```yaml
 checks:
@@ -106,7 +107,13 @@ checks:
     protocol: dns
     request: { name: example.com }
     expect: { count: { $gte: 1 } }
+  - name: certificate not expiring
+    protocol: tls
+    request: { host: example.com }
+    expect: { cert: { daysRemaining: { $gt: 14 } } }
 ```
+
+A file without a top-level `checks` array is reported as `could not run file: Expectation file must have a top-level "checks" array`.
 
 See [examples](examples/) for a complete YAML file per protocol.
 

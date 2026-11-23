@@ -6,7 +6,7 @@ See [examples/tcp.yaml](../examples/tcp.yaml) for a complete example file, and t
 
 ## Check properties
 
-Properties of each check, either at the top level of a YAML document or as an item of a `checks` array.
+An expectation file has a single top-level `checks` array. Each item is one check, and checks of different protocols can be combined in the same file. These are the properties of a check item.
 
 | Name | Description | Type | Mandatory | Default | Example |
 |------|------|------|------|------|------|
@@ -52,16 +52,17 @@ Properties of the `expect` object. Each one is a field captured from the respons
 ## Example
 
 ```yaml
-name: SSH port open
-protocol: tcp
-request:
-  host: github.com
-  port: 22
-  timeout: 5000
-  readTimeout: 2000
-expect:
-  connected: true
-  connectTime: { $lt: 1000 }
-  data: { $matches: "^SSH-2\\.0" }
-  bytesReceived: { $gt: 0 }
+checks:
+  - name: SSH port open
+    protocol: tcp
+    request:
+      host: github.com
+      port: 22
+      timeout: 5000
+      readTimeout: 2000
+    expect:
+      connected: true
+      connectTime: { $lt: 1000 }
+      data: { $matches: "^SSH-2\\.0" }
+      bytesReceived: { $gt: 0 }
 ```
