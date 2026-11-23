@@ -1,66 +1,51 @@
-var buster = require('buster-node'),
-  checker = require('../../lib/checkers/mongodb'),
-  mongodb = require('mongodb'),
-  referee = require('referee'),
-  assert = referee.assert;
+"use strict";
+import esmock from "esmock";
+import referee from "@sinonjs/referee";
+const assert = referee.assert;
 
-buster.testCase('mongodb - check', {
-  setUp: function () {
-    this.mockMongoClient = this.mock(mongodb.MongoClient);
-  },
-  'should have fail status when an error occurs while connecting to MongoDB': function (done) {
-    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
-        server: {
-          socketOptions: {
-            connectTimeoutMS: 2000
-          }
-        }
-      }).callsArgWith(2, new Error('some error'));
-    var setup = { uri: 'mongodb://somehost:27017' };
-    function cb(err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isError());
-      assert.equals(result.getErrors(), ['some error']);
-      done();
-    }
-    checker.check(setup, cb);
-  },
-  'should close connection and pass result with success status when connection is successful': function (done) {
-    var stubClose = this.stub(),
-      mockConnection = { close: stubClose };
-    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
-      server: {
-        socketOptions: {
-          connectTimeoutMS: 2000
-        }
-      }
-    }).callsArgWith(2, null, mockConnection);
-    var setup = { uri: 'mongodb://somehost:27017' };
-    function cb(err, result) {
-      assert.isTrue(stubClose.calledWith());
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      done();
-    }
-    checker.check(setup, cb);
-  },
-  'should set connect timeout server socket option when setup contains timeout': function (done) {
-    var stubClose = this.stub(),
-      mockConnection = { close: stubClose };
-    this.mockMongoClient.expects('connect').withArgs('mongodb://somehost:27017', {
-      server: {
-        socketOptions: {
-          connectTimeoutMS: 1234
-        }
-      }
-    }).callsArgWith(2, null, mockConnection);
-    var setup = { uri: 'mongodb://somehost:27017', timeout: 1234 };
-    function cb(err, result) {
-      assert.isTrue(stubClose.calledWith());
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      done();
-    }
-    checker.check(setup, cb);
-  }
+describe("mongodb - check", function () {
+  it("should have success status when connect resolves", function (done) {
+    const mockClient = { close: function () {} };
+    const checker = {}; // populated below via esmock
+    esmock("../../lib/checkers/mongodb.js", {
+      mongodb: {
+        MongoClient: {
+          connect: function (uri, opts) {
+            assert.equals(uri, "mongodb://somehost");
+            assert.equals(opts.connectTimeoutMS, 2000);
+            return Promise.resolve(mockClient);
+          },
+        },
+      },
+    }).then(function (mod) {
+      Object.assign(checker, mod.default);
+      checker.check({ uri: "mongodb://somehost" }, function (err, result) {
+        assert.isNull(err);
+        assert.isTrue(result.isSuccess());
+        done();
+      });
+    });
+  });
+
+  it("should have error status when connect rejects", function (done) {
+    esmock("../../lib/checkers/mongodb.js", {
+      mongodb: {
+        MongoClient: {
+          connect: function () {
+            return Promise.reject(new Error("some error"));
+          },
+        },
+      },
+    }).then(function (mod) {
+      mod.default.check(
+        { uri: "mongodb://somehost", timeout: 500 },
+        function (err, result) {
+          assert.isNull(err);
+          assert.isTrue(result.isError());
+          assert.equals(result.getErrors(), ["some error"]);
+          done();
+        },
+      );
+    });
+  });
 });

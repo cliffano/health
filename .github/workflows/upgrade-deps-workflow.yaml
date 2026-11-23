@@ -1,0 +1,19 @@
+---
+name: Upgrade Dependencies
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.STUDIO_GITHUB_TOKEN }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+      - run: npm install -g bob@5.3.0
+      - run: bob updep build
+      - uses: cliffano/save-changes-action@v2.0.0
+        with:
+          message: "Upgrade dependencies to latest"
+          github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}

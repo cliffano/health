@@ -1,0 +1,11 @@
+---
+name: Release Minor
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: cliffano/release-action@v2.0.0
+        with:
+          release_type: 'minor'
+          github_token: ${{ secrets.STUDIO_GITHUB_TOKEN }}

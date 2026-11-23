@@ -4,16 +4,14 @@
 
 <!-- BEGIN:BADGES -->
 [![Build Status](https://github.com/cliffano/health/workflows/CI/badge.svg)](https://github.com/cliffano/health/actions?query=workflow%3ACI)
-[![Dependencies Status](https://img.shields.io/david/cliffano/health.svg)](http://david-dm.org/cliffano/health)
-[![Coverage Status](https://img.shields.io/coveralls/cliffano/health.svg)](https://coveralls.io/r/cliffano/health?branch=main)
-[![Published Version](https://img.shields.io/npm/v/health.svg)](http://www.npmjs.com/package/health)
-[![Vulnerabilities Status](https://snyk.io/test/github/cliffano/health/badge.svg)](https://snyk.io/test/github/cliffano/health)
+[![Dependencies Status](https://img.shields.io/librariesio/release/npm/health)](https://libraries.io/npm/health)
+[![Code Scanning Status](https://github.com/cliffano/health/workflows/CodeQL/badge.svg)](https://github.com/cliffano/health/actions?query=workflow%3ACodeQL)
+[![Coverage Status](https://coveralls.io/repos/github/cliffano/health/badge.svg?branch=main)](https://coveralls.io/r/cliffano/health?branch=main)
+[![Security Status](https://snyk.io/test/github/cliffano/health/badge.svg)](https://snyk.io/test/github/cliffano/health)
+[![Published Version](https://img.shields.io/npm/v/health.svg)](https://www.npmjs.com/package/health)
 <!-- END:BADGES -->
-<br/>
-[![npm Badge](https://nodei.co/npm/health.png)](http://npmjs.org/package/health)
 
-Health
-------
+# Health
 
 Health is a resource health status checking library.
 
@@ -21,186 +19,90 @@ This is handy when you want to check the status of multiple resources using a si
 
 It also supports result caching via ttl attribute of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
 
-Installation
-------------
+## Installation
 
-```shell
+```bash
 npm install -g health
 ```
 
-Usage
------
+## Usage
 
 ```javascript
-// use default formatter
-var health = new (require('health'))(
-  setup: [ { name: 'google', uri: 'http://google.com' } ]
-);
+import Health from "health";
 
-// use built-in formatter (html, text, or xml)
-var health = new (require('health'))(
-  setup: [ { name: 'google', uri: 'http://google.com' } ],
-  formatter: 'html'
-);
+// use default formatter
+const health1 = new Health({
+  setup: [{ name: "google", uri: "http://google.com" }],
+});
+
+// use built-in formatter (cli, html, or text)
+const health2 = new Health({
+  setup: [{ name: "google", uri: "http://google.com" }],
+  formatter: "html",
+});
 
 // use custom formatter function
-var health = new (require('health'))(
-  setup: [ { name: 'google', uri: 'http://google.com' } ],
+const health3 = new Health({
+  setup: [{ name: "google", uri: "http://google.com" }],
   formatter: function (results) {
-    return results.join('|');
-  }
-);
+    return results.join("|");
+  },
+});
 
 // check resources
-health.check(function (err, result) {
-});
+health1.check(function (err, result) {});
 ```
 
 From command-line:
 
-```text
-health -f html -s health.json check
+```bash
+health check --setup-file health.json --formatter html
 ```
 
-Configuration
--------------
+Show help guide:
+
+```bash
+health --help
+```
+
+## Configuration
 
 Health setup is just a simple JSON:
 
 ```json
 [
-  { "name": "Google", "uri", "http://google.com", "statusCodes": [ 200 ] },
-  { "name": "GMail", "uri", "https://mail.google.com", "timeout": "1000" },
+  { "name": "Google", "uri": "http://google.com", "statusCode": [200] },
+  { "name": "GMail", "uri": "https://mail.google.com", "timeout": 1000 },
   { "name": "MongoDB", "uri": "mongodb://somehost:27017", "timeout": 200, "ttl": 30000 },
   { "name": "Temp", "uri": "file:///tmp", "mode": "777", "ttl": 360000 }
 ]
 ```
 
-<table>
-  <tr>
-```html
-<th>Attribute</th>
-<th>Type</th>
-<th>Description</th>
-<th>Protocol</th>
-<th>Usage</th>
-<th>Default</th>
-<th>Example</th>
-```
-  </tr>
-  <tr>
-```html
-<td>uri</td>
-<td>string</td>
-<td>Resource URI to check</td>
-<td>All</td>
-<td>Mandatory</td>
-<td></td>
-<td>mongodb://somehost:27017</td>
-```
-  </tr>
-  <tr>
-```html
-<td>name</td>
-<td>string</td>
-<td>Resource name</td>
-<td>All</td>
-<td>Optional</td>
-<td></td>
-<td>someapp</td>
-```
-  </tr>
-  <tr>
-```html
-<td>ttl</td>
-<td>number</td>
-<td>Cache time to live in milliseconds</td>
-<td>All</td>
-<td>Optional</td>
-<td></td>
-<td>30000</td>
-```
-  </tr>
-  <tr>
-```html
-<td>lenient</td>
-<td>boolean</td>
-<td>Replace fail or error with warning</td>
-<td>All</td>
-<td>Optional</td>
-<td>false</td>
-<td>true, false</td>
-```
-  </tr>
-  <tr>
-```html
-<td>group</td>
-<td>string</td>
-<td>Resource group name, status is set to warning when there's at least one group member having success/warning status, group members status is set to fail/error only when none of the group members has success/warning status</td>
-<td>All</td>
-<td>Optional</td>
-<td></td>
-<td>databases, apps, datacenter1</td>
-```
-  </tr>
-  <tr>
-```html
-<td>timeout</td>
-<td>number</td>
-<td>Request/connect timeout in milliseconds</td>
-<td>http, https, mongodb</td>
-<td>Optional</td>
-<td></td>
-<td>500</td>
-```
-  </tr>
-  <tr>
-```html
-<td>statusCode</td>
-<td>array</td>
-<td>An array of acceptable response HTTP status codes</td>
-<td>http, https</td>
-<td>Optional</td>
-<td></td>
-<td>[ 200, 409 ]</td>
-```
-  </tr>
-  <tr>
-```html
-<td>text</td>
-<td>array</td>
-<td>An array of all texts that must exist in response body, any of them does not exist means status FAIL</td>
-<td>http, https</td>
-<td>Optional</td>
-<td></td>
-<td>[ 'foo', 'bar' ]</td>
-```
-  </tr>
-  <tr>
-```html
-<td>mode</td>
-<td>string</td>
-<td>3-digit file/directory mode</td>
-<td>file</td>
-<td>Optional</td>
-<td></td>
-<td>777, 644</td>
-```
-  </tr>
-</table>
+| Attribute | Type | Description | Protocol | Usage | Default | Example |
+|-----------|------|--------------|----------|-------|---------|---------|
+| `uri` | string | Resource URI to check | All | Mandatory | | `mongodb://somehost:27017` |
+| `name` | string | Resource name | All | Optional | | `someapp` |
+| `ttl` | number | Cache time to live in milliseconds | All | Optional | | `30000` |
+| `lenient` | boolean | Replace fail or error with warning | All | Optional | `false` | `true`, `false` |
+| `group` | string | Resource group name, status is set to warning when there's at least one group member having success/warning status, group members status is set to fail/error only when none of the group members has success/warning status | All | Optional | | `databases`, `apps`, `datacenter1` |
+| `timeout` | number | Request/connect timeout in milliseconds | http, https, mongodb | Optional | | `500` |
+| `statusCode` | array | An array of acceptable response HTTP status codes | http, https | Optional | | `[200, 409]` |
+| `text` | array | An array of all texts that must exist in response body, any of them does not exist means status FAIL | http, https | Optional | | `['foo', 'bar']` |
+| `mode` | string | 3-digit file/directory mode | file | Optional | | `777`, `644` |
 
-Colophon
---------
+## Colophon
 
 <!-- BEGIN:DEVELOPERS_GUIDE -->
-[Developer's Guide](https://cliffano.github.io/developers_guide.html#nodejs)
+[Developer's Guide](https://cliffano.github.io/developers-guide-nodejs.html)
 <!-- END:DEVELOPERS_GUIDE -->
 
 <!-- BEGIN:BUILD_REPORTS -->
 Build reports:
 
 * [Code complexity report](https://cliffano.github.io/health/complexity/plato/index.html)
-* [Unit tests report](https://cliffano.github.io/health/test/buster.out)
-* [Test coverage report](https://cliffano.github.io/health/coverage/buster-istanbul/lcov-report/lib/index.html)
-* [API Documentation](https://cliffano.github.io/health/doc/dox-foundation/index.html)
+* [Unit tests report](https://cliffano.github.io/health/test/mocha.txt)
+* [Test coverage report](https://cliffano.github.io/health/coverage/c8/index.html)
+* [Integration tests report](https://cliffano.github.io/health/test-integration/cmdt.txt)
+* [API Documentation](https://cliffano.github.io/health/doc/jsdoc/index.html)
+
 <!-- END:BUILD_REPORTS -->

@@ -11,6 +11,6 @@ core
 eslint.config.js
 node_modules
 *.log
-screenshots
+stage
 test
 test-integration

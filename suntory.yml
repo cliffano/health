@@ -1,0 +1,15 @@
+---
+package_name: health
+author: Cliffano Subagio
+generator:
+  component: node-cli
+  inputs:
+    project_id: health
+    project_name: Health
+    project_desc: Resource status monitoring library
+    author_name: Cliffano Subagio
+    author_email: cliffano@gmail.com
+    author_url: https://github.com/cliffano
+    github_id: cliffano
+    github_repo: health
+    github_token_prefix: STUDIO

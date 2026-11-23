@@ -1,24 +1,24 @@
 {
-  "build": "clean dep lint complexity test coverage doc",
+  "build": "clean dep style lint complexity test coverage test-integration doc",
   "lint": {
-    "type": "jshint"
+    "type": "eslint"
+  },
+  "style": {
+    "type": "prettier"
   },
   "complexity": {
     "type": "plato"
   },
   "test": {
-    "type": "buster"
-  },
-  "test-integration": {
-    "type": "buster"
+    "type": "mocha"
   },
   "coverage": {
-    "type": "buster-istanbul"
+    "type": "c8"
+  },
+  "test-integration": {
+    "type": "cmdt"
   },
   "doc": {
-    "type": "dox-foundation"
-  },
-  "site": {
-    "type": "buildbranch"
+    "type": "jsdoc"
   }
 }

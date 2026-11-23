@@ -1,13 +1,10 @@
-var buster = require('buster-node'),
-  checker = require('../../lib/checkers/https'),
-  referee = require('referee'),
-  assert = referee.assert;
+"use strict";
+import referee from "@sinonjs/referee";
+import checker from "../../lib/checkers/https.js";
+const assert = referee.assert;
 
-buster.testCase('https', {
-  setUp: function () {
-    this.mock({});
-  },
-  'should have check method': function () {
-    assert.defined(checker.check);
-  }
+describe("https", function () {
+  it("should have check method", function () {
+    assert.isFunction(checker.check);
+  });
 });

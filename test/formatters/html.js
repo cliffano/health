@@ -1,16 +1,20 @@
-var buster = require('buster-node'),
-  fs = require('fs'),
-  text = require('../../lib/formatters/html'),
-  referee = require('referee'),
-  assert = referee.assert;
+"use strict";
+import fs from "fs";
+import referee from "@sinonjs/referee";
+import sinon from "sinon";
+import html from "../../lib/formatters/html.js";
+const assert = referee.assert;
 
-buster.testCase('html - format', {
-  setUp: function () {
-    this.mockFs = this.mock(fs);
-  },
-  'should format text properly when desc exists': function () {
-    this.mockFs.expects('readFileSync').returns(new Buffer('sometemplate'));
-    var result = text.format([{ uri: 'http://somehost', status: 'ok', desc: 'somedesc', duration: 20 }]);
-    assert.equals(result, 'sometemplate');
-  }
+describe("html - format", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should format text properly when desc exists", function () {
+    sinon.stub(fs, "readFileSync").returns(Buffer.from("sometemplate"));
+    const result = html.format([
+      { uri: "http://somehost", status: "ok", desc: "somedesc", duration: 20 },
+    ]);
+    assert.equals(result, "sometemplate");
+  });
 });

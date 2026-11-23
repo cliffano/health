@@ -1,0 +1,21 @@
+- fixtures:
+    - test-integration/fixtures/myhealth.json
+    - test-integration/fixtures/samplefile.txt
+
+- params:
+    health: ../../../../../bin/health.js
+
+- description: Command help should display help information
+  command: '{health} --help'
+  exitcode: 0
+  output: 'Usage: health'
+
+- description: Command init should create a sample setup file
+  command: '{health} init'
+  exitcode: 0
+  output: 'Creating sample setup file: health.json'
+
+- description: Command check should report success for a local file resource
+  command: '{health} check --setup-file myhealth.json'
+  exitcode: 0
+  output: 'success'

@@ -1,203 +1,231 @@
-var bag = require('bagofrequest'),
-  buster = require('buster-node'),
-  checker = require('../../lib/checkers/http'),
-  referee = require('referee'),
-  assert = referee.assert;
+"use strict";
+import bag from "bagofrequest";
+import referee from "@sinonjs/referee";
+import sinon from "sinon";
+import checker from "../../lib/checkers/http.js";
+const assert = referee.assert;
 
-buster.testCase('http - check', {
-  setUp: function () {
-    this.mock({});
-  },
-  'should have fail status when an error occurs while sending the request': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      cb(new Error('some error'));
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost' };
-    function cb(err, result) {
+describe("http - check", function () {
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it("should have fail status when an error occurs while sending the request", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      cb(new Error("some error"));
+    });
+    const setup = { uri: "http://somehost" };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isError());
-      assert.equals(result.getErrors(), ['some error']);
+      assert.equals(result.getErrors(), ["some error"]);
       done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have success status when request is successful and there is no checking involved': function (done) {
-    function mockRequest(method, url, opts, cb) {
+    });
+  });
+
+  it("should have success status when request is successful and there is no checking involved", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
       assert.equals(opts.timeout, 8000);
-      opts.handlers.xxx({ statusCode: '200' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', timeout: 8000 };
-    function cb(err, result) {
+      opts.handlers.xxx({ statusCode: "200" }, cb);
+    });
+    const setup = { uri: "http://somehost", timeout: 8000 };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isSuccess());
       assert.equals(result.getFailures(), []);
       assert.equals(result.getSuccesses(), []);
       done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have success status when request is successful and status code matches': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', 'statusCode-or': [ 200, 301 ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have success status when request is successful and status code matches", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200" }, cb);
+    });
+    const setup = { uri: "http://somehost", "statusCode-or": [200, 301] };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), ['Status code 200 as expected']);
+      assert.equals(result.getSuccesses(), ["Status code 200 as expected"]);
       assert.equals(result.getFailures(), []);
       done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have success status when request is successful and status code matches the regular expression': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', 'statusCode-or': [ '2[0-9]{2}', 301 ] };
-    function cb(err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), ['Status code 2[0-9]{2} as expected']);
-      assert.equals(result.getFailures(), []);
-      done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have success status when request is successful and texts exist in request body': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', text: [ 'foo', 'blah', '^foob', 'lah$' ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have success status when request is successful and status code matches the regular expression", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200" }, cb);
+    });
+    const setup = {
+      uri: "http://somehost",
+      "statusCode-or": ["2[0-9]{2}", 301],
+    };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isSuccess());
       assert.equals(result.getSuccesses(), [
-        'Text foo exists in response body',
-        'Text blah exists in response body',
-        'Text ^foob exists in response body',
-        'Text lah$ exists in response body']);
-      assert.equals(result.getFailures(), []);
-      done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have success status when request is successful, status code matches, and texts exist in request body': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', 'statusCode-or': [ 200, 301 ], text: [ 'foo', 'blah' ] };
-    function cb(err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), [
-        'Status code 200 as expected',
-        'Text foo exists in response body',
-        'Text blah exists in response body'
+        "Status code 2[0-9]{2} as expected",
       ]);
       assert.equals(result.getFailures(), []);
       done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have fail status when status code does not match': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '400' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', 'statusCode-or': [ 200, 301 ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have success status when request is successful and texts exist in request body", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
+    });
+    const setup = {
+      uri: "http://somehost",
+      text: ["foo", "blah", "^foob", "lah$"],
+    };
+    checker.check(setup, function (err, result) {
+      assert.isNull(err);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), [
+        "Text foo exists in response body",
+        "Text blah exists in response body",
+        "Text ^foob exists in response body",
+        "Text lah$ exists in response body",
+      ]);
+      assert.equals(result.getFailures(), []);
+      done();
+    });
+  });
+
+  it("should have success status when request is successful, status code matches, and texts exist in request body", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
+    });
+    const setup = {
+      uri: "http://somehost",
+      "statusCode-or": [200, 301],
+      text: ["foo", "blah"],
+    };
+    checker.check(setup, function (err, result) {
+      assert.isNull(err);
+      assert.isTrue(result.isSuccess());
+      assert.equals(result.getSuccesses(), [
+        "Status code 200 as expected",
+        "Text foo exists in response body",
+        "Text blah exists in response body",
+      ]);
+      assert.equals(result.getFailures(), []);
+      done();
+    });
+  });
+
+  it("should have fail status when status code does not match", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "400" }, cb);
+    });
+    const setup = { uri: "http://somehost", "statusCode-or": [200, 301] };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isFail());
       assert.equals(result.getFailures(), [
-        'Status code 400 does not match the expected 200',
-        'Status code 400 does not match the expected 301']);
+        "Status code 400 does not match the expected 200",
+        "Status code 400 does not match the expected 301",
+      ]);
       assert.equals(result.getSuccesses(), []);
       done();
-    }
-    checker.check(setup, cb);
-  },
-  'should have fail status when text does not exist in response body': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', text: [ 'xyz' ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have fail status when text does not exist in response body", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
+    });
+    const setup = { uri: "http://somehost", text: ["xyz"] };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
+      assert.equals(result.getFailures(), [
+        "Text xyz does not exist in response body",
+      ]);
       assert.equals(result.getSuccesses(), []);
       done();
-    }
-    checker.check(setup, cb); 
-  },
-  'should have fail status when one text exists and another one does not': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', text: [ 'foobar', 'xyz' ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have fail status when one text exists and another one does not", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
+    });
+    const setup = { uri: "http://somehost", text: ["foobar", "xyz"] };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
-      assert.equals(result.getSuccesses(), ['Text foobar exists in response body']);
+      assert.equals(result.getFailures(), [
+        "Text xyz does not exist in response body",
+      ]);
+      assert.equals(result.getSuccesses(), [
+        "Text foobar exists in response body",
+      ]);
       done();
-    }
-    checker.check(setup, cb); 
-  },
-  'should have fail status when checks result in both success and failure': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar blah' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', statusCode: [200], text: [ 'xyz' ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should have fail status when checks result in both success and failure", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
+    });
+    const setup = { uri: "http://somehost", statusCode: [200], text: ["xyz"] };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), ['Text xyz does not exist in response body']);
-      assert.equals(result.getSuccesses(), ['Status code 200 as expected']);
+      assert.equals(result.getFailures(), [
+        "Text xyz does not exist in response body",
+      ]);
+      assert.equals(result.getSuccesses(), ["Status code 200 as expected"]);
       done();
-    }
-    checker.check(setup, cb); 
-  },
-  'should execute all checks even though the first one fails': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', body: 'foobar xyz' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost', statusCode: 201, text: [ 'foobar', 'xyz', 'blah' ] };
-    function cb(err, result) {
+    });
+  });
+
+  it("should execute all checks even though the first one fails", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx({ statusCode: "200", body: "foobar xyz" }, cb);
+    });
+    const setup = {
+      uri: "http://somehost",
+      statusCode: 201,
+      text: ["foobar", "xyz", "blah"],
+    };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), ['Status code 200 does not match the expected 201', 'Text blah does not exist in response body']);
-      assert.equals(result.getSuccesses(), ['Text foobar exists in response body', 'Text xyz exists in response body']);
+      assert.equals(result.getFailures(), [
+        "Status code 200 does not match the expected 201",
+        "Text blah does not exist in response body",
+      ]);
+      assert.equals(result.getSuccesses(), [
+        "Text foobar exists in response body",
+        "Text xyz exists in response body",
+      ]);
       done();
-    }
-    checker.check(setup, cb); 
-  },
-  'should pass result headers and body as info': function (done) {
-    function mockRequest(method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: '200', headers: { someheader: 'somevalue' }, body: 'some body' }, cb);
-    }
-    this.stub(bag, 'request', mockRequest);
-    var setup = { uri: 'http://somehost' };
-    function cb(err, result) {
+    });
+  });
+
+  it("should pass result headers and body as info", function (done) {
+    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
+      opts.handlers.xxx(
+        {
+          statusCode: "200",
+          headers: { someheader: "somevalue" },
+          body: "some body",
+        },
+        cb,
+      );
+    });
+    const setup = { uri: "http://somehost" };
+    checker.check(setup, function (err, result) {
       assert.isNull(err);
       assert.isTrue(result.isSuccess());
       assert.equals(result.getFailures(), []);
       assert.equals(result.getSuccesses(), []);
-      assert.equals(result.getInfo().headers.someheader, 'somevalue');
-      assert.equals(result.getInfo().body, 'some body');
+      assert.equals(result.getInfo().headers.someheader, "somevalue");
+      assert.equals(result.getInfo().body, "some body");
       done();
-    }
-    checker.check(setup, cb); 
-  }
+    });
+  });
 });

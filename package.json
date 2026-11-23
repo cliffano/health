@@ -1,27 +1,29 @@
 {
   "name": "health",
+  "type": "module",
   "description": "Resource status monitoring library.",
   "keywords": [
     "health",
     "status",
     "monitor"
   ],
-  "version": "0.3.1",
-  "homepage": "http://github.com/cliffano/health",
-  "author": "Cliffano Subagio <blah@cliffano.com> (http://blog.cliffano.com)",
+  "version": "1.0.0-pre.0",
+  "homepage": "https://github.com/cliffano/health",
+  "author": "Cliffano Subagio <cliffano@gmail.com> (http://blog.cliffano.com)",
   "contributors": [
     "All contributors (https://github.com/cliffano/health/graphs/contributors)"
   ],
-  "main": "./lib/health",
+  "main": "./lib/health.js",
   "bin": {
-    "health": "./bin/health"
+    "health": "./bin/health.js"
   },
+  "preferGlobal": true,
   "repository": {
     "type": "git",
-    "url": "http://github.com/cliffano/health.git"
+    "url": "https://github.com/cliffano/health.git"
   },
   "bugs": {
-    "url": "http://github.com/cliffano/health/issues"
+    "url": "https://github.com/cliffano/health/issues"
   },
   "directories": {
     "bin": "./bin",
@@ -29,30 +31,26 @@
     "test": "./test"
   },
   "dependencies": {
-    "async": "^2.6.2",
-    "bagofcli": "^1.1.0",
+    "async": "^3.2.6",
+    "bagofcli": "^3.1.0",
     "bagofrequest": "^1.0.0",
     "colors": "^1.4.0",
-    "fs.extra": "^1.3.2",
-    "i18n": "^0.9.0",
-    "lodash": "^4.17.15",
+    "fs-extra": "^11.4.0",
+    "i18n": "^0.15.3",
+    "jazz": "^1.2.0",
+    "lodash": "^4.18.1",
     "memory-cache": "^0.2.0",
-    "mongodb": "^3.5.6",
-    "jazz": "^0.0.18",
-    "validator": "^13.0.0"
+    "mongodb": "^7.6.0",
+    "validator": "^13.15.35"
   },
   "devDependencies": {
-    "buster-node": "^0.7.1",
-    "referee": "^1.2.0"
+    "@sinonjs/referee": "^11.0.2",
+    "esmock": "^2.7.6",
+    "sinon": "^22.1.0"
   },
   "scripts": {},
   "engines": {
-    "node": "'>= 4.0.0'"
+    "node": ">= 20.0.0"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/cliffano/health/raw/master/LICENSE"
-    }
-  ]
+  "license": "MIT"
 }
