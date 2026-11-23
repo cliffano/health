@@ -1,0 +1,21 @@
+# Sample Health expectation file, created by `health init`.
+# Run it with: health check health.yaml
+# See https://github.com/cliffano/health for every protocol and field.
+checks:
+  - name: Google homepage is up
+    protocol: http
+    request:
+      url: https://google.com
+    expect:
+      status: 200
+      headers:
+        content-type: { $matches: "text/html" }
+      responseTime: { $lt: 5000 }
+
+  - name: google.com resolves
+    protocol: dns
+    request:
+      name: google.com
+      rrtype: A
+    expect:
+      count: { $gte: 1 }

@@ -1,13 +1,21 @@
 {
   "commands": {
     "init": {
-      "desc": "Create sample setup file"
+      "desc": "Create sample health.yaml expectation file in current directory",
+      "examples": ["health init"]
     },
     "check": {
-      "desc": "Check resources configured in setup file",
+      "desc": "Verify protocol responses against YAML expectation files, default: health.yaml",
       "options": [
-        { "arg": "-s, --setup-file <setupFile>", "desc": "Setup file, default: health.json" },
-        { "arg": "-f, --formatter <formatter>", "desc": "Result formatter: cli, html, text, or xml, default: cli" }
+        {
+          "arg": "-v, --verbose",
+          "desc": "Display the full captured result of each check"
+        }
+      ],
+      "examples": [
+        "health check",
+        "health check http.yaml dns.yaml",
+        "health check --verbose examples/tls.yaml"
       ]
     }
   }

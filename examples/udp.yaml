@@ -1,0 +1,28 @@
+# UDP checks — send a datagram, verify the response (or its absence).
+checks:
+  # DNS query over raw UDP: A-record lookup for google.com against 8.8.8.8.
+  # Payload is a hand-built DNS packet in hex.
+  - name: Google public DNS answers over UDP
+    protocol: udp
+    request:
+      host: 8.8.8.8
+      port: 53
+      sendHex: "abcd0100000100000000000006676f6f676c6503636f6d0000010001"
+      timeout: 3000       # ms to wait for a response
+      # type: udp4        # or udp6
+    expect:
+      responded: true
+      responseTime: { $lt: 500 }
+      bytesReceived: { $gt: 12 }         # bigger than the DNS header
+      dataHex: { $matches: "^abcd" }     # response echoes our transaction ID
+
+  # Text payload variant
+  - name: Local statsd accepts metrics (fire-and-forget)
+    protocol: udp
+    request:
+      host: 127.0.0.1
+      port: 8125
+      send: "health.ping:1|c"
+      timeout: 1000
+    expect:
+      responded: false    # statsd never replies — absence of ICMP error is the check

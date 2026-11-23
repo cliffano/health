@@ -1,21 +1,41 @@
 - fixtures:
-    - test-integration/fixtures/myhealth.json
-    - test-integration/fixtures/samplefile.txt
+    - test-integration/fixtures/pass.yaml
+    - test-integration/fixtures/fail.yaml
 
 - params:
     health: ../../../../../bin/health.js
 
 - description: Command help should display help information
-  command: '{health} --help'
+  command: "{health} --help"
   exitcode: 0
-  output: 'Usage: health'
+  output: "Usage: health"
 
-- description: Command init should create a sample setup file
-  command: '{health} init'
+- description: Command init should create a sample expectation file
+  command: "{health} init"
   exitcode: 0
-  output: 'Creating sample setup file: health.json'
+  output: "Creating sample expectation file: health.yaml"
 
-- description: Command check should report success for a local file resource
-  command: '{health} check --setup-file myhealth.json'
+- description: Command check should exit 0 when all checks pass
+  command: "{health} check pass.yaml"
   exitcode: 0
-  output: 'success'
+  output: "1 passed, 0 failed"
+
+- description: Command check should exit 1 and show failure when a check fails
+  command: "{health} check fail.yaml"
+  exitcode: 1
+  output: "check failed: connect ECONNREFUSED"
+
+- description: Command check should report every file when multiple files are specified
+  command: "{health} check pass.yaml fail.yaml"
+  exitcode: 1
+  output: "1 passed, 1 failed"
+
+- description: Command check should display captured result when verbose
+  command: "{health} check --verbose pass.yaml"
+  exitcode: 0
+  output: '"responded": false'
+
+- description: Command check should exit 1 when file does not exist
+  command: "{health} check missing.yaml"
+  exitcode: 1
+  output: "could not run file"

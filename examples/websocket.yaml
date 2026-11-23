@@ -1,0 +1,25 @@
+# WebSocket checks — handshake, subprotocol negotiation, first message.
+# Requires Node.js >= 22 (global WebSocket client).
+checks:
+  - name: Echo server round-trip
+    protocol: websocket           # alias: ws
+    request:
+      url: wss://echo.websocket.org
+      # subprotocols: [chat]      # offered subprotocols
+      send: "ping from health"   # sent as soon as the socket opens
+      timeout: 5000               # ms to establish the connection
+      messageTimeout: 3000        # ms to wait for the first message
+    expect:
+      connected: true
+      connectTime: { $lt: 3000 }
+      messageReceived: true
+      message: { $contains: "health" }   # echo.websocket.org echoes payloads
+
+  - name: Feed connects and pushes data
+    protocol: ws
+    request:
+      url: wss://stream.example.com/live
+    expect:
+      connected: true
+      messageReceived: true
+      message: { $matches: "\"type\"\\s*:\\s*\"welcome\"" }

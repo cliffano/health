@@ -5,24 +5,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Added
+- Add YAML expectation files, holding a single check, a `checks` array, or multiple `---` separated documents
+- Add http, https, http2, tcp, udp, dns, tls, websocket (ws), and ntp checkers built on Node.js core modules
+- Add expectation matcher with partial deep matching and `$eq`, `$ne`, `$gt`, `$gte`, `$lt`, `$lte`, `$contains`, `$matches`, `$exists`, `$in`, `$length`, `$type`, `$not` operators
+- Add `Health#check`, `Health#checkFile`, and `Health#checkFiles` API
+- Add `health check [--verbose] [file ...]` command, exit code 1 when any check fails
+- Add example expectation file per protocol
+- Add configuration reference doc per protocol under `docs/`
+- Add test-integration suite exercising the `health` CLI
+
 ### Changed
-- Set locale fallback to default when current locale is not defined
+- Change `health init` to create a sample `health.yaml` expectation file, without overwriting an existing one
 - Change module type to ESM
-- Replace test framework from buster-node to Mocha + Sinon + @sinonjs/referee + esmock
+- Replace test framework from buster-node to Mocha + Sinon + @sinonjs/referee
 - Replace lint type from jshint to eslint, add Prettier style checking
 - Replace coverage from buster-istanbul to c8
 - Replace doc type from dox-foundation to jsdoc
 - Replace Docker-based CI action with GH Actions (CI, CodeQL, publish, release-major/minor/patch, upgrade-deps)
 - Add Suntory as build Makefile
 - Add AGENTS.md with Node.js project conventions
-- Replace fs.extra with fs-extra
-- Upgrade mongodb driver to 7.x, use promise-based `MongoClient.connect` instead of the removed callback API
-- Replace dynamic `require()` checker/formatter lookup with static ESM imports
-- Set min node engine to >= 20.0.0
-- Add test-integration suite exercising the `health` CLI
+- Set min node engine to >= 22.0.0
 
-### Fixed
-- Fix http(s) checker statusCode check crashing on the real numeric `response.statusCode`
+### Removed
+- Remove JSON setup file and URI based resource definitions, superseded by YAML expectation files
+- Remove file and mongodb checkers
+- Remove cli, html, and text result formatters
+- Remove result caching (`ttl`), resource groups, and `lenient` status
+- Remove i18n locales
 
 ## 0.3.0 - 2015-06-21
 ### Changed

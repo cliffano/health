@@ -1,0 +1,27 @@
+# TCP checks — connectivity, latency, and banner/response verification.
+checks:
+  # Simplest form: is the port open?
+  - name: SSH port open
+    protocol: tcp
+    request:
+      host: github.com
+      port: 22
+      timeout: 5000       # ms to establish connection
+      readTimeout: 2000   # ms to wait for data after connecting
+    expect:
+      connected: true
+      connectTime: { $lt: 1000 }
+      data: { $matches: "^SSH-2\\.0" }   # SSH servers send a banner
+
+  # Send a payload and verify the reply (SMTP handshake)
+  - name: SMTP banner
+    protocol: tcp
+    request:
+      host: gmail-smtp-in.l.google.com
+      port: 25
+      send: "EHLO health.example\r\n"
+      # sendHex: "45484c4f0d0a"   # alternative: payload as hex
+    expect:
+      connected: true
+      data: { $matches: "^220 " }
+      bytesReceived: { $gt: 0 }

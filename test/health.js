@@ -1,571 +1,293 @@
 "use strict";
-import bag from "bagofcli";
-import cache from "memory-cache";
-import fsx from "fs-extra";
+import fs from "fs";
+
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
+
+import dnsChecker from "../lib/checkers/dns.js";
+import httpChecker from "../lib/checkers/http.js";
+import tcpChecker from "../lib/checkers/tcp.js";
 import Health from "../lib/health.js";
-import Result from "../lib/result.js";
 const assert = referee.assert;
 
-describe("health - health", function () {
-  afterEach(function () {
-    sinon.restore();
+describe("health - constructor", function () {
+  it("should set opts when specified", function () {
+    const health = new Health({ some: "opt" });
+    assert.equals(health.opts, { some: "opt" });
   });
 
-  it("should set opts if specified via constructor", function () {
-    const health = new Health({
-      setup: { uri: "http://somehost" },
-      formatter: "json",
-    });
-    assert.equals(health.opts.setup, { uri: "http://somehost" });
-    assert.equals(health.opts.formatter, "json");
+  it("should default opts to empty object when unspecified", function () {
+    assert.equals(new Health().opts, {});
   });
 
-  it("should set default opts if unspecified via constructor", function () {
-    const health = new Health();
-    assert.equals(health.opts.setup, "health.json");
-    assert.isUndefined(health.opts.formatter);
+  it("should expose supported protocols", function () {
+    assert.equals(Health.PROTOCOLS, [
+      "http",
+      "https",
+      "http2",
+      "tcp",
+      "udp",
+      "dns",
+      "tls",
+      "websocket",
+      "ws",
+      "ntp",
+    ]);
   });
 });
 
 describe("health - init", function () {
-  beforeEach(function () {
-    this.mockConsole = sinon.mock(console);
-  });
-
   afterEach(function () {
-    this.mockConsole.verify();
     sinon.restore();
   });
 
-  it("should copy sample health.js file to current directory when init is called", function (done) {
-    this.mockConsole
-      .expects("log")
-      .once()
-      .withExactArgs("Creating sample setup file: health.json");
-    sinon.stub(fsx, "copy").callsFake(function (src, dest, cb) {
-      assert.isTrue(src.match(/\/examples\/health.json$/).length === 1);
-      assert.equals(dest, "health.json");
-      cb();
+  it("should copy sample health.yaml without overwriting when called", function (done) {
+    sinon.stub(fs, "copyFile").callsFake(function (src, dest, mode, cb) {
+      assert.isTrue(/\/examples\/health\.yaml$/.test(src));
+      assert.equals(dest, "health.yaml");
+      assert.equals(mode, fs.constants.COPYFILE_EXCL);
+      cb(null);
     });
-    const health = new Health();
-    health.init(function (err) {
-      assert.isUndefined(err);
+    new Health().init(function (err, result) {
+      assert.isNull(err);
+      assert.equals(result, "health.yaml");
       done();
     });
   });
-});
 
-describe("health - clearCache", function () {
-  beforeEach(function () {
-    this.mockCache = sinon.mock(cache);
-  });
-
-  afterEach(function () {
-    this.mockCache.verify();
-    sinon.restore();
-  });
-
-  it("should call clear", function () {
-    this.mockCache.expects("clear").once().withExactArgs();
-    const health = new Health();
-    health.clearCache();
+  it("should pass error to callback when sample file cannot be copied", function (done) {
+    sinon.stub(fs, "copyFile").callsArgWith(3, new Error("EEXIST"));
+    new Health().init(function (err, result) {
+      assert.equals(err.message, "EEXIST");
+      assert.isUndefined(result);
+      done();
+    });
   });
 });
 
 describe("health - check", function () {
-  beforeEach(function () {
-    this.mockCache = sinon.mock(cache);
-  });
-
   afterEach(function () {
-    this.mockCache.verify();
     sinon.restore();
   });
 
-  it("should pass error when uri has unsupported protocol", function (done) {
-    const health = new Health({
-      setup: [{ uri: "httpx://somehost" }],
-    });
-    health.check(function (err, results) {
+  it("should pass error to callback when protocol is unknown", function (done) {
+    new Health().check({ protocol: "gopher" }, function (err, result) {
       assert.equals(
         err.message,
-        "Unsupported protocol for URI httpx://somehost",
+        'Unknown protocol "gopher" (supported: http, https, http2, tcp, udp, dns, tls, websocket, ws, ntp)',
       );
-      assert.isUndefined(results);
+      assert.isUndefined(result);
       done();
     });
   });
 
-  it("should pass error when uri has unsupported protocol and setup uses file", function (done) {
-    const health = new Health({
-      setup: "/some/path/health.json",
+  it("should report ok result when expectation matches", function (done) {
+    sinon.stub(httpChecker, "check").callsFake(function (request, cb) {
+      assert.equals(request, { url: "https://somehost" });
+      cb(null, { status: 200, headers: { "content-type": "text/html" } });
     });
-    sinon.stub(bag, "lookupFile").callsFake(function (file) {
-      assert.equals(file, "/some/path/health.json");
-      return '[{ "uri": "httpx://somehost" }]';
-    });
-    health.check(function (err, results) {
-      assert.equals(
-        err.message,
-        "Unsupported protocol for URI httpx://somehost",
-      );
-      assert.isUndefined(results);
-      done();
-    });
-  });
-
-  it("should pass result with cached data when result is already cached (cache hit)", function (done) {
-    this.mockCache
-      .expects("get")
-      .once()
-      .withExactArgs("http://somehost")
-      .returns({ uri: "http://somehost", status: "success", duration: 15 });
-    const health = new Health({
-      setup: [{ uri: "http://somehost" }],
-    });
-    health.check(function (err, results) {
-      assert.isNull(err);
-      assert.equals(results.length, 1);
-      assert.equals(results[0].uri, "http://somehost");
-      assert.equals(results[0].status, "success");
-      assert.equals(results[0].duration, 15);
-      done();
-    });
-  });
-
-  it("should pass result with check result when it is not already cached (cache miss) and the result is then cached", function (done) {
-    const result = new Result();
-    result.success();
-    this.mockCache
-      .expects("get")
-      .once()
-      .withExactArgs("http://somehost")
-      .returns(null);
-    this.mockCache
-      .expects("put")
-      .once()
-      .withExactArgs("http://somehost", result, 10000);
-    const health = new Health({
-      setup: [{ name: "someapp", uri: "http://somehost" }],
-    });
-    health._checker = function () {
-      return {
-        check: function (setup, cb) {
-          cb(null, result);
-        },
-      };
-    };
-    health.check(function (err, results) {
-      assert.isNull(err);
-      assert.equals(results.length, 1);
-      assert.equals(results[0].getName(), "someapp");
-      assert.equals(results[0].getUri(), "http://somehost");
-      assert.isTrue(results[0].isSuccess());
-      assert.isNumber(results[0].getDuration());
-      assert.isObject(results[0].getTimestamp());
-      done();
-    });
-  });
-
-  it("should format data when formatter opt string is specified", function (done) {
-    const result = new Result();
-    sinon.useFakeTimers({ now: 0, toFake: ["Date"] });
-    result.setUri("http://somehost");
-    result.success();
-    this.mockCache
-      .expects("get")
-      .once()
-      .withExactArgs("http://somehost")
-      .returns(null);
-    this.mockCache
-      .expects("put")
-      .once()
-      .withExactArgs("http://somehost", result, 5000);
-    const health = new Health({
-      setup: [{ uri: "http://somehost", ttl: 5000 }],
-      formatter: "text",
-    });
-    health._checker = function () {
-      return {
-        check: function (setup, cb) {
-          cb(null, result);
-        },
-      };
-    };
-    health.check(function (err, results) {
-      assert.isNull(err);
-      assert.equals(results.length, 1);
-      assert.equals(results[0], "success - http://somehost - 0ms");
-      done();
-    });
-  });
-
-  it("should pass error when an error occurs while checking a resource", function (done) {
-    this.mockCache
-      .expects("get")
-      .once()
-      .withExactArgs("http://somehost")
-      .returns(null);
-    const health = new Health({
-      setup: [{ uri: "http://somehost", ttl: 5000 }],
-    });
-    health._checker = function () {
-      return {
-        check: function (setup, cb) {
-          cb(new Error("some error"));
-        },
-      };
-    };
-    health.check(function (err, results) {
-      assert.equals(err.message, "some error");
-      assert.isUndefined(results);
-      done();
-    });
-  });
-
-  it("should format data when formatter opt function is specified", function (done) {
-    const result = new Result();
-    sinon.useFakeTimers({ now: 0, toFake: ["Date"] });
-    result.setUri("http://somehost");
-    result.success();
-    this.mockCache
-      .expects("get")
-      .once()
-      .withExactArgs("http://somehost")
-      .returns(null);
-    this.mockCache
-      .expects("put")
-      .once()
-      .withExactArgs("http://somehost", result, 5000);
-    const health = new Health({
-      setup: [{ uri: "http://somehost", ttl: 5000 }],
-      formatter: function (results) {
-        let formatted = "";
-        results.forEach(function (result) {
-          formatted = result.getUri() + ": " + result.getStatus() + "\n";
-        });
-        return formatted;
+    new Health().check(
+      {
+        name: "somecheck",
+        protocol: "https",
+        request: { url: "https://somehost" },
+        expect: { status: 200, headers: { "Content-Type": "text/html" } },
       },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result, {
+          name: "somecheck",
+          protocol: "https",
+          ok: true,
+          failures: [],
+          result: { status: 200, headers: { "content-type": "text/html" } },
+        });
+        done();
+      },
+    );
+  });
+
+  it("should report failures when expectation does not match", function (done) {
+    sinon.stub(httpChecker, "check").callsArgWith(1, null, { status: 500 });
+    new Health().check(
+      {
+        protocol: "http",
+        request: { url: "http://somehost" },
+        expect: { status: 200 },
+      },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result.name, "http http://somehost");
+        assert.isFalse(result.ok);
+        assert.equals(result.failures, [
+          { path: "status", message: "expected 200, got 500" },
+        ]);
+        done();
+      },
+    );
+  });
+
+  it("should report failed result instead of error when checker fails", function (done) {
+    sinon.stub(tcpChecker, "check").callsArgWith(1, new Error("ECONNREFUSED"));
+    new Health().check(
+      { protocol: "tcp", request: { host: "somehost", port: 1 } },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result, {
+          name: "tcp somehost:1",
+          protocol: "tcp",
+          ok: false,
+          error: "ECONNREFUSED",
+          failures: [{ path: "", message: "check failed: ECONNREFUSED" }],
+          result: null,
+        });
+        done();
+      },
+    );
+  });
+
+  it("should pass when no expectation and no request are specified", function (done) {
+    sinon.stub(tcpChecker, "check").callsFake(function (request, cb) {
+      assert.equals(request, {});
+      cb(null, { connected: true });
     });
-    health._checker = function () {
-      return {
-        check: function (setup, cb) {
-          cb(null, result);
-        },
-      };
-    };
-    health.check(function (err, result) {
+    new Health().check({ protocol: "tcp" }, function (err, result) {
       assert.isNull(err);
-      assert.equals(result, "http://somehost: success\n");
+      assert.equals(result.name, "tcp");
+      assert.isTrue(result.ok);
+      done();
+    });
+  });
+
+  it("should derive default name from request name or host when name is unspecified", function (done) {
+    sinon.stub(dnsChecker, "check").callsArgWith(1, null, { count: 1 });
+    sinon.stub(tcpChecker, "check").callsArgWith(1, null, {});
+    const health = new Health();
+    health.check(
+      { protocol: "dns", request: { name: "somehost" } },
+      function (err, dnsResult) {
+        assert.equals(dnsResult.name, "dns somehost");
+        health.check(
+          { protocol: "tcp", request: { host: "somehost" } },
+          function (err, tcpResult) {
+            assert.equals(tcpResult.name, "tcp somehost:");
+            done();
+          },
+        );
+      },
+    );
+  });
+});
+
+describe("health - checkFile", function () {
+  beforeEach(function () {
+    sinon.stub(httpChecker, "check").callsArgWith(1, null, { status: 200 });
+    sinon.stub(dnsChecker, "check").callsArgWith(1, null, { count: 1 });
+  });
+
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  function stubFile(content) {
+    sinon.stub(fs, "readFile").callsFake(function (file, encoding, cb) {
+      assert.equals(file, "some.yaml");
+      assert.equals(encoding, "utf8");
+      cb(null, content);
+    });
+  }
+
+  it("should run single check when file has one document", function (done) {
+    stubFile(
+      "protocol: http\nrequest: { url: http://somehost }\nexpect: { status: 200 }\n",
+    );
+    new Health().checkFile("some.yaml", function (err, results) {
+      assert.isNull(err);
+      assert.equals(results.length, 1);
+      assert.isTrue(results[0].ok);
+      done();
+    });
+  });
+
+  it("should run every check when file has a checks array", function (done) {
+    stubFile(
+      [
+        "checks:",
+        "  - { protocol: http, request: { url: http://a }, expect: { status: 200 } }",
+        "  - { protocol: dns, request: { name: b }, expect: { count: 2 } }",
+      ].join("\n"),
+    );
+    new Health().checkFile("some.yaml", function (err, results) {
+      assert.isNull(err);
+      assert.equals(
+        results.map((r) => [r.name, r.ok]),
+        [
+          ["http http://a", true],
+          ["dns b", false],
+        ],
+      );
+      done();
+    });
+  });
+
+  it("should run every document and skip empty ones when file has multiple documents", function (done) {
+    stubFile(
+      "---\nprotocol: http\nrequest: { url: http://a }\n---\n---\nprotocol: dns\nrequest: { name: b }\n",
+    );
+    new Health().checkFile("some.yaml", function (err, results) {
+      assert.isNull(err);
+      assert.equals(results.length, 2);
+      done();
+    });
+  });
+
+  it("should pass error to callback when file cannot be read", function (done) {
+    sinon.stub(fs, "readFile").callsArgWith(2, new Error("ENOENT"));
+    new Health().checkFile("missing.yaml", function (err) {
+      assert.equals(err.message, "ENOENT");
+      done();
+    });
+  });
+
+  it("should pass error to callback when file is invalid YAML", function (done) {
+    stubFile("protocol: [http\n");
+    new Health().checkFile("some.yaml", function (err, results) {
+      assert.isString(err.message);
+      assert.isUndefined(results);
+      done();
+    });
+  });
+
+  it("should pass error to callback when a check has unknown protocol", function (done) {
+    stubFile("protocol: gopher\n");
+    new Health().checkFile("some.yaml", function (err) {
+      assert.isTrue(/Unknown protocol "gopher"/.test(err.message));
       done();
     });
   });
 });
 
-describe("health - _singleResultRules", function () {
-  beforeEach(function () {
-    this.health = new Health();
+describe("health - checkFiles", function () {
+  afterEach(function () {
+    sinon.restore();
   });
 
-  it("should set name if it exists", function () {
-    const result = new Result();
-    const setup = { name: "somename", uri: "http://somehost" };
-    this.health._singleResultRules(result, setup);
-    assert.equals(result.getName(), "somename");
-  });
-
-  it("should set status to warning when result is fail and lenient is true", function () {
-    const result = new Result();
-    const setup = { name: "somename", uri: "http://somehost", lenient: true };
-    result.fail();
-    this.health._singleResultRules(result, setup);
-    assert.isTrue(result.isWarning());
-  });
-
-  it("should set status to warning when result is error and lenient is true", function () {
-    const result = new Result();
-    const setup = { name: "somename", uri: "http://somehost", lenient: true };
-    result.error();
-    this.health._singleResultRules(result, setup);
-    assert.equals(result.status, "warning");
-  });
-
-  it("should mask password with asterisks", function () {
-    const result = new Result();
-    const setup = { name: "somename", uri: "http://user:pass@somehost" };
-    this.health._singleResultRules(result, setup);
-    assert.equals(result.getUri(), "http://user:****@somehost/");
-  });
-});
-
-describe("health - _multiResultsRules", function () {
-  beforeEach(function () {
-    this.health = new Health();
-  });
-
-  it("should leave all results as-is when there is no specified group", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.success();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.error();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.warning();
-
-    let results = [result1, result2, result3, result4];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1" },
-      { name: "somename2", uri: "http://somehost2" },
-      { name: "somename3", uri: "http://somehost3" },
-      { name: "somename4", uri: "http://somehost4" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isFail());
-    assert.isTrue(results[1].isSuccess());
-    assert.isTrue(results[2].isError());
-    assert.isTrue(results[3].isWarning());
-  });
-
-  it("should change status fail and error to warning when not all group members have non-success status", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.success();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.error();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.warning();
-
-    let results = [result1, result2, result3, result4];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1", group: "somegroup" },
-      { name: "somename2", uri: "http://somehost2", group: "somegroup" },
-      { name: "somename3", uri: "http://somehost3", group: "somegroup" },
-      { name: "somename4", uri: "http://somehost4", group: "somegroup" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isWarning());
-    assert.isTrue(results[1].isSuccess());
-    assert.isTrue(results[2].isWarning());
-    assert.isTrue(results[3].isWarning());
-  });
-
-  it("should change status warning to fail when all group members have non-success status", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.fail();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.warning();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.error();
-
-    let results = [result1, result2, result3, result4];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1", group: "somegroup" },
-      { name: "somename2", uri: "http://somehost2", group: "somegroup" },
-      { name: "somename3", uri: "http://somehost3", group: "somegroup" },
-      { name: "somename4", uri: "http://somehost4", group: "somegroup" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isFail());
-    assert.isTrue(results[1].isFail());
-    assert.isTrue(results[2].isFail());
-    assert.isTrue(results[3].isError());
-  });
-
-  it("should change status warning to fail when group is weighted and members do not pass the weight", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-    const result5 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.fail();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.warning();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.error();
-    result5.setName("somename5");
-    result5.setUri("http://somehost5");
-    result5.success();
-
-    let results = [result1, result2, result3, result4, result5];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1", group: "somegroup-50" },
-      { name: "somename2", uri: "http://somehost2", group: "somegroup-50" },
-      { name: "somename3", uri: "http://somehost3", group: "somegroup-50" },
-      { name: "somename4", uri: "http://somehost4", group: "somegroup-50" },
-      { name: "somename5", uri: "http://somehost5", group: "somegroup-50" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isFail());
-    assert.isTrue(results[1].isFail());
-    assert.isTrue(results[2].isFail());
-    assert.isTrue(results[3].isError());
-    assert.isTrue(results[4].isSuccess());
-  });
-
-  it("should change status fail and error to warning when group is weighted and members pass the weight", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-    const result5 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.fail();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.warning();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.error();
-    result5.setName("somename5");
-    result5.setUri("http://somehost5");
-    result5.success();
-
-    let results = [result1, result2, result3, result4, result5];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1", group: "somegroup-20" },
-      { name: "somename2", uri: "http://somehost2", group: "somegroup-20" },
-      { name: "somename3", uri: "http://somehost3", group: "somegroup-20" },
-      { name: "somename4", uri: "http://somehost4", group: "somegroup-20" },
-      { name: "somename5", uri: "http://somehost5", group: "somegroup-20" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isWarning());
-    assert.isTrue(results[1].isWarning());
-    assert.isTrue(results[2].isWarning());
-    assert.isTrue(results[3].isWarning());
-    assert.isTrue(results[4].isSuccess());
-  });
-
-  it("should change and keep status accordingly when there are multiple groups", function () {
-    const result1 = new Result();
-    const result2 = new Result();
-    const result3 = new Result();
-    const result4 = new Result();
-    const result5 = new Result();
-    const result6 = new Result();
-    const result7 = new Result();
-    const result8 = new Result();
-
-    result1.setName("somename1");
-    result1.setUri("http://somehost1");
-    result1.fail();
-    result2.setName("somename2");
-    result2.setUri("http://somehost2");
-    result2.fail();
-    result3.setName("somename3");
-    result3.setUri("http://somehost3");
-    result3.warning();
-    result4.setName("somename4");
-    result4.setUri("http://somehost4");
-    result4.error();
-    result5.setName("somename5");
-    result5.setUri("http://somehost5");
-    result5.fail();
-    result6.setName("somename6");
-    result6.setUri("http://somehost6");
-    result6.success();
-    result7.setName("somename7");
-    result7.setUri("http://somehost7");
-    result7.error();
-    result8.setName("somename8");
-    result8.setUri("http://somehost8");
-    result8.warning();
-
-    let results = [
-      result1,
-      result2,
-      result3,
-      result4,
-      result5,
-      result6,
-      result7,
-      result8,
-    ];
-    const setup = [
-      { name: "somename1", uri: "http://somehost1", group: "somegroupA" },
-      { name: "somename2", uri: "http://somehost2", group: "somegroupA" },
-      { name: "somename3", uri: "http://somehost3", group: "somegroupA" },
-      { name: "somename4", uri: "http://somehost4", group: "somegroupA" },
-      { name: "somename5", uri: "http://somehost5", group: "somegroupB" },
-      { name: "somename6", uri: "http://somehost6", group: "somegroupB" },
-      { name: "somename7", uri: "http://somehost7", group: "somegroupB" },
-      { name: "somename8", uri: "http://somehost8", group: "somegroupB" },
-    ];
-    results = this.health._multiResultsRules(results, setup);
-    assert.isTrue(results[0].isFail());
-    assert.isTrue(results[1].isFail());
-    assert.isTrue(results[2].isFail());
-    assert.isTrue(results[3].isError());
-    assert.isTrue(results[4].isWarning());
-    assert.isTrue(results[5].isSuccess());
-    assert.isTrue(results[6].isWarning());
-    assert.isTrue(results[7].isWarning());
-  });
-});
-
-describe("health - _checker", function () {
-  beforeEach(function () {
-    this.health = new Health();
-  });
-
-  it("should use http checker when URI has http protocol", function () {
-    const checker = this.health._checker("http://somehost");
-    assert.isObject(checker);
-  });
-
-  it("should use http checker when URI has https protocol", function () {
-    const checker = this.health._checker("https://somehost");
-    assert.isObject(checker);
-  });
-
-  it("should have undefined checker when URI has unsupported protocol", function () {
-    const checker = this.health._checker("httpx://somehost");
-    assert.isUndefined(checker);
+  it("should record results and errors per file when files are checked", function (done) {
+    const checkFile = sinon.stub(Health.prototype, "checkFile");
+    checkFile.withArgs("ok.yaml").callsArgWith(1, null, [{ ok: true }]);
+    checkFile.withArgs("bad.yaml").callsArgWith(1, new Error("ENOENT"));
+    new Health().checkFiles(["ok.yaml", "bad.yaml"], function (err, reports) {
+      assert.isNull(err);
+      assert.equals(reports.length, 2);
+      assert.equals(reports[0], {
+        file: "ok.yaml",
+        error: null,
+        results: [{ ok: true }],
+      });
+      assert.equals(reports[1].file, "bad.yaml");
+      assert.equals(reports[1].error.message, "ENOENT");
+      assert.equals(reports[1].results, []);
+      done();
+    });
   });
 });

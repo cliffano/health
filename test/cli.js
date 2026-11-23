@@ -1,11 +1,11 @@
 "use strict";
-/* eslint no-unused-vars: 0 */
 import bag from "bagofcli";
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
+
 import cli from "../lib/cli.js";
 import Health from "../lib/health.js";
-import cliFormatter from "../lib/formatters/cli.js";
+import reporter from "../lib/reporter.js";
 const assert = referee.assert;
 
 describe("cli - exec", function () {
@@ -13,7 +13,7 @@ describe("cli - exec", function () {
     sinon.restore();
   });
 
-  it("should contain commands with actions", function (done) {
+  it("should contain commands with actions when executed", function (done) {
     sinon.stub(bag, "command").value(function (base, actions) {
       assert.isString(base);
       assert.isFunction(actions.commands.init.action);
@@ -29,93 +29,82 @@ describe("cli - init", function () {
     sinon.restore();
   });
 
-  it("should contain init command and delegate to health init when exec is called", function (done) {
+  it("should log created file and exit 0 when health init succeeds", function () {
     sinon.stub(bag, "command").value(function (base, actions) {
       actions.commands.init.action();
     });
-    sinon.stub(Health.prototype, "init").callsFake(function (cb) {
-      assert.equals(typeof cb, "function");
-      done();
-    });
+    sinon.stub(Health.prototype, "init").callsArgWith(0, null, "health.yaml");
+    const log = sinon.stub(console, "log");
+    const exit = sinon.stub(process, "exit");
     cli.exec();
+    assert.isTrue(
+      log.calledWithExactly("Creating sample expectation file: health.yaml"),
+    );
+    assert.isTrue(exit.calledWithExactly(0));
   });
 });
 
 describe("cli - check", function () {
   beforeEach(function () {
-    this.mockConsole = sinon.mock(console);
-    this.mockFormatter = sinon.mock(cliFormatter);
-    this.mockProcess = sinon.mock(process);
+    this.log = sinon.stub(console, "log");
+    this.exit = sinon.stub(process, "exit");
   });
 
   afterEach(function () {
-    this.mockConsole.verify();
-    this.mockFormatter.verify();
-    this.mockProcess.verify();
     sinon.restore();
   });
 
-  it("should log array items line by line", function () {
-    this.mockConsole.expects("log").once().withExactArgs("someresult");
-    this.mockProcess.expects("exit").twice().withExactArgs(0);
-    this.mockFormatter
-      .expects("format")
-      .once()
-      .withExactArgs([{ status: "success", name: "someapp", desc: "somedesc" }])
-      .returns(["someresult"]);
+  function runCheck(args) {
     sinon.stub(bag, "command").value(function (base, actions) {
-      actions.commands.check.action({});
-    });
-    sinon.stub(bag, "lookupFile").callsFake(function (file) {
-      assert.equals(file, "health.json");
-      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-    });
-    sinon.stub(Health.prototype, "check").callsFake(function (cb) {
-      cb(null, [{ status: "success", name: "someapp", desc: "somedesc" }]);
+      actions.commands.check.action(args);
     });
     cli.exec();
+  }
+
+  it("should check health.yaml and exit 0 when no file is specified and all checks pass", function () {
+    const reports = [{ file: "health.yaml", error: null, results: [] }];
+    sinon.stub(Health.prototype, "checkFiles").callsFake(function (files, cb) {
+      assert.equals(files, ["health.yaml"]);
+      cb(null, reports);
+    });
+    sinon
+      .stub(reporter, "report")
+      .withArgs(reports, { verbose: false })
+      .returns({ lines: ["line1", "line2"], passed: 1, failed: 0 });
+    runCheck({ args: [] });
+    assert.equals(this.log.callCount, 2);
+    assert.isTrue(this.log.firstCall.calledWithExactly("line1"));
+    assert.isTrue(this.exit.calledWithExactly(0));
   });
 
-  it("should log string result as-is", function () {
-    this.mockConsole.expects("log").once().withExactArgs("someresult");
-    this.mockProcess.expects("exit").twice().withExactArgs(0);
-    this.mockFormatter
-      .expects("format")
-      .once()
-      .withExactArgs([{ status: "success", name: "someapp", desc: "somedesc" }])
-      .returns("someresult");
-    sinon.stub(bag, "command").value(function (base, actions) {
-      actions.commands.check.action({});
+  it("should check specified files verbosely and exit 1 when a check fails", function () {
+    sinon.stub(Health.prototype, "checkFiles").callsFake(function (files, cb) {
+      assert.equals(files, ["a.yaml", "b.yaml"]);
+      cb(null, []);
     });
-    sinon.stub(bag, "lookupFile").callsFake(function (file) {
-      assert.equals(file, "health.json");
-      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-    });
-    sinon.stub(Health.prototype, "check").callsFake(function (cb) {
-      cb(null, [{ status: "success", name: "someapp", desc: "somedesc" }]);
-    });
-    cli.exec();
+    sinon
+      .stub(reporter, "report")
+      .withArgs([], { verbose: true })
+      .returns({ lines: [], passed: 0, failed: 1 });
+    runCheck({ args: ["a.yaml", "b.yaml"], verbose: true });
+    assert.isTrue(this.exit.calledWithExactly(1));
   });
 
-  it("should exit process with the number of non-ok result", function () {
-    this.mockConsole.expects("log").once().withExactArgs("someresult");
-    this.mockProcess.expects("exit").once().withExactArgs(0);
-    this.mockProcess.expects("exit").once().withExactArgs(2);
-    this.mockFormatter.expects("format").once().returns("someresult");
-    sinon.stub(bag, "command").value(function (base, actions) {
-      actions.commands.check.action({});
+  it("should default to health.yaml when args are absent", function () {
+    sinon.stub(Health.prototype, "checkFiles").callsFake(function (files, cb) {
+      assert.equals(files, ["health.yaml"]);
+      cb(null, []);
     });
-    sinon.stub(bag, "lookupFile").callsFake(function (file) {
-      assert.equals(file, "health.json");
-      return '[ { "name": "gmail", "uri": "http://google.com" } ]';
-    });
-    sinon.stub(Health.prototype, "check").callsFake(function (cb) {
-      cb(null, [
-        { status: "fail", name: "someapp1", desc: "somedesc1" },
-        { status: "success", name: "someapp2", desc: "somedesc2" },
-        { status: "fail", name: "someapp3", desc: "somedesc3" },
-      ]);
-    });
-    cli.exec();
+    runCheck({});
+    assert.isTrue(this.exit.calledWithExactly(0));
+  });
+
+  it("should exit with error when checks cannot be run", function () {
+    sinon
+      .stub(Health.prototype, "checkFiles")
+      .callsArgWith(1, new Error("someerror"));
+    const exitErr = sinon.stub(bag, "exit");
+    runCheck({ args: ["a.yaml"] });
+    assert.equals(exitErr.firstCall.args[0].message, "someerror");
   });
 });

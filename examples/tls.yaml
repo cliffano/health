@@ -1,0 +1,31 @@
+# TLS checks — handshake + certificate verification on any TLS port.
+# Works for HTTPS, SMTPS, IMAPS, database TLS, etc. No HTTP request is made.
+checks:
+  - name: google.com certificate healthy
+    protocol: tls
+    request:
+      host: google.com
+      port: 443
+      # servername: google.com     # SNI, defaults to host
+      # alpnProtocols: [h2, http/1.1]
+      timeout: 5000
+    expect:
+      connected: true
+      authorized: true                     # chain validates against system CAs
+      protocol: { $in: [TLSv1.2, TLSv1.3] }
+      cipher: { $exists: true }
+      cert:
+        subject: { $matches: "google" }
+        issuer: { $exists: true }
+        daysRemaining: { $gt: 14 }         # alert before expiry
+      responseTime: { $lt: 3000 }
+
+  - name: SMTPS endpoint presents valid cert
+    protocol: tls
+    request:
+      host: smtp.gmail.com
+      port: 465
+    expect:
+      authorized: true
+      cert:
+        daysRemaining: { $gt: 7 }

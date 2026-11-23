@@ -1,0 +1,17 @@
+# HTTP/2 checks — like http, but over an h2 session (ALPN-negotiated).
+name: Google speaks HTTP/2
+protocol: http2
+request:
+  url: https://www.google.com/
+  method: GET
+  # headers: { user-agent: health }
+  # body: '...'
+  timeout: 10000
+expect:
+  status: 200
+  httpVersion: "2.0"
+  alpnProtocol: h2                 # confirms h2 was actually negotiated
+  headers:
+    content-type: { $matches: "text/html" }
+  body: { $contains: "<title>" }
+  responseTime: { $lt: 5000 }

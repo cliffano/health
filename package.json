@@ -1,11 +1,21 @@
 {
   "name": "health",
   "type": "module",
-  "description": "Resource status monitoring library.",
+  "description": "Verify networking protocol responses against YAML expectation files.",
   "keywords": [
     "health",
-    "status",
-    "monitor"
+    "health-check",
+    "monitoring",
+    "expectation",
+    "yaml",
+    "http",
+    "http2",
+    "tcp",
+    "udp",
+    "dns",
+    "tls",
+    "websocket",
+    "ntp"
   ],
   "version": "1.0.0-pre.0",
   "homepage": "https://github.com/cliffano/health",
@@ -33,24 +43,15 @@
   "dependencies": {
     "async": "^3.2.6",
     "bagofcli": "^3.1.0",
-    "bagofrequest": "^1.0.0",
-    "colors": "^1.4.0",
-    "fs-extra": "^11.4.0",
-    "i18n": "^0.15.3",
-    "jazz": "^1.2.0",
-    "lodash": "^4.18.1",
-    "memory-cache": "^0.2.0",
-    "mongodb": "^7.6.0",
-    "validator": "^13.15.35"
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@sinonjs/referee": "^11.0.2",
-    "esmock": "^2.7.6",
     "sinon": "^22.1.0"
   },
   "scripts": {},
   "engines": {
-    "node": ">= 20.0.0"
+    "node": ">= 22.0.0"
   },
   "license": "MIT"
 }

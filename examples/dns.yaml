@@ -1,0 +1,31 @@
+# DNS checks — resolve records and verify their contents.
+checks:
+  - name: google.com has A records
+    protocol: dns
+    request:
+      name: google.com
+      rrtype: A            # A, AAAA, CNAME, MX, NS, TXT, SOA, SRV, PTR, CAA
+      # server: 8.8.8.8    # optional: query a specific resolver
+      timeout: 5000
+    expect:
+      count: { $gte: 1 }
+      records: { $length: { $gte: 1 } }
+      responseTime: { $lt: 2000 }
+
+  - name: gmail MX records point at Google
+    protocol: dns
+    request:
+      name: gmail.com
+      rrtype: MX
+    expect:
+      count: { $gte: 1 }
+      records:
+        $contains: { exchange: gmail-smtp-in.l.google.com, priority: 5 }
+
+  - name: SPF record present
+    protocol: dns
+    request:
+      name: google.com
+      rrtype: TXT
+    expect:
+      records: { $contains: "v=spf1 include:_spf.google.com ~all" }

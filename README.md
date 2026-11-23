@@ -13,11 +13,9 @@
 
 # Health
 
-Health is a resource health status checking library.
+Health verifies networking protocol responses against YAML expectation files.
 
-This is handy when you want to check the status of multiple resources using a simple configuration file. For example, if your application requires a web service and a MongoDB database to be available, Health module can monitor those resources and return status ok/fail against each resource along with the response time.
-
-It also supports result caching via ttl attribute of each resource, which is handy when you want to monitor multiple resources at a different interval or to reduce the load on certain resources.
+Describe what a healthy endpoint looks like (an HTTP status, a header, a JSON field, a DNS record, a TLS certificate expiry, an NTP clock offset) and Health checks the live response against it. Every protocol is built on Node.js core modules (`http`, `https`, `http2`, `net`, `tls`, `dgram`, `dns`, and the global `WebSocket`), so there are no protocol client dependencies.
 
 ## Installation
 
@@ -25,70 +23,151 @@ It also supports result caching via ttl attribute of each resource, which is han
 npm install -g health
 ```
 
+Requires Node.js 22 or newer.
+
 ## Usage
 
-```javascript
-import Health from "health";
+The simplest expectation file, `google.yaml`:
 
-// use default formatter
-const health1 = new Health({
-  setup: [{ name: "google", uri: "http://google.com" }],
-});
-
-// use built-in formatter (cli, html, or text)
-const health2 = new Health({
-  setup: [{ name: "google", uri: "http://google.com" }],
-  formatter: "html",
-});
-
-// use custom formatter function
-const health3 = new Health({
-  setup: [{ name: "google", uri: "http://google.com" }],
-  formatter: function (results) {
-    return results.join("|");
-  },
-});
-
-// check resources
-health1.check(function (err, result) {});
+```yaml
+protocol: http
+request:
+  url: https://google.com
+expect:
+  status: 200
 ```
 
-From command-line:
+Check it from command-line:
 
 ```bash
-health check --setup-file health.json --formatter html
+health check google.yaml
 ```
 
-Show help guide:
+Check multiple files, and display the full captured result of each check:
+
+```bash
+health check --verbose http.yaml dns.yaml tls.yaml
+```
+
+Without any file argument, `health check` uses `health.yaml` in the current directory. Create a sample one using:
+
+```bash
+health init
+```
+
+The exit code is `0` when every check passes and `1` otherwise, so it can be used directly as a CI step or a cron job. Show help guide:
 
 ```bash
 health --help
 ```
 
-## Configuration
+From JavaScript:
 
-Health setup is just a simple JSON:
+```javascript
+import Health from "health";
 
-```json
-[
-  { "name": "Google", "uri": "http://google.com", "statusCode": [200] },
-  { "name": "GMail", "uri": "https://mail.google.com", "timeout": 1000 },
-  { "name": "MongoDB", "uri": "mongodb://somehost:27017", "timeout": 200, "ttl": 30000 },
-  { "name": "Temp", "uri": "file:///tmp", "mode": "777", "ttl": 360000 }
-]
+const health = new Health();
+
+// check a single expectation
+health.check(
+  {
+    name: "google",
+    protocol: "http",
+    request: { url: "https://google.com" },
+    expect: { status: 200 },
+  },
+  function (err, result) {
+    // result: { name, protocol, ok, failures: [{ path, message }], result }
+  },
+);
+
+// check every expectation in a YAML file
+health.checkFile("google.yaml", function (err, results) {});
+
+// check multiple YAML files, an unreadable file is reported, not thrown
+health.checkFiles(["http.yaml", "dns.yaml"], function (err, reports) {
+  // reports: [{ file, error, results }]
+});
 ```
 
-| Attribute | Type | Description | Protocol | Usage | Default | Example |
-|-----------|------|--------------|----------|-------|---------|---------|
-| `uri` | string | Resource URI to check | All | Mandatory | | `mongodb://somehost:27017` |
-| `name` | string | Resource name | All | Optional | | `someapp` |
-| `ttl` | number | Cache time to live in milliseconds | All | Optional | | `30000` |
-| `lenient` | boolean | Replace fail or error with warning | All | Optional | `false` | `true`, `false` |
-| `group` | string | Resource group name, status is set to warning when there's at least one group member having success/warning status, group members status is set to fail/error only when none of the group members has success/warning status | All | Optional | | `databases`, `apps`, `datacenter1` |
-| `timeout` | number | Request/connect timeout in milliseconds | http, https, mongodb | Optional | | `500` |
-| `statusCode` | array | An array of acceptable response HTTP status codes | http, https | Optional | | `[200, 409]` |
-| `text` | array | An array of all texts that must exist in response body, any of them does not exist means status FAIL | http, https | Optional | | `['foo', 'bar']` |
-| `mode` | string | 3-digit file/directory mode | file | Optional | | `777`, `644` |
+A protocol failure such as a refused connection or a timeout is reported as a failed result with an `error` message, not as a callback error. The callback error is only used when a check can't be run at all, e.g. unknown protocol or invalid YAML.
+
+## Expectation files
+
+Each check has a `protocol`, a protocol-specific `request`, an `expect` block, and an optional `name`. A file can hold a single check, a top-level `checks` array, or multiple YAML documents separated by `---`:
+
+```yaml
+checks:
+  - name: web up
+    protocol: http
+    request: { url: https://example.com }
+    expect: { status: 200 }
+  - name: dns ok
+    protocol: dns
+    request: { name: example.com }
+    expect: { count: { $gte: 1 } }
+```
+
+See [examples](examples/) for a complete YAML file per protocol.
+
+## Configuration reference
+
+Every check, request, and expect property of each protocol, with its type, default, and an example:
+
+* [HTTP and HTTPS](docs/conf-http.md)
+* [HTTP/2](docs/conf-http2.md)
+* [TCP](docs/conf-tcp.md)
+* [UDP](docs/conf-udp.md)
+* [DNS](docs/conf-dns.md)
+* [TLS](docs/conf-tls.md)
+* [WebSocket](docs/conf-websocket.md)
+* [NTP](docs/conf-ntp.md)
+
+## Protocols
+
+| Protocol | Core module | Verifiable fields |
+|----------|-------------|-------------------|
+| [`http`, `https`](docs/conf-http.md) | `http`, `https` | `url`, `status`, `statusText`, `httpVersion`, `headers.*`, `body`, `bodyLength`, `json.*`, `redirects`, `responseTime`, `remoteAddress`, `tls.*` (`protocol`, `cipher`, `authorized`, `certSubject`, `certIssuer`, `certValidFrom`, `certValidTo`, `certDaysRemaining`) |
+| [`http2`](docs/conf-http2.md) | `http2` | `url`, `status`, `httpVersion`, `alpnProtocol`, `headers.*`, `body`, `bodyLength`, `json.*`, `responseTime` |
+| [`tcp`](docs/conf-tcp.md) | `net` | `connected`, `connectTime`, `responseTime`, `remoteAddress`, `remoteFamily`, `data`, `dataHex`, `bytesReceived` |
+| [`udp`](docs/conf-udp.md) | `dgram` | `responded`, `responseTime`, `data`, `dataHex`, `bytesReceived`, `remoteAddress`, `remotePort` |
+| [`dns`](docs/conf-dns.md) | `dns` | `name`, `rrtype`, `records`, `count`, `responseTime` |
+| [`tls`](docs/conf-tls.md) | `tls` | `connected`, `authorized`, `authorizationError`, `protocol`, `cipher`, `cipherVersion`, `alpnProtocol`, `servername`, `responseTime`, `cert.*` (`subject`, `issuer`, `subjectAltName`, `validFrom`, `validTo`, `daysRemaining`, `serialNumber`, `fingerprint256`) |
+| [`websocket`, `ws`](docs/conf-websocket.md) | global `WebSocket` | `connected`, `connectTime`, `protocol`, `extensions`, `messageReceived`, `message`, `responseTime` |
+| [`ntp`](docs/conf-ntp.md) | `dgram` | `responded`, `valid`, `leapIndicator`, `version`, `mode`, `stratum`, `offset`, `offsetAbs`, `delay`, `serverTime`, `bytesReceived`, `responseTime` |
+
+All time values are in milliseconds. `json` is the parsed response body when it is valid JSON. Expected header names are case-insensitive.
+
+See the [configuration reference](#configuration-reference) for every request property and its default.
+
+## Matchers
+
+A scalar expectation means strict equality, an array means deep equality, and a plain object is a partial deep match where only the listed keys are checked:
+
+```yaml
+expect:
+  headers:
+    content-type: { $matches: "text/html" }
+  json:
+    data:
+      user: { name: alice }
+```
+
+An object whose keys all start with `$` applies operators:
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `$eq`, `$ne` | Deep equality, inequality | `{ $ne: 500 }` |
+| `$gt`, `$gte`, `$lt`, `$lte` | Numeric comparison | `{ $lt: 1000 }` |
+| `$contains` | Substring, or array membership | `{ $contains: "<title>" }` |
+| `$matches` | Regular expression | `{ $matches: "^SSH-2\\.0" }` |
+| `$exists` | `true` must be present, `false` must be absent | `{ $exists: false }` |
+| `$in` | Value is one of the listed options | `{ $in: [TLSv1.2, TLSv1.3] }` |
+| `$length` | Length of string or array, accepts nested matchers | `{ $length: { $gte: 1 } }` |
+| `$type` | `string`, `number`, `boolean`, `array`, `object`, or `null` | `{ $type: array }` |
+| `$not` | Negate a nested matcher | `{ $not: { $in: [500, 503] } }` |
+
+Each failure is reported with the dotted path of the mismatching field, e.g. `headers.content-type: expected match for /json/, got "text/html"`.
 
 ## Colophon
 

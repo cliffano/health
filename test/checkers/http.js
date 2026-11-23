@@ -1,230 +1,317 @@
 "use strict";
-import bag from "bagofrequest";
+import EventEmitter from "events";
+import http from "http";
+import https from "https";
+
 import referee from "@sinonjs/referee";
 import sinon from "sinon";
+
 import checker from "../../lib/checkers/http.js";
 const assert = referee.assert;
 
+/**
+ * Build a fake lib.request implementation that serves the given responses
+ * in order, each { status, headers, chunks, socket, error }.
+ */
+function fakeRequest(responses, requests) {
+  let index = 0;
+  return function (url, opts, onResponse) {
+    const spec = responses[index];
+    index += 1;
+    const req = new EventEmitter();
+    req.write = sinon.spy();
+    req.destroy = function (err) {
+      req.emit("error", err);
+    };
+    req.end = function () {
+      requests.push({ url: url.toString(), opts, req });
+      if (spec.error) {
+        req.emit("error", spec.error);
+      } else if (spec.timeout) {
+        req.emit("timeout");
+      } else {
+        const res = new EventEmitter();
+        res.statusCode = spec.status;
+        res.statusMessage = spec.statusText || "OK";
+        res.httpVersion = "1.1";
+        res.headers = spec.headers || {};
+        res.socket = spec.socket || { remoteAddress: "127.0.0.1" };
+        onResponse(res);
+        if (spec.resError) {
+          res.emit("error", spec.resError);
+          return;
+        }
+        (spec.chunks || []).forEach((chunk) => res.emit("data", chunk));
+        res.emit("end");
+      }
+    };
+    return req;
+  };
+}
+
 describe("http - check", function () {
+  beforeEach(function () {
+    this.requests = [];
+  });
+
   afterEach(function () {
     sinon.restore();
   });
 
-  it("should have fail status when an error occurs while sending the request", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      cb(new Error("some error"));
-    });
-    const setup = { uri: "http://somehost" };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isError());
-      assert.equals(result.getErrors(), ["some error"]);
+  it("should pass error to callback when url is unspecified", function (done) {
+    checker.check({}, function (err) {
+      assert.equals(err.message, 'http check requires "url"');
       done();
     });
   });
 
-  it("should have success status when request is successful and there is no checking involved", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      assert.equals(opts.timeout, 8000);
-      opts.handlers.xxx({ statusCode: "200" }, cb);
-    });
-    const setup = { uri: "http://somehost", timeout: 8000 };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getFailures(), []);
-      assert.equals(result.getSuccesses(), []);
+  it("should pass error to callback when url is invalid", function (done) {
+    checker.check({ url: "not a url" }, function (err) {
+      assert.equals(err.code, "ERR_INVALID_URL");
       done();
     });
   });
 
-  it("should have success status when request is successful and status code matches", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200" }, cb);
-    });
-    const setup = { uri: "http://somehost", "statusCode-or": [200, 301] };
-    checker.check(setup, function (err, result) {
+  it("should capture status, headers, body and json when response is plain http", function (done) {
+    sinon.stub(http, "request").callsFake(
+      fakeRequest(
+        [
+          {
+            status: 200,
+            headers: { "content-type": "application/json" },
+            chunks: [Buffer.from('{"ok":'), Buffer.from("true}")],
+          },
+        ],
+        this.requests,
+      ),
+    );
+    const requests = this.requests;
+    checker.check({ url: "http://somehost/json" }, function (err, result) {
       assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), ["Status code 200 as expected"]);
-      assert.equals(result.getFailures(), []);
+      assert.equals(result.url, "http://somehost/json");
+      assert.equals(result.status, 200);
+      assert.equals(result.statusText, "OK");
+      assert.equals(result.httpVersion, "1.1");
+      assert.equals(result.headers, { "content-type": "application/json" });
+      assert.equals(result.body, '{"ok":true}');
+      assert.equals(result.bodyLength, 11);
+      assert.equals(result.json, { ok: true });
+      assert.equals(result.redirects, 0);
+      assert.equals(result.remoteAddress, "127.0.0.1");
+      assert.isUndefined(result.tls);
+      assert.isNumber(result.responseTime);
+      assert.equals(requests[0].opts.method, "GET");
+      assert.equals(requests[0].opts.timeout, 10000);
+      assert.isTrue(requests[0].opts.rejectUnauthorized);
       done();
     });
   });
 
-  it("should have success status when request is successful and status code matches the regular expression", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200" }, cb);
-    });
-    const setup = {
-      uri: "http://somehost",
-      "statusCode-or": ["2[0-9]{2}", 301],
+  it("should send method, headers and body when specified", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(fakeRequest([{ status: 201, chunks: [] }], this.requests));
+    const requests = this.requests;
+    checker.check(
+      {
+        url: "http://somehost/items",
+        method: "POST",
+        headers: { "x-key": "value" },
+        body: "payload",
+        timeout: 100,
+        rejectUnauthorized: false,
+      },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result.status, 201);
+        assert.isUndefined(result.json);
+        assert.equals(requests[0].opts.method, "POST");
+        assert.equals(requests[0].opts.headers, { "x-key": "value" });
+        assert.equals(requests[0].opts.timeout, 100);
+        assert.isFalse(requests[0].opts.rejectUnauthorized);
+        assert.isTrue(requests[0].req.write.calledWithExactly("payload"));
+        done();
+      },
+    );
+  });
+
+  it("should capture tls details when response is https", function (done) {
+    const clock = sinon.useFakeTimers(new Date("2026-01-01T00:00:00Z"));
+    const socket = {
+      remoteAddress: "10.0.0.1",
+      authorized: true,
+      getPeerCertificate: () => ({
+        subject: { CN: "somehost" },
+        issuer: { CN: "someca" },
+        valid_from: "Jan 1 00:00:00 2025 GMT",
+        valid_to: "Jan 31 00:00:00 2026 GMT",
+      }),
+      getCipher: () => ({ name: "TLS_AES_256_GCM_SHA384" }),
+      getProtocol: () => "TLSv1.3",
     };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), [
-        "Status code 2[0-9]{2} as expected",
-      ]);
-      assert.equals(result.getFailures(), []);
-      done();
-    });
-  });
-
-  it("should have success status when request is successful and texts exist in request body", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
-    });
-    const setup = {
-      uri: "http://somehost",
-      text: ["foo", "blah", "^foob", "lah$"],
-    };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), [
-        "Text foo exists in response body",
-        "Text blah exists in response body",
-        "Text ^foob exists in response body",
-        "Text lah$ exists in response body",
-      ]);
-      assert.equals(result.getFailures(), []);
-      done();
-    });
-  });
-
-  it("should have success status when request is successful, status code matches, and texts exist in request body", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
-    });
-    const setup = {
-      uri: "http://somehost",
-      "statusCode-or": [200, 301],
-      text: ["foo", "blah"],
-    };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getSuccesses(), [
-        "Status code 200 as expected",
-        "Text foo exists in response body",
-        "Text blah exists in response body",
-      ]);
-      assert.equals(result.getFailures(), []);
-      done();
-    });
-  });
-
-  it("should have fail status when status code does not match", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "400" }, cb);
-    });
-    const setup = { uri: "http://somehost", "statusCode-or": [200, 301] };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), [
-        "Status code 400 does not match the expected 200",
-        "Status code 400 does not match the expected 301",
-      ]);
-      assert.equals(result.getSuccesses(), []);
-      done();
-    });
-  });
-
-  it("should have fail status when text does not exist in response body", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
-    });
-    const setup = { uri: "http://somehost", text: ["xyz"] };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), [
-        "Text xyz does not exist in response body",
-      ]);
-      assert.equals(result.getSuccesses(), []);
-      done();
-    });
-  });
-
-  it("should have fail status when one text exists and another one does not", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
-    });
-    const setup = { uri: "http://somehost", text: ["foobar", "xyz"] };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), [
-        "Text xyz does not exist in response body",
-      ]);
-      assert.equals(result.getSuccesses(), [
-        "Text foobar exists in response body",
-      ]);
-      done();
-    });
-  });
-
-  it("should have fail status when checks result in both success and failure", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar blah" }, cb);
-    });
-    const setup = { uri: "http://somehost", statusCode: [200], text: ["xyz"] };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), [
-        "Text xyz does not exist in response body",
-      ]);
-      assert.equals(result.getSuccesses(), ["Status code 200 as expected"]);
-      done();
-    });
-  });
-
-  it("should execute all checks even though the first one fails", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx({ statusCode: "200", body: "foobar xyz" }, cb);
-    });
-    const setup = {
-      uri: "http://somehost",
-      statusCode: 201,
-      text: ["foobar", "xyz", "blah"],
-    };
-    checker.check(setup, function (err, result) {
-      assert.isNull(err);
-      assert.isTrue(result.isFail());
-      assert.equals(result.getFailures(), [
-        "Status code 200 does not match the expected 201",
-        "Text blah does not exist in response body",
-      ]);
-      assert.equals(result.getSuccesses(), [
-        "Text foobar exists in response body",
-        "Text xyz exists in response body",
-      ]);
-      done();
-    });
-  });
-
-  it("should pass result headers and body as info", function (done) {
-    sinon.stub(bag, "request").callsFake(function (method, url, opts, cb) {
-      opts.handlers.xxx(
-        {
-          statusCode: "200",
-          headers: { someheader: "somevalue" },
-          body: "some body",
-        },
-        cb,
+    sinon
+      .stub(https, "request")
+      .callsFake(
+        fakeRequest(
+          [{ status: 200, chunks: [Buffer.from("hello")], socket }],
+          this.requests,
+        ),
       );
-    });
-    const setup = { uri: "http://somehost" };
-    checker.check(setup, function (err, result) {
+    checker.check({ url: "https://somehost" }, function (err, result) {
+      clock.restore();
       assert.isNull(err);
-      assert.isTrue(result.isSuccess());
-      assert.equals(result.getFailures(), []);
-      assert.equals(result.getSuccesses(), []);
-      assert.equals(result.getInfo().headers.someheader, "somevalue");
-      assert.equals(result.getInfo().body, "some body");
+      assert.equals(result.tls, {
+        protocol: "TLSv1.3",
+        cipher: "TLS_AES_256_GCM_SHA384",
+        authorized: true,
+        certSubject: "somehost",
+        certIssuer: "someca",
+        certValidFrom: "Jan 1 00:00:00 2025 GMT",
+        certValidTo: "Jan 31 00:00:00 2026 GMT",
+        certDaysRemaining: 30,
+      });
+      done();
+    });
+  });
+
+  it("should tolerate missing certificate and socket details when https", function (done) {
+    const socket = { getPeerCertificate: () => null };
+    sinon
+      .stub(https, "request")
+      .callsFake(fakeRequest([{ status: 200, socket }], this.requests));
+    checker.check({ url: "https://somehost" }, function (err, result) {
+      assert.isNull(err);
+      assert.isUndefined(result.tls.protocol);
+      assert.isUndefined(result.tls.cipher);
+      assert.isUndefined(result.tls.certSubject);
+      assert.isUndefined(result.tls.certDaysRemaining);
+      done();
+    });
+  });
+
+  it("should follow and count redirects when response is 3xx", function (done) {
+    sinon.stub(http, "request").callsFake(
+      fakeRequest(
+        [
+          { status: 301, headers: { location: "/next" } },
+          { status: 302, headers: { location: "http://otherhost/final" } },
+          { status: 200, chunks: [Buffer.from("done")] },
+        ],
+        this.requests,
+      ),
+    );
+    const requests = this.requests;
+    checker.check({ url: "http://somehost/start" }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 200);
+      assert.equals(result.redirects, 2);
+      assert.equals(result.url, "http://otherhost/final");
+      assert.equals(requests[1].url, "http://somehost/next");
+      done();
+    });
+  });
+
+  it("should stop following redirects when maxRedirects is reached", function (done) {
+    sinon.stub(http, "request").callsFake(
+      fakeRequest(
+        [
+          { status: 302, headers: { location: "/a" } },
+          { status: 302, headers: { location: "/b" } },
+        ],
+        this.requests,
+      ),
+    );
+    checker.check(
+      { url: "http://somehost/", maxRedirects: 1 },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result.status, 302);
+        assert.equals(result.redirects, 1);
+        done();
+      },
+    );
+  });
+
+  it("should not follow redirects when followRedirects is false", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(
+        fakeRequest(
+          [{ status: 302, headers: { location: "/a" } }],
+          this.requests,
+        ),
+      );
+    checker.check(
+      { url: "http://somehost/", followRedirects: false },
+      function (err, result) {
+        assert.isNull(err);
+        assert.equals(result.status, 302);
+        assert.equals(result.headers.location, "/a");
+        assert.equals(result.redirects, 0);
+        done();
+      },
+    );
+  });
+
+  it("should not treat 3xx without location as a redirect", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(fakeRequest([{ status: 304 }], this.requests));
+    checker.check({ url: "http://somehost/" }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.status, 304);
+      done();
+    });
+  });
+
+  it("should cap captured body when response is larger than 5MB", function (done) {
+    const big = Buffer.alloc(5 * 1024 * 1024, "a");
+    sinon
+      .stub(http, "request")
+      .callsFake(
+        fakeRequest([{ status: 200, chunks: [big, big] }], this.requests),
+      );
+    checker.check({ url: "http://somehost/" }, function (err, result) {
+      assert.isNull(err);
+      assert.equals(result.bodyLength, big.length);
+      done();
+    });
+  });
+
+  it("should pass error to callback when request fails", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(
+        fakeRequest([{ error: new Error("ECONNREFUSED") }], this.requests),
+      );
+    checker.check({ url: "http://somehost/" }, function (err, result) {
+      assert.equals(err.message, "ECONNREFUSED");
+      assert.isUndefined(result);
+      done();
+    });
+  });
+
+  it("should pass timeout error to callback when request times out", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(fakeRequest([{ timeout: true }], this.requests));
+    checker.check({ url: "http://somehost/", timeout: 50 }, function (err) {
+      assert.equals(err.message, "http timeout after 50ms");
+      done();
+    });
+  });
+
+  it("should pass error to callback when response stream fails", function (done) {
+    sinon
+      .stub(http, "request")
+      .callsFake(
+        fakeRequest(
+          [{ status: 200, resError: new Error("aborted") }],
+          this.requests,
+        ),
+      );
+    checker.check({ url: "http://somehost/" }, function (err) {
+      assert.equals(err.message, "aborted");
       done();
     });
   });

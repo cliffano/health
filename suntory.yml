@@ -6,7 +6,7 @@ generator:
   inputs:
     project_id: health
     project_name: Health
-    project_desc: Resource status monitoring library
+    project_desc: Verify networking protocol responses against YAML expectation files
     author_name: Cliffano Subagio
     author_email: cliffano@gmail.com
     author_url: https://github.com/cliffano
