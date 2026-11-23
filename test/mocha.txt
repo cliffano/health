@@ -1,118 +1,192 @@
 
 [0m[0m
-[0m  checker - allMustPass[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
-  [32m  [32m✔[39m[0m[90m should have successes and failures when some items pass and some items fail checking[0m
-  [32m  [32m✔[39m[0m[90m should have failures and no success when all items fail checking[0m
-
-[0m  checker - oneMustPass[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when some items pass and some items fail checking[0m
-  [32m  [32m✔[39m[0m[90m should have failures and no success when all items fail checking[0m
-
-[0m  checker - checkAttribute[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when all items pass checking and attribute is a single value[0m
-  [32m  [32m✔[39m[0m[90m should have successes and no failure when attribute has -or prefix and only one expectation matches[0m
-  [32m  [32m✔[39m[0m[90m should have no success and no failure when attribute does not exist in setup[0m
-
-[0m  file - check[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when an error occurs while stat-ing the file[0m
-  [32m  [32m✔[39m[0m[90m should have success status when there is no error while stat-ing the file[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when mode does not match expectation[0m
-  [32m  [32m✔[39m[0m[90m should have success status when mode matches expectation[0m
-  [32m  [32m✔[39m[0m[90m should have success status when mode matches expected regular expression[0m
-  [32m  [32m✔[39m[0m[90m should have success status when mode matches expectation and mode is an array with single item[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when mode expects multiple matches and only one actually matches[0m
-  [32m  [32m✔[39m[0m[90m should have success status when mode is either and it specifies multiple values and one matches[0m
+[0m  dns - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when name is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should resolve A records with defaults when only name is specified[0m
+  [32m  [32m✔[39m[0m[90m should join TXT record chunks when rrtype is txt[0m
+  [32m  [32m✔[39m[0m[90m should count a single record when result is not an array[0m
+  [32m  [32m✔[39m[0m[90m should use custom server and timeout when specified[0m
+  [32m  [32m✔[39m[0m[90m should use custom server list when server is an array[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when server is invalid[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when resolution fails[0m
 
 [0m  http - check[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when an error occurs while sending the request[0m
-  [32m  [32m✔[39m[0m[90m should have success status when request is successful and there is no checking involved[0m
-  [32m  [32m✔[39m[0m[90m should have success status when request is successful and status code matches[0m
-  [32m  [32m✔[39m[0m[90m should have success status when request is successful and status code matches the regular expression[0m
-  [32m  [32m✔[39m[0m[90m should have success status when request is successful and texts exist in request body[0m
-  [32m  [32m✔[39m[0m[90m should have success status when request is successful, status code matches, and texts exist in request body[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when status code does not match[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when text does not exist in response body[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when one text exists and another one does not[0m
-  [32m  [32m✔[39m[0m[90m should have fail status when checks result in both success and failure[0m
-  [32m  [32m✔[39m[0m[90m should execute all checks even though the first one fails[0m
-  [32m  [32m✔[39m[0m[90m should pass result headers and body as info[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is invalid[0m
+  [32m  [32m✔[39m[0m[90m should capture status, headers, body and json when response is plain http[0m
+  [32m  [32m✔[39m[0m[90m should send method, headers and body when specified[0m
+  [32m  [32m✔[39m[0m[90m should capture tls details when response is https[0m
+  [32m  [32m✔[39m[0m[90m should tolerate missing certificate and socket details when https[0m
+  [32m  [32m✔[39m[0m[90m should follow and count redirects when response is 3xx[0m
+  [32m  [32m✔[39m[0m[90m should stop following redirects when maxRedirects is reached[0m
+  [32m  [32m✔[39m[0m[90m should not follow redirects when followRedirects is false[0m
+  [32m  [32m✔[39m[0m[90m should not treat 3xx without location as a redirect[0m
+  [32m  [32m✔[39m[0m[90m should cap captured body when response is larger than 5MB[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when request fails[0m
+  [32m  [32m✔[39m[0m[90m should pass timeout error to callback when request times out[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when response stream fails[0m
 
-[0m  https[0m
-  [32m  [32m✔[39m[0m[90m should have check method[0m
+[0m  http2 - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is invalid[0m
+  [32m  [32m✔[39m[0m[90m should capture status, headers, alpn and json when request succeeds[0m
+  [32m  [32m✔[39m[0m[90m should send method, headers and body when specified[0m
+  [32m  [32m✔[39m[0m[90m should cap captured body when response is larger than 5MB[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when client fails[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when stream fails[0m
+  [32m  [32m✔[39m[0m[90m should pass timeout error to callback when no response arrives in time[0m
 
-[0m  mongodb - check[0m
-  [32m  [32m✔[39m[0m[90m should have success status when connect resolves[0m[33m (51ms)[0m
-(node:2977) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
-(Use `node --trace-deprecation ...` to show where the warning was created)
-  [32m  [32m✔[39m[0m[90m should have error status when connect rejects[0m
+[0m  ntp - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when host is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should decode offset, delay and stratum when server replies[0m
+  [32m  [32m✔[39m[0m[90m should mark response invalid when stratum is 0 or mode is not server[0m
+  [32m  [32m✔[39m[0m[90m should mark response invalid when packet is too short[0m
+  [32m  [32m✔[39m[0m[90m should report no response when timeout elapses[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when socket fails[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when send fails[0m
+
+[0m  tcp - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when host or port is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should capture data when server sends a banner and closes[0m
+  [32m  [32m✔[39m[0m[90m should send payload and finish after readTimeout when server keeps connection open[0m
+  [32m  [32m✔[39m[0m[90m should send hex payload and use encoding when specified[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connect times out[0m
+  [32m  [32m✔[39m[0m[90m should finish with captured data when idle timeout happens after connect[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connection fails[0m
+
+[0m  tls - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when host is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should capture handshake and certificate details when connected[0m
+  [32m  [32m✔[39m[0m[90m should pass options and omit certificate when none is presented[0m
+  [32m  [32m✔[39m[0m[90m should leave certificate fields undefined when they are absent[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connect times out[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connection fails[0m
+
+[0m  udp - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when host or port is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should capture response when server replies[0m
+  [32m  [32m✔[39m[0m[90m should send hex payload, use socket type and encoding when specified[0m
+  [32m  [32m✔[39m[0m[90m should report no response when timeout elapses[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when socket fails[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when send fails[0m
+
+[0m  websocket - check[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when global WebSocket is unavailable[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when url is rejected by the client[0m
+  [32m  [32m✔[39m[0m[90m should capture first message and negotiated protocol when connected[0m
+  [32m  [32m✔[39m[0m[90m should report no message when messageTimeout elapses[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connect times out[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when connection fails[0m
 
 [0m  cli - exec[0m
-  [32m  [32m✔[39m[0m[90m should contain commands with actions[0m
+  [32m  [32m✔[39m[0m[90m should contain commands with actions when executed[0m
 
 [0m  cli - init[0m
-  [32m  [32m✔[39m[0m[90m should contain init command and delegate to health init when exec is called[0m
+  [32m  [32m✔[39m[0m[90m should log created file and exit 0 when health init succeeds[0m
 
 [0m  cli - check[0m
-  [32m  [32m✔[39m[0m[90m should log array items line by line[0m
-  [32m  [32m✔[39m[0m[90m should log string result as-is[0m
-  [32m  [32m✔[39m[0m[90m should exit process with the number of non-ok result[0m
+  [32m  [32m✔[39m[0m[90m should check health.yaml and exit 0 when no file is specified and all checks pass[0m
+  [32m  [32m✔[39m[0m[90m should check specified files verbosely and exit 1 when a check fails[0m
+  [32m  [32m✔[39m[0m[90m should default to health.yaml when args are absent[0m
+  [32m  [32m✔[39m[0m[90m should exit with error when checks cannot be run[0m
 
-[0m  cli - format[0m
-  [32m  [32m✔[39m[0m[90m should format cli line properly when desc exists[0m
-  [32m  [32m✔[39m[0m[90m should format cli line properly when name exists[0m
-  [32m  [32m✔[39m[0m[90m should colourise status and uri and exclude name and desc from cli line when they do not exist[0m
-
-[0m  html - format[0m
-  [32m  [32m✔[39m[0m[90m should format text properly when desc exists[0m
-
-[0m  text - format[0m
-  [32m  [32m✔[39m[0m[90m should format text properly when desc exists[0m
-  [32m  [32m✔[39m[0m[90m should format text properly when name exists[0m
-  [32m  [32m✔[39m[0m[90m should exclude name and desc from text when they do not exist[0m
-  [32m  [32m✔[39m[0m[90m should format multiple texts properly[0m
-
-[0m  health - health[0m
-  [32m  [32m✔[39m[0m[90m should set opts if specified via constructor[0m
-  [32m  [32m✔[39m[0m[90m should set default opts if unspecified via constructor[0m
+[0m  health - constructor[0m
+  [32m  [32m✔[39m[0m[90m should set opts when specified[0m
+  [32m  [32m✔[39m[0m[90m should default opts to empty object when unspecified[0m
+  [32m  [32m✔[39m[0m[90m should expose supported protocols[0m
 
 [0m  health - init[0m
-  [32m  [32m✔[39m[0m[90m should copy sample health.js file to current directory when init is called[0m
-
-[0m  health - clearCache[0m
-  [32m  [32m✔[39m[0m[90m should call clear[0m
+  [32m  [32m✔[39m[0m[90m should copy sample health.yaml without overwriting when called[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when sample file cannot be copied[0m
 
 [0m  health - check[0m
-  [32m  [32m✔[39m[0m[90m should pass error when uri has unsupported protocol[0m
-  [32m  [32m✔[39m[0m[90m should pass error when uri has unsupported protocol and setup uses file[0m
-  [32m  [32m✔[39m[0m[90m should pass result with cached data when result is already cached (cache hit)[0m
-  [32m  [32m✔[39m[0m[90m should pass result with check result when it is not already cached (cache miss) and the result is then cached[0m
-(node:2977) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
-  [32m  [32m✔[39m[0m[90m should format data when formatter opt string is specified[0m
-  [32m  [32m✔[39m[0m[90m should pass error when an error occurs while checking a resource[0m
-  [32m  [32m✔[39m[0m[90m should format data when formatter opt function is specified[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when protocol is unknown[0m
+  [32m  [32m✔[39m[0m[90m should report ok result when expectation matches[0m
+  [32m  [32m✔[39m[0m[90m should report failures when expectation does not match[0m
+  [32m  [32m✔[39m[0m[90m should report failed result instead of error when checker fails[0m
+  [32m  [32m✔[39m[0m[90m should pass when no expectation and no request are specified[0m
+  [32m  [32m✔[39m[0m[90m should derive default name from request name or host when name is unspecified[0m
 
-[0m  health - _singleResultRules[0m
-  [32m  [32m✔[39m[0m[90m should set name if it exists[0m
-  [32m  [32m✔[39m[0m[90m should set status to warning when result is fail and lenient is true[0m
-  [32m  [32m✔[39m[0m[90m should set status to warning when result is error and lenient is true[0m
-  [32m  [32m✔[39m[0m[90m should mask password with asterisks[0m
+[0m  health - checkFile[0m
+  [32m  [32m✔[39m[0m[90m should run single check when file has one document[0m
+  [32m  [32m✔[39m[0m[90m should run every check when file has a checks array[0m
+  [32m  [32m✔[39m[0m[90m should run every document and skip empty ones when file has multiple documents[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when file cannot be read[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when file is invalid YAML[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when a check has unknown protocol[0m
 
-[0m  health - _multiResultsRules[0m
-  [32m  [32m✔[39m[0m[90m should leave all results as-is when there is no specified group[0m
-  [32m  [32m✔[39m[0m[90m should change status fail and error to warning when not all group members have non-success status[0m
-  [32m  [32m✔[39m[0m[90m should change status warning to fail when all group members have non-success status[0m
-  [32m  [32m✔[39m[0m[90m should change status warning to fail when group is weighted and members do not pass the weight[0m
-  [32m  [32m✔[39m[0m[90m should change status fail and error to warning when group is weighted and members pass the weight[0m
-  [32m  [32m✔[39m[0m[90m should change and keep status accordingly when there are multiple groups[0m
+[0m  health - checkFiles[0m
+  [32m  [32m✔[39m[0m[90m should record results and errors per file when files are checked[0m
 
-[0m  health - _checker[0m
-  [32m  [32m✔[39m[0m[90m should use http checker when URI has http protocol[0m
-  [32m  [32m✔[39m[0m[90m should use http checker when URI has https protocol[0m
-  [32m  [32m✔[39m[0m[90m should have undefined checker when URI has unsupported protocol[0m
+[0m  matcher - match scalars and arrays[0m
+  [32m  [32m✔[39m[0m[90m should pass when scalars are strictly equal[0m
+  [32m  [32m✔[39m[0m[90m should fail when scalars differ[0m
+  [32m  [32m✔[39m[0m[90m should deep compare when expected is an array[0m
+
+[0m  matcher - match objects[0m
+  [32m  [32m✔[39m[0m[90m should partially match when expected is a plain object[0m
+  [32m  [32m✔[39m[0m[90m should fail with dotted path when a nested key differs[0m
+  [32m  [32m✔[39m[0m[90m should fail when expected object but actual is not an object[0m
+  [32m  [32m✔[39m[0m[90m should treat an empty object as a partial match of anything object-like[0m
+
+[0m  matcher - match equality operators[0m
+  [32m  [32m✔[39m[0m[90m should deep compare when $eq is used[0m
+  [32m  [32m✔[39m[0m[90m should require difference when $ne is used[0m
+
+[0m  matcher - match comparison operators[0m
+  [32m  [32m✔[39m[0m[90m should pass when numbers are within bounds[0m
+  [32m  [32m✔[39m[0m[90m should fail with a message per operator when out of bounds[0m
+
+[0m  matcher - match $contains[0m
+  [32m  [32m✔[39m[0m[90m should check substring when actual is a string[0m
+  [32m  [32m✔[39m[0m[90m should check membership when actual is an array[0m
+  [32m  [32m✔[39m[0m[90m should fail when actual is neither string nor array[0m
+
+[0m  matcher - match $matches[0m
+  [32m  [32m✔[39m[0m[90m should test regular expression when actual is a string[0m
+  [32m  [32m✔[39m[0m[90m should fail when actual is not a string[0m
+
+[0m  matcher - match $exists[0m
+  [32m  [32m✔[39m[0m[90m should check presence when $exists is true[0m
+  [32m  [32m✔[39m[0m[90m should check absence when $exists is false[0m
+
+[0m  matcher - match $in, $type, $length, $not[0m
+  [32m  [32m✔[39m[0m[90m should check membership when $in is used[0m
+  [32m  [32m✔[39m[0m[90m should check type when $type is used[0m
+  [32m  [32m✔[39m[0m[90m should match length with nested matcher when $length is used[0m
+  [32m  [32m✔[39m[0m[90m should fail $length when actual is null or undefined[0m
+  [32m  [32m✔[39m[0m[90m should negate nested matcher when $not is used[0m
+
+[0m  matcher - match mixed keys[0m
+  [32m  [32m✔[39m[0m[90m should treat an object mixing operators and plain keys as partial match[0m
+
+[0m  reporter - report[0m
+  [32m  [32m✔[39m[0m[90m should list passed checks with response time when available[0m
+  [32m  [32m✔[39m[0m[90m should list failures with and without path when checks fail[0m
+  [32m  [32m✔[39m[0m[90m should count unreadable file as failed when file has an error[0m
+  [32m  [32m✔[39m[0m[90m should include full captured result when verbose is true[0m
+
+[0m  util - once[0m
+  [32m  [32m✔[39m[0m[90m should only pass the first call through when called multiple times[0m
+
+[0m  util - elapsed[0m
+  [32m  [32m✔[39m[0m[90m should return rounded milliseconds when given a start mark[0m
+
+[0m  util - parseJson[0m
+  [32m  [32m✔[39m[0m[90m should return parsed value when text is valid JSON[0m
+  [32m  [32m✔[39m[0m[90m should return undefined when text is not valid JSON[0m
+
+[0m  util - daysRemaining[0m
+  [32m  [32m✔[39m[0m[90m should return whole days until expiry when date is specified[0m
+  [32m  [32m✔[39m[0m[90m should return negative days when certificate has expired[0m
+  [32m  [32m✔[39m[0m[90m should return undefined when date is unspecified[0m
+
+[0m  util - payload[0m
+  [32m  [32m✔[39m[0m[90m should prefer hex payload when both hex and text are specified[0m
+  [32m  [32m✔[39m[0m[90m should use text payload when hex is unspecified[0m
+  [32m  [32m✔[39m[0m[90m should return undefined when no payload is specified[0m
 
 
-[92m [0m[32m 70 passing[0m[90m (152ms)[0m
+[92m [0m[32m 125 passing[0m[90m (121ms)[0m
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>util.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-health-Health.html">Health</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#check">check</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFile">checkFile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFiles">checkFiles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#init">init</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_dns.html">checkers/dns</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_dns.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http.html">checkers/http</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http2.html">checkers/http2</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http2.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_ntp.html">checkers/ntp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_ntp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tcp.html">checkers/tcp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tcp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tls.html">checkers/tls</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tls.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_udp.html">checkers/udp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_udp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_websocket.html">checkers/websocket</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_websocket.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-cli.html">cli</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-cli.html#~exec">exec</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-health.html">health</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-matcher.html">matcher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-matcher.html#~match">match</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-reporter.html">reporter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-reporter.html#~report">report</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-util.html">util</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~daysRemaining">daysRemaining</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~elapsed">elapsed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~once">once</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~parseJson">parseJson</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~payload">payload</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">util.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+/**
+ * Small helpers shared by the protocol checkers.
+ *
+ * @module util
+ */
+
+const DAY_MS = 86400000;
+
+/**
+ * Wrap a callback so that only its first invocation takes effect.
+ * Network events can race (e.g. timeout vs. error vs. data), this guarantees
+ * that a checker reports exactly one outcome.
+ *
+ * @param {Function} cb - standard cb(err, result) callback
+ * @return {Function} callback that ignores every call after the first
+ */
+function once(cb) {
+  let called = false;
+  return function (err, result) {
+    if (!called) {
+      called = true;
+      cb(err, result);
+    }
+  };
+}
+
+/**
+ * Milliseconds elapsed since a performance.now() start mark, rounded.
+ *
+ * @param {Number} start - performance.now() value captured at the start
+ * @return {Number} elapsed time in milliseconds
+ */
+function elapsed(start) {
+  return Math.round(performance.now() - start);
+}
+
+/**
+ * Parse text as JSON, returning undefined instead of throwing.
+ *
+ * @param {String} text - text to parse
+ * @return {*} parsed value, or undefined when text is not valid JSON
+ */
+function parseJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Number of whole days between now and a certificate expiry date.
+ *
+ * @param {String} validTo - certificate valid_to date string
+ * @return {Number} days remaining (negative when expired), undefined when unknown
+ */
+function daysRemaining(validTo) {
+  return validTo
+    ? Math.floor((new Date(validTo) - Date.now()) / DAY_MS)
+    : undefined;
+}
+
+/**
+ * Build the bytes to send from either a hex string or a text payload.
+ *
+ * @param {String} [sendHex] - payload as hex string, takes precedence
+ * @param {String} [send] - payload as text
+ * @return {Buffer} payload, undefined when neither is specified
+ */
+function payload(sendHex, send) {
+  if (sendHex !== undefined) {
+    return Buffer.from(String(sendHex), "hex");
+  }
+  return send !== undefined ? Buffer.from(String(send)) : undefined;
+}
+
+export default { once, elapsed, parseJson, daysRemaining, payload };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Nov 23 2026 22:44:08 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

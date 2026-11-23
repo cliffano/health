@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>reporter.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-health-Health.html">Health</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#check">check</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFile">checkFile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFiles">checkFiles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#init">init</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_dns.html">checkers/dns</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_dns.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http.html">checkers/http</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http2.html">checkers/http2</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http2.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_ntp.html">checkers/ntp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_ntp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tcp.html">checkers/tcp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tcp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tls.html">checkers/tls</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tls.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_udp.html">checkers/udp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_udp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_websocket.html">checkers/websocket</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_websocket.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-cli.html">cli</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-cli.html#~exec">exec</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-health.html">health</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-matcher.html">matcher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-matcher.html#~match">match</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-reporter.html">reporter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-reporter.html#~report">report</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-util.html">util</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~daysRemaining">daysRemaining</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~elapsed">elapsed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~once">once</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~parseJson">parseJson</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~payload">payload</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">reporter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+/**
+ * Turns check reports into human readable CLI output lines.
+ *
+ * @module reporter
+ */
+import nodeUtil from "util";
+
+/**
+ * Apply a terminal style, styleText drops it when stdout is not a TTY.
+ *
+ * @param {String} format - util.styleText format, e.g. green
+ * @param {String} text - text to style
+ * @return {String} styled text
+ * @private
+ */
+function _style(format, text) {
+  return nodeUtil.styleText(format, text);
+}
+
+/**
+ * Indent every line of a block of text.
+ *
+ * @param {String} text - text to indent
+ * @param {String} indent - indentation prefix
+ * @return {String} indented text
+ * @private
+ */
+function _indent(text, indent) {
+  return text.replace(/^/gm, indent);
+}
+
+/**
+ * Build the output lines for a single check result.
+ *
+ * @param {Object} result - check result from Health#check
+ * @param {Boolean} verbose - include the full captured result
+ * @return {Array} output lines
+ * @private
+ */
+function _resultLines(result, verbose) {
+  const lines = [];
+  if (result.ok) {
+    const time =
+      result.result?.responseTime !== undefined
+        ? ` ${_style("dim", `(${result.result.responseTime}ms)`)}`
+        : "";
+    lines.push(`  ${_style("green", "✓")} ${result.name}${time}`);
+  } else {
+    lines.push(`  ${_style("red", `✗ ${result.name}`)}`);
+    result.failures.forEach(function (failure) {
+      const path = failure.path ? `${failure.path}: ` : "";
+      lines.push(`      ${_style("red", `${path}${failure.message}`)}`);
+    });
+  }
+  if (verbose &amp;&amp; result.result) {
+    lines.push(
+      _style("dim", _indent(JSON.stringify(result.result, null, 2), "      ")),
+    );
+  }
+  return lines;
+}
+
+/**
+ * Report check results of multiple files.
+ *
+ * @param {Array} reports - list of { file, error, results } from Health#checkFiles
+ * @param {Object} [opts] - optional settings
+ * @param {Boolean} [opts.verbose=false] - include each check's full result
+ * @return {Object} { lines, passed, failed }, failed includes unreadable files
+ */
+function report(reports, opts) {
+  const verbose = (opts &amp;&amp; opts.verbose) === true;
+  const lines = [];
+  let passed = 0;
+  let failed = 0;
+  reports.forEach(function (fileReport) {
+    lines.push(_style("dim", fileReport.file));
+    if (fileReport.error) {
+      failed += 1;
+      lines.push(
+        `  ${_style("red", `✗ could not run file: ${fileReport.error.message}`)}`,
+      );
+    }
+    fileReport.results.forEach(function (result) {
+      if (result.ok) {
+        passed += 1;
+      } else {
+        failed += 1;
+      }
+      lines.push(..._resultLines(result, verbose));
+    });
+  });
+  lines.push("", `${passed} passed, ${failed} failed`);
+  return { lines, passed, failed };
+}
+
+export default { report };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Nov 23 2026 22:44:08 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

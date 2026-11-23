@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>checkers/tcp.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-health-Health.html">Health</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#check">check</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFile">checkFile</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#checkFiles">checkFiles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-health-Health.html#init">init</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_dns.html">checkers/dns</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_dns.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http.html">checkers/http</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_http2.html">checkers/http2</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_http2.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_ntp.html">checkers/ntp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_ntp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tcp.html">checkers/tcp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tcp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_tls.html">checkers/tls</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_tls.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_udp.html">checkers/udp</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_udp.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-checkers_websocket.html">checkers/websocket</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-checkers_websocket.html#~check">check</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-cli.html">cli</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-cli.html#~exec">exec</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-health.html">health</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-matcher.html">matcher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-matcher.html#~match">match</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-reporter.html">reporter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-reporter.html#~report">report</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-util.html">util</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~daysRemaining">daysRemaining</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~elapsed">elapsed</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~once">once</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~parseJson">parseJson</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-util.html#~payload">payload</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">checkers/tcp.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+/**
+ * TCP checker, built on the core net module. Opens a connection, optionally
+ * sends a payload, and captures whatever the server sends back.
+ *
+ * @module checkers/tcp
+ */
+import net from "net";
+
+import util from "../util.js";
+
+const DEFAULT_TIMEOUT = 5000;
+const DEFAULT_READ_TIMEOUT = 2000;
+
+/**
+ * Connect to a TCP port and capture the response.
+ *
+ * @param {Object} req - request definition
+ * @param {String} req.host - host to connect to
+ * @param {Number} req.port - port to connect to
+ * @param {String} [req.send] - text payload to send after connecting
+ * @param {String} [req.sendHex] - payload as hex string, takes precedence
+ * @param {Number} [req.timeout=5000] - connect timeout in milliseconds
+ * @param {Number} [req.readTimeout=2000] - time to collect data after connecting
+ * @param {String} [req.encoding=utf8] - encoding of the returned data string
+ * @param {Function} cb - standard cb(err, result) callback
+ */
+function check(req, cb) {
+  if (!req.host || !req.port) {
+    cb(new Error('tcp check requires "host" and "port"'));
+    return;
+  }
+  const timeout = req.timeout ?? DEFAULT_TIMEOUT;
+  const readTimeout = req.readTimeout ?? DEFAULT_READ_TIMEOUT;
+  const encoding = req.encoding || "utf8";
+  const start = performance.now();
+  const done = util.once(cb);
+  const chunks = [];
+  let connectTime;
+  let remoteAddress;
+  let remoteFamily;
+
+  const socket = net.connect({ host: req.host, port: req.port, timeout });
+
+  function finish() {
+    socket.destroy();
+    const data = Buffer.concat(chunks);
+    done(null, {
+      connected: connectTime !== undefined,
+      connectTime,
+      responseTime: util.elapsed(start),
+      remoteAddress,
+      remoteFamily,
+      data: data.toString(encoding),
+      dataHex: data.toString("hex"),
+      bytesReceived: data.length,
+    });
+  }
+
+  socket.on("connect", function () {
+    connectTime = util.elapsed(start);
+    remoteAddress = socket.remoteAddress;
+    remoteFamily = socket.remoteFamily;
+    const payload = util.payload(req.sendHex, req.send);
+    if (payload !== undefined) {
+      socket.write(payload);
+    }
+    setTimeout(finish, readTimeout).unref?.();
+  });
+  socket.on("data", function (chunk) {
+    chunks.push(chunk);
+  });
+  socket.on("end", finish);
+  socket.on("timeout", function () {
+    if (connectTime === undefined) {
+      socket.destroy();
+      done(
+        new Error(
+          `tcp connect timeout after ${timeout}ms (${req.host}:${req.port})`,
+        ),
+      );
+    } else {
+      finish();
+    }
+  });
+  socket.on("error", done);
+}
+
+export default { check };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Nov 23 2026 22:44:08 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
