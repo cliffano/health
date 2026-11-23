@@ -192,5 +192,5 @@
   [32m  [32m✔[39m[0m[90m should return undefined when no payload is specified[0m
 
 
-[92m [0m[32m 129 passing[0m[90m (204ms)[0m
+[92m [0m[32m 129 passing[0m[90m (184ms)[0m
 
