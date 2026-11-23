@@ -44,7 +44,7 @@
   [32m  [32m✔[39m[0m[90m should have check method[0m
 
 [0m  mongodb - check[0m
-  [32m  [32m✔[39m[0m[90m should have success status when connect resolves[0m[33m (56ms)[0m
+  [32m  [32m✔[39m[0m[90m should have success status when connect resolves[0m[33m (69ms)[0m
   [32m  [32m✔[39m[0m[90m should have error status when connect rejects[0m
 
 [0m  cli - exec[0m
@@ -87,6 +87,8 @@
   [32m  [32m✔[39m[0m[90m should pass error when uri has unsupported protocol and setup uses file[0m
   [32m  [32m✔[39m[0m[90m should pass result with cached data when result is already cached (cache hit)[0m
   [32m  [32m✔[39m[0m[90m should pass result with check result when it is not already cached (cache miss) and the result is then cached[0m
+(node:3042) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+(Use `node --trace-deprecation ...` to show where the warning was created)
   [32m  [32m✔[39m[0m[90m should format data when formatter opt string is specified[0m
   [32m  [32m✔[39m[0m[90m should pass error when an error occurs while checking a resource[0m
   [32m  [32m✔[39m[0m[90m should format data when formatter opt function is specified[0m
@@ -111,5 +113,5 @@
   [32m  [32m✔[39m[0m[90m should have undefined checker when URI has unsupported protocol[0m
 
 
-[92m [0m[32m 70 passing[0m[90m (139ms)[0m
+[92m [0m[32m 70 passing[0m[90m (173ms)[0m
 
