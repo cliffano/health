@@ -1,4 +1,4 @@
-Using directory: .bob/test-integration/cmdt-1795473951532-3084
+Using directory: .bob/test-integration/cmdt-1795475023328-3096
 
-test-integration/commands.yml .......
-7 tests, 7 successes, 0 failure
+test-integration/commands.yml ........
+8 tests, 8 successes, 0 failure

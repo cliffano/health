@@ -1,4 +1,4 @@
-test | /opt/hostedtoolcache/node/26.13.1/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
+test | /opt/hostedtoolcache/node/22.23.5/x64/lib/node_modules/bob/node_modules/.bin/mocha --colors --reporter spec --recursive test/
 
 [0m[0m
 [0m  dns - check[0m
@@ -110,9 +110,13 @@ test | /opt/hostedtoolcache/node/26.13.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should derive default name from request name or host when name is unspecified[0m
 
 [0m  health - checkFile[0m
-  [32m  [32m✔[39m[0m[90m should run single check when file has one document[0m
-  [32m  [32m✔[39m[0m[90m should run every check when file has a checks array[0m
-  [32m  [32m✔[39m[0m[90m should run every document and skip empty ones when file has multiple documents[0m
+  [32m  [32m✔[39m[0m[90m should run every check when file has a checks array of mixed protocols[0m
+  [32m  [32m✔[39m[0m[90m should return no results when checks array is empty[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when file has no checks array[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when checks is not an array[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when file is empty[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when a checks item is not an object[0m
+  [32m  [32m✔[39m[0m[90m should pass error to callback when file has multiple documents[0m
   [32m  [32m✔[39m[0m[90m should pass error to callback when file cannot be read[0m
   [32m  [32m✔[39m[0m[90m should pass error to callback when file is invalid YAML[0m
   [32m  [32m✔[39m[0m[90m should pass error to callback when a check has unknown protocol[0m
@@ -189,7 +193,7 @@ test | /opt/hostedtoolcache/node/26.13.1/x64/lib/node_modules/bob/node_modules/.
   [32m  [32m✔[39m[0m[90m should return undefined when no payload is specified[0m
 
 
-[92m [0m[32m 125 passing[0m[90m (172ms)[0m
+[92m [0m[32m 129 passing[0m[90m (204ms)[0m
 
 SUCCESS | exit code 0
 ---------------|---------|----------|---------|---------|-------------------
